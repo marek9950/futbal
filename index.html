@@ -6,7 +6,6 @@
   <title>Tipovačka: Marek vs Krevetka</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    /* Skrytie predvolených šípok v inputoch pre istotu */
     input[type=number]::-webkit-inner-spin-button, 
     input[type=number]::-webkit-outer-spin-button { 
       -webkit-appearance: none; 
@@ -31,7 +30,7 @@
 
     <div id="mrdkaAlert" class="hidden bg-yellow-100 border border-yellow-300 text-yellow-800 p-4 rounded-xl text-center font-bold text-sm shadow-sm"></div>
 
-    <!-- Nový zápas (Tipy) -->
+    <!-- Nový zápas -->
     <div class="bg-white p-6 rounded-2xl shadow-sm">
       <h3 class="text-lg font-bold mb-4 text-slate-700">Pridať nový tip</h3>
       
@@ -47,7 +46,6 @@
       </div>
 
       <div class="space-y-4 mb-5 border-t border-slate-100 pt-4">
-        <!-- Tip Krevetka -->
         <div>
           <label class="block text-xs text-pink-500 font-semibold mb-2">Tip Krevetka</label>
           <div class="flex items-center justify-between gap-4">
@@ -65,7 +63,6 @@
           </div>
         </div>
 
-        <!-- Tip Marek -->
         <div>
           <label class="block text-xs text-blue-500 font-semibold mb-2">Tip Marek</label>
           <div class="flex items-center justify-between gap-4">
@@ -97,7 +94,6 @@
   </div>
 
   <script>
-    // null namiesto čísla znamená, že výsledok ešte nie je zadaný
     let historyData = [
       { tH: 'Marseille', tA: 'PSG', rH: 1, rA: 2, kH: 2, kA: 3, mH: 1, mA: 2 },
       { tH: 'Sevilla', tA: 'Barcelona', rH: 1, rA: 3, kH: 1, kA: 3, mH: 0, mA: 3 },
@@ -136,6 +132,13 @@
       renderApp();
     }
 
+    function deleteMatch(idx) {
+      if (confirm('Naozaj chceš vymazať tento zápas z histórie?')) {
+        historyData.splice(idx, 1);
+        renderApp();
+      }
+    }
+
     function renderApp() {
       let totalK = 0;
       let totalM = 0;
@@ -150,9 +153,9 @@
         totalM += ptsM;
 
         if (!isResolved) {
-          // KARTA BEZ VÝSLEDKU
           listHTML += `
-            <div class="bg-white p-5 rounded-xl shadow-sm border-2 border-dashed border-slate-300">
+            <div class="relative bg-white p-5 rounded-xl shadow-sm border-2 border-dashed border-slate-300">
+              <button onclick="deleteMatch(${idx})" class="absolute top-3 right-4 text-slate-300 hover:text-red-500 font-bold text-lg">✕</button>
               <div class="text-center font-bold text-slate-700 mb-4 pb-2 border-b border-slate-100 text-lg">${match.tH} - ${match.tA}</div>
               
               <div class="flex justify-between text-sm mb-4">
@@ -180,13 +183,13 @@
             </div>
           `;
         } else {
-          // KARTA S VÝSLEDKOM A ZVÝRAZNENÍM
           let styleK = ptsK > ptsM ? 'bg-green-50 border border-green-300' : 'bg-slate-50 border border-transparent';
           let styleM = ptsM > ptsK ? 'bg-green-50 border border-green-300' : 'bg-slate-50 border border-transparent';
 
           listHTML += `
-            <div class="bg-white p-4 rounded-xl shadow-sm text-sm border-l-4 border-slate-800">
-              <div class="flex justify-between items-center mb-3 pb-2 border-b border-slate-100">
+            <div class="relative bg-white p-4 rounded-xl shadow-sm text-sm border-l-4 border-slate-800">
+              <button onclick="deleteMatch(${idx})" class="absolute top-3 right-3 text-slate-300 hover:text-red-500 font-bold text-lg">✕</button>
+              <div class="flex justify-between items-center mb-3 pb-2 border-b border-slate-100 pr-6">
                 <span class="font-bold text-slate-700 text-base">${match.tH} - ${match.tA}</span>
                 <span class="bg-slate-800 px-3 py-1 rounded-lg text-white font-bold">${match.rH} : ${match.rA}</span>
               </div>
@@ -237,7 +240,6 @@
         return alert('Musíš vyplniť názvy tímov!');
       }
 
-      // Výsledok (rH, rA) je zatiaľ null
       historyData.unshift({
         tH, tA, 
         rH: null, rA: null, 
@@ -252,7 +254,6 @@
       renderApp();
     }
 
-    // Init
     renderApp();
   </script>
 </body>
