@@ -6,6 +6,7 @@
   <title>Tipovačka: Marek vs Krevetka</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
+    /* Skrytie predvolených šípok v inputoch */
     input[type=number]::-webkit-inner-spin-button, 
     input[type=number]::-webkit-outer-spin-button { 
       -webkit-appearance: none; 
@@ -13,7 +14,7 @@
     }
   </style>
 </head>
-<body class="bg-slate-100 text-slate-800 p-4 font-sans antialiased pb-20">
+<body class="bg-slate-100 text-slate-800 p-4 font-sans antialiased pb-24">
   <div class="max-w-md mx-auto space-y-6">
 
     <!-- Skóre -->
@@ -28,7 +29,11 @@
       </div>
     </div>
 
+    <!-- Alert pri dosiahnutí 30 bodov -->
     <div id="mrdkaAlert" class="hidden bg-yellow-100 border border-yellow-300 text-yellow-800 p-4 rounded-xl text-center font-bold text-sm shadow-sm"></div>
+    
+    <!-- Inline error message box -->
+    <div id="errorBox" class="hidden bg-red-100 border border-red-300 text-red-800 p-3 rounded-xl text-center font-semibold text-sm shadow-sm"></div>
 
     <!-- Nový zápas -->
     <div class="bg-white p-6 rounded-2xl shadow-sm">
@@ -46,105 +51,129 @@
       </div>
 
       <div class="space-y-4 mb-5 border-t border-slate-100 pt-4">
+        <!-- Tip Krevetka -->
         <div>
           <label class="block text-xs text-pink-500 font-semibold mb-2">Tip Krevetka</label>
           <div class="flex items-center justify-between gap-4">
             <div class="flex items-center border border-slate-200 rounded-xl overflow-hidden w-full">
-              <button type="button" onclick="modVal('betKH', -1)" class="w-12 h-12 bg-slate-100 hover:bg-slate-200 text-xl font-bold">-</button>
+              <button type="button" onclick="modVal('betKH', -1)" class="w-12 h-12 bg-slate-100 hover:bg-slate-200 text-xl font-bold active:bg-slate-300 transition">-</button>
               <input id="betKH" type="number" value="0" readonly class="w-full h-12 text-center font-bold text-lg bg-white">
-              <button type="button" onclick="modVal('betKH', 1)" class="w-12 h-12 bg-slate-100 hover:bg-slate-200 text-xl font-bold">+</button>
+              <button type="button" onclick="modVal('betKH', 1)" class="w-12 h-12 bg-slate-100 hover:bg-slate-200 text-xl font-bold active:bg-slate-300 transition">+</button>
             </div>
             <span class="text-slate-400 font-bold">:</span>
             <div class="flex items-center border border-slate-200 rounded-xl overflow-hidden w-full">
-              <button type="button" onclick="modVal('betKA', -1)" class="w-12 h-12 bg-slate-100 hover:bg-slate-200 text-xl font-bold">-</button>
+              <button type="button" onclick="modVal('betKA', -1)" class="w-12 h-12 bg-slate-100 hover:bg-slate-200 text-xl font-bold active:bg-slate-300 transition">-</button>
               <input id="betKA" type="number" value="0" readonly class="w-full h-12 text-center font-bold text-lg bg-white">
-              <button type="button" onclick="modVal('betKA', 1)" class="w-12 h-12 bg-slate-100 hover:bg-slate-200 text-xl font-bold">+</button>
+              <button type="button" onclick="modVal('betKA', 1)" class="w-12 h-12 bg-slate-100 hover:bg-slate-200 text-xl font-bold active:bg-slate-300 transition">+</button>
             </div>
           </div>
         </div>
 
+        <!-- Tip Marek -->
         <div>
           <label class="block text-xs text-blue-500 font-semibold mb-2">Tip Marek</label>
           <div class="flex items-center justify-between gap-4">
             <div class="flex items-center border border-slate-200 rounded-xl overflow-hidden w-full">
-              <button type="button" onclick="modVal('betMH', -1)" class="w-12 h-12 bg-slate-100 hover:bg-slate-200 text-xl font-bold">-</button>
+              <button type="button" onclick="modVal('betMH', -1)" class="w-12 h-12 bg-slate-100 hover:bg-slate-200 text-xl font-bold active:bg-slate-300 transition">-</button>
               <input id="betMH" type="number" value="0" readonly class="w-full h-12 text-center font-bold text-lg bg-white">
-              <button type="button" onclick="modVal('betMH', 1)" class="w-12 h-12 bg-slate-100 hover:bg-slate-200 text-xl font-bold">+</button>
+              <button type="button" onclick="modVal('betMH', 1)" class="w-12 h-12 bg-slate-100 hover:bg-slate-200 text-xl font-bold active:bg-slate-300 transition">+</button>
             </div>
             <span class="text-slate-400 font-bold">:</span>
             <div class="flex items-center border border-slate-200 rounded-xl overflow-hidden w-full">
-              <button type="button" onclick="modVal('betMA', -1)" class="w-12 h-12 bg-slate-100 hover:bg-slate-200 text-xl font-bold">-</button>
+              <button type="button" onclick="modVal('betMA', -1)" class="w-12 h-12 bg-slate-100 hover:bg-slate-200 text-xl font-bold active:bg-slate-300 transition">-</button>
               <input id="betMA" type="number" value="0" readonly class="w-full h-12 text-center font-bold text-lg bg-white">
-              <button type="button" onclick="modVal('betMA', 1)" class="w-12 h-12 bg-slate-100 hover:bg-slate-200 text-xl font-bold">+</button>
+              <button type="button" onclick="modVal('betMA', 1)" class="w-12 h-12 bg-slate-100 hover:bg-slate-200 text-xl font-bold active:bg-slate-300 transition">+</button>
             </div>
           </div>
         </div>
       </div>
 
-      <button onclick="addMatch()" class="w-full bg-slate-800 text-white p-4 rounded-xl font-bold hover:bg-slate-700 transition active:scale-95 text-sm">
-        Uložiť tipy (bez výsledku)
+      <button id="addMatchBtn" class="w-full bg-slate-800 text-white p-4 rounded-xl font-bold hover:bg-slate-700 transition active:scale-95 text-sm flex justify-center items-center gap-2">
+        Uložiť tipy na cloud
       </button>
     </div>
 
-    <!-- História -->
+    <!-- Sekcie zápasov -->
     <div>
-      <h3 class="text-lg font-bold mb-3 text-slate-700">Zápasy</h3>
+      <h3 class="text-lg font-bold mb-3 text-slate-700 flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-yellow-400"></span> Čakajúce na výsledok
+      </h3>
+      <div id="pendingList" class="space-y-4 empty:hidden"></div>
+      <div id="pendingEmpty" class="text-sm text-slate-400 italic mb-6">Žiadne čakajúce zápasy.</div>
+    </div>
+
+    <div class="mt-8">
+      <h3 class="text-lg font-bold mb-3 text-slate-700 flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-green-500"></span> História
+      </h3>
       <div id="historyList" class="space-y-4"></div>
     </div>
   </div>
 
-  <script>
-    let historyData = [
-      { tH: 'Marseille', tA: 'PSG', rH: 1, rA: 2, kH: 2, kA: 3, mH: 1, mA: 2 },
-      { tH: 'Sevilla', tA: 'Barcelona', rH: 1, rA: 3, kH: 1, kA: 3, mH: 0, mA: 3 },
-      { tH: 'Bayern', tA: 'Berlin', rH: 7, rA: 0, kH: 5, kA: 1, mH: 4, mA: 0 },
-      { tH: 'Brentford', tA: 'Chelsea', rH: 3, rA: 0, kH: 2, kA: 3, mH: 2, mA: 2 },
-      { tH: 'Juventus', tA: 'Nijmegen', rH: 5, rA: 0, kH: 3, kA: 1, mH: 3, mA: 0 },
-      { tH: 'AC Milan', tA: 'Benfica Lis.', rH: 0, rA: 2, kH: 2, kA: 1, mH: 3, mA: 0 },
-      { tH: 'Alaves', tA: 'Valencia', rH: 0, rA: 1, kH: 3, kA: 1, mH: 2, mA: 0 },
-      { tH: 'Leeds', tA: 'Newcastle', rH: 4, rA: 1, kH: 3, kA: 1, mH: 1, mA: 1 },
-      { tH: 'Torino', tA: 'AS Roma', rH: 0, rA: 2, kH: 1, kA: 2, mH: 0, mA: 2 },
-      { tH: 'Man Utd', tA: 'Man City', rH: 0, rA: 1, kH: 2, kA: 3, mH: 1, mA: 2 }
-    ];
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-    function modVal(id, delta) {
+    // Vložená tvoja konfigurácia
+    const firebaseConfig = {
+      apiKey: "AIzaSyDdscBDRvZOdtSjz8filTYtRmmYCT8Fk_Y",
+      authDomain: "futbal-one.firebaseapp.com",
+      projectId: "futbal-one",
+      storageBucket: "futbal-one.firebasestorage.app",
+      messagingSenderId: "689260745957",
+      appId: "1:689260745957:web:d3815cc1e8b80d9225b00c",
+      measurementId: "G-40BYW7L13N"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Aby sme dodržali bezpečné cesty pre zdieľanú databázu
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'futbal-one';
+    const matchCollectionPath = `artifacts/${appId}/public/data/matches`;
+    
+    let matchesData = [];
+
+    // Pomocná funkcia pre +/- tlačidlá
+    window.modVal = function(id, delta) {
       let el = document.getElementById(id);
       if(!el) return;
       let val = parseInt(el.value) || 0;
       el.value = Math.max(0, val + delta);
+    };
+
+    // Zobrazenie chýb namiesto otravného alert()
+    function showError(msg) {
+      const errBox = document.getElementById('errorBox');
+      errBox.innerText = msg;
+      errBox.classList.remove('hidden');
+      setTimeout(() => errBox.classList.add('hidden'), 4000);
     }
 
     function calculatePoints(betH, betA, resH, resA) {
       if (resH === null || resA === null) return 0;
       if (betH === resH && betA === resA) return 5;
       let pts = 0;
+      // 1X2 logika (kto vyhral alebo remíza)
       if (Math.sign(betH - betA) === Math.sign(resH - resA)) pts += 3;
+      // Uhádnuté góly konkrétneho tímu
       if (betH === resH) pts += 1;
       if (betA === resA) pts += 1;
       return pts;
     }
 
-    function saveResult(idx) {
-      let rH = parseInt(document.getElementById(`resH_${idx}`).value);
-      let rA = parseInt(document.getElementById(`resA_${idx}`).value);
-      historyData[idx].rH = rH;
-      historyData[idx].rA = rA;
-      renderApp();
-    }
-
-    function deleteMatch(idx) {
-      if (confirm('Naozaj chceš vymazať tento zápas z histórie?')) {
-        historyData.splice(idx, 1);
-        renderApp();
-      }
-    }
-
     function renderApp() {
       let totalK = 0;
       let totalM = 0;
-      let listHTML = '';
+      let pendingHTML = '';
+      let historyHTML = '';
+      
+      let pendingCount = 0;
 
-      historyData.forEach((match, idx) => {
+      // Zoraďovanie od najnovších (v pamäti, aby sme nepreťažovali databázu zbytočnými indexami)
+      const sortedMatches = [...matchesData].sort((a, b) => b.createdAt - a.createdAt);
+
+      sortedMatches.forEach((match) => {
         let isResolved = match.rH !== null && match.rA !== null;
         let ptsK = calculatePoints(match.kH, match.kA, match.rH, match.rA);
         let ptsM = calculatePoints(match.mH, match.mA, match.rH, match.rA);
@@ -153,59 +182,65 @@
         totalM += ptsM;
 
         if (!isResolved) {
-          listHTML += `
+          pendingCount++;
+          pendingHTML += `
             <div class="relative bg-white p-5 rounded-xl shadow-sm border-2 border-dashed border-slate-300">
-              <button onclick="deleteMatch(${idx})" class="absolute top-3 right-4 text-slate-300 hover:text-red-500 font-bold text-lg">✕</button>
+              <button onclick="window.deleteMatch('${match.id}')" class="absolute top-3 right-4 text-slate-300 hover:text-red-500 font-bold text-lg transition active:scale-75">✕</button>
               <div class="text-center font-bold text-slate-700 mb-4 pb-2 border-b border-slate-100 text-lg">${match.tH} - ${match.tA}</div>
               
               <div class="flex justify-between text-sm mb-4">
-                <span class="text-pink-500 font-semibold">Krevetka tip: ${match.kH}:${match.kA}</span>
-                <span class="text-blue-500 font-semibold">Marek tip: ${match.mH}:${match.mA}</span>
+                <span class="text-pink-500 font-semibold">Krevetka tip: <span class="bg-pink-50 px-2 py-1 rounded text-pink-700">${match.kH}:${match.kA}</span></span>
+                <span class="text-blue-500 font-semibold">Marek tip: <span class="bg-blue-50 px-2 py-1 rounded text-blue-700">${match.mH}:${match.mA}</span></span>
               </div>
 
-              <div class="bg-slate-50 p-4 rounded-xl">
+              <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
                 <label class="block text-xs text-center text-slate-500 mb-2 font-bold uppercase">Doplniť reálny výsledok</label>
                 <div class="flex items-center justify-center gap-3 mb-4">
-                  <div class="flex items-center border border-slate-200 rounded-lg overflow-hidden bg-white">
-                    <button type="button" onclick="modVal('resH_${idx}', -1)" class="w-10 h-10 bg-slate-100 font-bold">-</button>
-                    <input id="resH_${idx}" type="number" value="0" readonly class="w-12 h-10 text-center font-bold text-lg">
-                    <button type="button" onclick="modVal('resH_${idx}', 1)" class="w-10 h-10 bg-slate-100 font-bold">+</button>
+                  <div class="flex items-center border border-slate-200 rounded-lg overflow-hidden bg-white shadow-sm">
+                    <button type="button" onclick="modVal('resH_${match.id}', -1)" class="w-10 h-10 bg-slate-100 font-bold active:bg-slate-200">-</button>
+                    <input id="resH_${match.id}" type="number" value="0" readonly class="w-12 h-10 text-center font-bold text-lg text-slate-700">
+                    <button type="button" onclick="modVal('resH_${match.id}', 1)" class="w-10 h-10 bg-slate-100 font-bold active:bg-slate-200">+</button>
                   </div>
                   <span class="font-bold text-slate-400">:</span>
-                  <div class="flex items-center border border-slate-200 rounded-lg overflow-hidden bg-white">
-                    <button type="button" onclick="modVal('resA_${idx}', -1)" class="w-10 h-10 bg-slate-100 font-bold">-</button>
-                    <input id="resA_${idx}" type="number" value="0" readonly class="w-12 h-10 text-center font-bold text-lg">
-                    <button type="button" onclick="modVal('resA_${idx}', 1)" class="w-10 h-10 bg-slate-100 font-bold">+</button>
+                  <div class="flex items-center border border-slate-200 rounded-lg overflow-hidden bg-white shadow-sm">
+                    <button type="button" onclick="modVal('resA_${match.id}', -1)" class="w-10 h-10 bg-slate-100 font-bold active:bg-slate-200">-</button>
+                    <input id="resA_${match.id}" type="number" value="0" readonly class="w-12 h-10 text-center font-bold text-lg text-slate-700">
+                    <button type="button" onclick="modVal('resA_${match.id}', 1)" class="w-10 h-10 bg-slate-100 font-bold active:bg-slate-200">+</button>
                   </div>
                 </div>
-                <button onclick="saveResult(${idx})" class="w-full bg-green-500 text-white p-2 rounded-lg font-bold text-sm">Vypočítať body</button>
+                <button onclick="window.saveResult('${match.id}')" class="w-full bg-emerald-500 text-white p-3 rounded-lg font-bold text-sm shadow-sm hover:bg-emerald-600 active:scale-95 transition">Vypočítať body</button>
               </div>
             </div>
           `;
         } else {
-          let styleK = ptsK > ptsM ? 'bg-green-50 border border-green-300' : 'bg-slate-50 border border-transparent';
-          let styleM = ptsM > ptsK ? 'bg-green-50 border border-green-300' : 'bg-slate-50 border border-transparent';
+          // Zvýraznenie víťaza zápasu
+          let styleK = ptsK > ptsM ? 'bg-green-50 border-green-400 shadow-inner' : 'bg-slate-50 border-transparent opacity-80';
+          let styleM = ptsM > ptsK ? 'bg-green-50 border-green-400 shadow-inner' : 'bg-slate-50 border-transparent opacity-80';
+          if (ptsK === ptsM && ptsK > 0) {
+              styleK = 'bg-yellow-50 border-yellow-300 shadow-inner';
+              styleM = 'bg-yellow-50 border-yellow-300 shadow-inner';
+          }
 
-          listHTML += `
+          historyHTML += `
             <div class="relative bg-white p-4 rounded-xl shadow-sm text-sm border-l-4 border-slate-800">
-              <button onclick="deleteMatch(${idx})" class="absolute top-3 right-3 text-slate-300 hover:text-red-500 font-bold text-lg">✕</button>
+              <button onclick="window.deleteMatch('${match.id}')" class="absolute top-3 right-3 text-slate-300 hover:text-red-500 font-bold text-lg transition active:scale-75">✕</button>
               <div class="flex justify-between items-center mb-3 pb-2 border-b border-slate-100 pr-6">
                 <span class="font-bold text-slate-700 text-base">${match.tH} - ${match.tA}</span>
-                <span class="bg-slate-800 px-3 py-1 rounded-lg text-white font-bold">${match.rH} : ${match.rA}</span>
+                <span class="bg-slate-800 px-3 py-1 rounded-lg text-white font-bold tracking-widest">${match.rH}:${match.rA}</span>
               </div>
               <div class="flex gap-2">
-                <div class="w-1/2 p-2 rounded-lg ${styleK}">
-                  <div class="text-xs text-slate-500 mb-1">Krevetka</div>
+                <div class="w-1/2 p-3 rounded-lg border ${styleK} transition">
+                  <div class="text-xs text-slate-500 mb-1 font-semibold uppercase tracking-wider">Krevetka</div>
                   <div class="flex justify-between items-center">
                     <span class="font-bold text-slate-700 text-lg">${match.kH}:${match.kA}</span>
-                    <span class="text-pink-500 font-black">+${ptsK}</span>
+                    <span class="text-pink-500 font-black bg-white px-2 py-1 rounded-md shadow-sm">+${ptsK}</span>
                   </div>
                 </div>
-                <div class="w-1/2 p-2 rounded-lg ${styleM}">
-                  <div class="text-xs text-slate-500 mb-1">Marek</div>
+                <div class="w-1/2 p-3 rounded-lg border ${styleM} transition">
+                  <div class="text-xs text-slate-500 mb-1 font-semibold uppercase tracking-wider">Marek</div>
                   <div class="flex justify-between items-center">
                     <span class="font-bold text-slate-700 text-lg">${match.mH}:${match.mA}</span>
-                    <span class="text-blue-500 font-black">+${ptsM}</span>
+                    <span class="text-blue-500 font-black bg-white px-2 py-1 rounded-md shadow-sm">+${ptsM}</span>
                   </div>
                 </div>
               </div>
@@ -214,7 +249,12 @@
         }
       });
 
-      document.getElementById('historyList').innerHTML = listHTML;
+      document.getElementById('pendingList').innerHTML = pendingHTML;
+      document.getElementById('historyList').innerHTML = historyHTML;
+      
+      document.getElementById('pendingEmpty').style.display = pendingCount > 0 ? 'none' : 'block';
+
+      // Animované skóre (voliteľné)
       document.getElementById('scoreK').innerText = totalK;
       document.getElementById('scoreM').innerText = totalM;
 
@@ -228,7 +268,30 @@
       }
     }
 
-    function addMatch() {
+    window.saveResult = async function(docId) {
+      const rH = parseInt(document.getElementById(`resH_${docId}`).value);
+      const rA = parseInt(document.getElementById(`resA_${docId}`).value);
+      
+      try {
+        const matchRef = doc(db, matchCollectionPath, docId);
+        await updateDoc(matchRef, { rH, rA });
+      } catch (e) {
+        showError("Chyba pri ukladaní výsledku.");
+        console.error(e);
+      }
+    };
+
+    window.deleteMatch = async function(docId) {
+      try {
+        const matchRef = doc(db, matchCollectionPath, docId);
+        await deleteDoc(matchRef);
+      } catch (e) {
+        showError("Chyba pri mazaní zápasu.");
+        console.error(e);
+      }
+    };
+
+    document.getElementById('addMatchBtn').addEventListener('click', async () => {
       let tH = document.getElementById('teamH').value.trim();
       let tA = document.getElementById('teamA').value.trim();
       let kH = document.getElementById('betKH').value;
@@ -237,24 +300,57 @@
       let mA = document.getElementById('betMA').value;
 
       if (!tH || !tA) {
-        return alert('Musíš vyplniť názvy tímov!');
+        return showError('Musíš vyplniť názvy oboch tímov!');
       }
 
-      historyData.unshift({
-        tH, tA, 
-        rH: null, rA: null, 
-        kH: Number(kH), kA: Number(kA), 
-        mH: Number(mH), mA: Number(mA)
-      });
+      const btn = document.getElementById('addMatchBtn');
+      btn.disabled = true;
+      btn.innerHTML = `Ukladám... <svg class="animate-spin h-4 w-4 ml-2" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>`;
 
-      document.getElementById('teamH').value = '';
-      document.getElementById('teamA').value = '';
-      ['betKH', 'betKA', 'betMH', 'betMA'].forEach(id => document.getElementById(id).value = '0');
+      try {
+        await addDoc(collection(db, matchCollectionPath), {
+          tH, tA, 
+          rH: null, rA: null, 
+          kH: Number(kH), kA: Number(kA), 
+          mH: Number(mH), mA: Number(mA),
+          createdAt: Date.now()
+        });
 
-      renderApp();
+        // Vyčistenie formulára
+        document.getElementById('teamH').value = '';
+        document.getElementById('teamA').value = '';
+        ['betKH', 'betKA', 'betMH', 'betMA'].forEach(id => document.getElementById(id).value = '0');
+      } catch (e) {
+        showError("Chyba spojenia s databázou. Skontroluj internet.");
+        console.error(e);
+      } finally {
+        btn.disabled = false;
+        btn.innerText = 'Uložiť tipy na cloud';
+      }
+    });
+
+    async function initApp() {
+      try {
+        // Nastavenie Real-time synchronizácie
+        const matchesQuery = collection(db, matchCollectionPath);
+        onSnapshot(matchesQuery, (snapshot) => {
+          matchesData = [];
+          snapshot.forEach((doc) => {
+            matchesData.push({ id: doc.id, ...doc.data() });
+          });
+          renderApp();
+        }, (error) => {
+          console.error("Firestore onSnapshot error:", error);
+          showError("Odpojené od cloudu. Obnov stránku.");
+        });
+
+      } catch (error) {
+        console.error("Initialization failed:", error);
+        showError("Zlyhalo pripojenie na databázu.");
+      }
     }
 
-    renderApp();
+    initApp();
   </script>
 </body>
 </html>
