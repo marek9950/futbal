@@ -6,148 +6,187 @@
   <title>Tipovačka: Marek vs Krevetka</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    /* Skrytie predvolených šípok v inputoch */
+    /* Skrytie šípok v číselných poliach */
     input[type=number]::-webkit-inner-spin-button, 
     input[type=number]::-webkit-outer-spin-button { 
       -webkit-appearance: none; 
       margin: 0; 
     }
+    /* Zabezpečenie priestoru pre spodné menu na mobiloch */
+    .pb-safe { padding-bottom: calc(env(safe-area-inset-bottom) + 1rem); }
   </style>
 </head>
-<body class="bg-slate-100 text-slate-800 font-sans antialiased pb-24 h-screen flex flex-col">
-  
-  <!-- Inline error message box (globálny) -->
-  <div id="errorBox" class="fixed top-4 left-1/2 transform -translate-x-1/2 w-[90%] max-w-md hidden bg-red-100 border border-red-300 text-red-800 p-3 rounded-xl text-center font-semibold text-sm shadow-xl z-50 transition-opacity"></div>
+<body class="bg-slate-100 text-slate-800 font-sans antialiased h-screen overflow-hidden flex flex-col">
 
-  <div id="loginScreen" class="flex-1 flex flex-col items-center justify-center p-6 space-y-6">
-    <div class="bg-white p-8 rounded-3xl shadow-sm text-center max-w-sm w-full border border-slate-200">
-      <div class="w-16 h-16 bg-blue-100 text-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-4 text-3xl">⚽</div>
-      <h1 class="text-2xl font-black text-slate-800 mb-2">Tipovačka</h1>
-      <p class="text-slate-500 text-sm mb-8">Prihlás sa pre prístup k zápasom. Prístup majú len povolené účty.</p>
+  <!-- Hlavný obsah rolovateľný -->
+  <div class="flex-1 overflow-y-auto pb-24">
+    <div class="max-w-md mx-auto space-y-6 p-4">
       
-      <button id="loginBtn" class="w-full bg-slate-800 text-white p-4 rounded-xl font-bold hover:bg-slate-700 transition active:scale-95 text-sm flex justify-center items-center gap-3">
-        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-          <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-          <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
-          <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-        </svg>
-        Prihlásiť sa cez Google
-      </button>
+      <!-- Skóre Hlavička (Zobrazuje sa vždy) -->
+      <div class="bg-white p-6 rounded-2xl shadow-sm flex justify-between items-center text-center">
+        <div class="w-1/2 border-r border-slate-200">
+          <div class="flex justify-center items-center gap-1 mb-1">
+            <h2 class="text-sm uppercase tracking-wide text-slate-500 font-semibold">Krevetka</h2>
+            <span id="setsK" class="text-xs font-bold text-yellow-500">🏆 0</span>
+          </div>
+          <span id="scoreK" class="text-4xl font-bold text-pink-500">0</span>
+        </div>
+        <div class="w-1/2">
+          <div class="flex justify-center items-center gap-1 mb-1">
+            <h2 class="text-sm uppercase tracking-wide text-slate-500 font-semibold">Marek</h2>
+            <span id="setsM" class="text-xs font-bold text-yellow-500">🏆 0</span>
+          </div>
+          <span id="scoreM" class="text-4xl font-bold text-blue-500">0</span>
+        </div>
+      </div>
+
+      <!-- ZÁLOŽKA: DOMOV (Aktuálny Set) -->
+      <div id="tab-home" class="tab-content block space-y-6">
+        
+        <!-- Formulár na nový zápas -->
+        <div class="bg-white p-6 rounded-2xl shadow-sm">
+          <h3 class="text-lg font-bold mb-4 text-slate-700">Pridať nový tip</h3>
+          <div class="flex gap-3 mb-5">
+            <div class="w-1/2">
+              <label class="block text-xs text-slate-500 mb-1">Domáci</label>
+              <input id="teamH" type="text" placeholder="Tím 1" class="w-full bg-slate-50 border border-slate-200 p-3 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-400">
+            </div>
+            <div class="w-1/2">
+              <label class="block text-xs text-slate-500 mb-1">Hostia</label>
+              <input id="teamA" type="text" placeholder="Tím 2" class="w-full bg-slate-50 border border-slate-200 p-3 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-400">
+            </div>
+          </div>
+
+          <div class="space-y-4 mb-5 border-t border-slate-100 pt-4">
+            <div>
+              <label class="block text-xs text-pink-500 font-semibold mb-2">Tip Krevetka</label>
+              <div class="flex items-center justify-between gap-4">
+                <div class="flex items-center border border-slate-200 rounded-xl overflow-hidden w-full">
+                  <button type="button" onclick="modVal('betKH', -1)" class="w-12 h-12 bg-slate-100 hover:bg-slate-200 text-xl font-bold">-</button>
+                  <input id="betKH" type="number" value="0" readonly class="w-full h-12 text-center font-bold text-lg bg-white">
+                  <button type="button" onclick="modVal('betKH', 1)" class="w-12 h-12 bg-slate-100 hover:bg-slate-200 text-xl font-bold">+</button>
+                </div>
+                <span class="text-slate-400 font-bold">:</span>
+                <div class="flex items-center border border-slate-200 rounded-xl overflow-hidden w-full">
+                  <button type="button" onclick="modVal('betKA', -1)" class="w-12 h-12 bg-slate-100 hover:bg-slate-200 text-xl font-bold">-</button>
+                  <input id="betKA" type="number" value="0" readonly class="w-full h-12 text-center font-bold text-lg bg-white">
+                  <button type="button" onclick="modVal('betKA', 1)" class="w-12 h-12 bg-slate-100 hover:bg-slate-200 text-xl font-bold">+</button>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs text-blue-500 font-semibold mb-2">Tip Marek</label>
+              <div class="flex items-center justify-between gap-4">
+                <div class="flex items-center border border-slate-200 rounded-xl overflow-hidden w-full">
+                  <button type="button" onclick="modVal('betMH', -1)" class="w-12 h-12 bg-slate-100 hover:bg-slate-200 text-xl font-bold">-</button>
+                  <input id="betMH" type="number" value="0" readonly class="w-full h-12 text-center font-bold text-lg bg-white">
+                  <button type="button" onclick="modVal('betMH', 1)" class="w-12 h-12 bg-slate-100 hover:bg-slate-200 text-xl font-bold">+</button>
+                </div>
+                <span class="text-slate-400 font-bold">:</span>
+                <div class="flex items-center border border-slate-200 rounded-xl overflow-hidden w-full">
+                  <button type="button" onclick="modVal('betMA', -1)" class="w-12 h-12 bg-slate-100 hover:bg-slate-200 text-xl font-bold">-</button>
+                  <input id="betMA" type="number" value="0" readonly class="w-full h-12 text-center font-bold text-lg bg-white">
+                  <button type="button" onclick="modVal('betMA', 1)" class="w-12 h-12 bg-slate-100 hover:bg-slate-200 text-xl font-bold">+</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <button onclick="addMatch()" class="w-full bg-slate-800 text-white p-4 rounded-xl font-bold hover:bg-slate-700 transition active:scale-95 text-sm">
+            Natipovať
+          </button>
+        </div>
+
+        <div>
+          <h3 class="text-lg font-bold mb-3 text-slate-700 flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-green-500"></span> Aktuálny Set
+          </h3>
+          <div id="seedBtnContainer" class="mb-4">
+            <button onclick="seedData()" class="w-full bg-yellow-400 text-slate-900 p-3 rounded-xl font-bold text-xs shadow-sm hover:bg-yellow-500 transition">
+              ⚠️ Načítať rozohranú partiu z Excelu (Klikni len raz!)
+            </button>
+          </div>
+          <div id="homeMatchesList" class="space-y-4"></div>
+        </div>
+      </div>
+
+      <!-- ZÁLOŽKA: HISTÓRIA (Staré sety) -->
+      <div id="tab-history" class="tab-content hidden space-y-6">
+        <h3 class="text-lg font-bold mb-3 text-slate-700">Archív odohraných setov</h3>
+        <div id="historySetsList" class="space-y-6"></div>
+      </div>
+
+      <!-- ZÁLOŽKA: PRAVIDLÁ -->
+      <div id="tab-rules" class="tab-content hidden space-y-4">
+        <div class="bg-white p-6 rounded-2xl shadow-sm">
+          <h3 class="text-lg font-black mb-4 text-slate-800">Pravidlá tipovania</h3>
+          <ul class="space-y-4 text-sm text-slate-600">
+            <li class="flex gap-3 items-start">
+              <span class="text-xl">🎯</span>
+              <div>
+                <strong class="text-slate-800 block">Presný výsledok: 5 bodov</strong>
+                Trafený presný počet gólov oboch tímov (napr. tip 2:1 a výsledok 2:1).
+              </div>
+            </li>
+            <li class="flex gap-3 items-start">
+              <span class="text-xl">🟢</span>
+              <div>
+                <strong class="text-slate-800 block">Správny výsledok (1/X/2): 3 body</strong>
+                Uhadnutý víťaz zápasu alebo remíza, ale nie presné skóre.
+              </div>
+            </li>
+            <li class="flex gap-3 items-start">
+              <span class="text-xl">⚽</span>
+              <div>
+                <strong class="text-slate-800 block">Správny počet gólov jedného tímu: +1 bod</strong>
+                Ak netrafíš presný výsledok, ale trafíš aspoň presný počet gólov jedného tímu.
+              </div>
+            </li>
+            <li class="flex gap-3 items-start border-t border-slate-100 pt-4 mt-2">
+              <span class="text-xl">🏆</span>
+              <div>
+                <strong class="text-slate-800 block">MRDKA systém</strong>
+                Pri dosiahnutí 30 bodov získava hráč 1 MRDKU (M-R-D-K-A). Tým sa uzatvára aktuálny set a skóre sa vynuluje.
+              </div>
+            </li>
+            <li class="flex gap-3 items-start">
+              <span class="text-xl">☕</span>
+              <div>
+                <strong class="text-slate-800 block">Káva pre víťaza</strong>
+                Hráč, ktorý prehrá set (MRDKU), pozýva víťaza na kávu!
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
     </div>
   </div>
 
-  <div id="appContent" class="hidden w-full max-w-md mx-auto space-y-6 p-4">
+  <!-- SPODNÁ NAVIGÁCIA (Kompaktná) -->
+  <div class="fixed bottom-0 left-0 w-full bg-white border-t border-slate-200 flex justify-around p-3 pb-safe z-50 shadow-[0_-4px_10px_rgba(0,0,0,0.03)]">
+    <button onclick="switchTab('tab-home')" id="nav-tab-home" class="nav-btn text-blue-500 flex flex-col items-center gap-1 w-20 transition active:scale-95">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+      <span class="text-[10px] font-bold">Domov</span>
+    </button>
     
-    <!-- Hlavička s odhlásením -->
-    <div class="flex justify-between items-center mb-2 px-2">
-      <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Súkromná liga</span>
-      <button id="logoutBtn" class="text-xs text-slate-500 hover:text-red-500 transition font-semibold flex items-center gap-1">
-        Odhlásiť sa <span id="userEmail" class="font-normal opacity-70"></span>
-      </button>
-    </div>
-
-    <!-- Skóre -->
-    <div class="bg-white p-6 rounded-2xl shadow-sm flex justify-between items-center text-center">
-      <div class="w-1/2 border-r border-slate-200">
-        <h2 class="text-sm uppercase tracking-wide text-slate-500 font-semibold mb-1">Krevetka</h2>
-        <span id="scoreK" class="text-4xl font-bold text-pink-500">0</span>
-      </div>
-      <div class="w-1/2">
-        <h2 class="text-sm uppercase tracking-wide text-slate-500 font-semibold mb-1">Marek</h2>
-        <span id="scoreM" class="text-4xl font-bold text-blue-500">0</span>
-      </div>
-    </div>
-
-    <!-- Alert pri dosiahnutí 30 bodov -->
-    <div id="mrdkaAlert" class="hidden bg-yellow-100 border border-yellow-300 text-yellow-800 p-4 rounded-xl text-center font-bold text-sm shadow-sm"></div>
-
-    <!-- Nový zápas -->
-    <div class="bg-white p-6 rounded-2xl shadow-sm">
-      <h3 class="text-lg font-bold mb-4 text-slate-700">Pridať nový tip</h3>
-      
-      <div class="flex gap-3 mb-5">
-        <div class="w-1/2">
-          <label class="block text-xs text-slate-500 mb-1">Domáci</label>
-          <input id="teamH" type="text" placeholder="Tím 1" class="w-full bg-slate-50 border border-slate-200 p-3 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-400">
-        </div>
-        <div class="w-1/2">
-          <label class="block text-xs text-slate-500 mb-1">Hostia</label>
-          <input id="teamA" type="text" placeholder="Tím 2" class="w-full bg-slate-50 border border-slate-200 p-3 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-400">
-        </div>
-      </div>
-
-      <div class="space-y-4 mb-5 border-t border-slate-100 pt-4">
-        <!-- Tip Krevetka -->
-        <div>
-          <label class="block text-xs text-pink-500 font-semibold mb-2">Tip Krevetka</label>
-          <div class="flex items-center justify-between gap-4">
-            <div class="flex items-center border border-slate-200 rounded-xl overflow-hidden w-full">
-              <button type="button" onclick="modVal('betKH', -1)" class="w-12 h-12 bg-slate-100 hover:bg-slate-200 text-xl font-bold active:bg-slate-300 transition">-</button>
-              <input id="betKH" type="number" value="0" readonly class="w-full h-12 text-center font-bold text-lg bg-white">
-              <button type="button" onclick="modVal('betKH', 1)" class="w-12 h-12 bg-slate-100 hover:bg-slate-200 text-xl font-bold active:bg-slate-300 transition">+</button>
-            </div>
-            <span class="text-slate-400 font-bold">:</span>
-            <div class="flex items-center border border-slate-200 rounded-xl overflow-hidden w-full">
-              <button type="button" onclick="modVal('betKA', -1)" class="w-12 h-12 bg-slate-100 hover:bg-slate-200 text-xl font-bold active:bg-slate-300 transition">-</button>
-              <input id="betKA" type="number" value="0" readonly class="w-full h-12 text-center font-bold text-lg bg-white">
-              <button type="button" onclick="modVal('betKA', 1)" class="w-12 h-12 bg-slate-100 hover:bg-slate-200 text-xl font-bold active:bg-slate-300 transition">+</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Tip Marek -->
-        <div>
-          <label class="block text-xs text-blue-500 font-semibold mb-2">Tip Marek</label>
-          <div class="flex items-center justify-between gap-4">
-            <div class="flex items-center border border-slate-200 rounded-xl overflow-hidden w-full">
-              <button type="button" onclick="modVal('betMH', -1)" class="w-12 h-12 bg-slate-100 hover:bg-slate-200 text-xl font-bold active:bg-slate-300 transition">-</button>
-              <input id="betMH" type="number" value="0" readonly class="w-full h-12 text-center font-bold text-lg bg-white">
-              <button type="button" onclick="modVal('betMH', 1)" class="w-12 h-12 bg-slate-100 hover:bg-slate-200 text-xl font-bold active:bg-slate-300 transition">+</button>
-            </div>
-            <span class="text-slate-400 font-bold">:</span>
-            <div class="flex items-center border border-slate-200 rounded-xl overflow-hidden w-full">
-              <button type="button" onclick="modVal('betMA', -1)" class="w-12 h-12 bg-slate-100 hover:bg-slate-200 text-xl font-bold active:bg-slate-300 transition">-</button>
-              <input id="betMA" type="number" value="0" readonly class="w-full h-12 text-center font-bold text-lg bg-white">
-              <button type="button" onclick="modVal('betMA', 1)" class="w-12 h-12 bg-slate-100 hover:bg-slate-200 text-xl font-bold active:bg-slate-300 transition">+</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <button id="addMatchBtn" class="w-full bg-slate-800 text-white p-4 rounded-xl font-bold hover:bg-slate-700 transition active:scale-95 text-sm flex justify-center items-center gap-2">
-        Uložiť tipy na cloud
-      </button>
-    </div>
-
-    <!-- Sekcie zápasov -->
-    <div>
-      <h3 class="text-lg font-bold mb-3 text-slate-700 flex items-center gap-2">
-        <span class="w-2 h-2 rounded-full bg-yellow-400"></span> Čakajúce na výsledok
-      </h3>
-      <div id="pendingList" class="space-y-4 empty:hidden"></div>
-      <div id="pendingEmpty" class="text-sm text-slate-400 italic mb-6">Žiadne čakajúce zápasy.</div>
-    </div>
-
-    <div class="mt-8">
-      <h3 class="text-lg font-bold mb-3 text-slate-700 flex items-center gap-2">
-        <span class="w-2 h-2 rounded-full bg-green-500"></span> História
-      </h3>
-      <div id="historyList" class="space-y-4"></div>
-    </div>
+    <button onclick="switchTab('tab-history')" id="nav-tab-history" class="nav-btn text-slate-400 flex flex-col items-center gap-1 w-20 transition active:scale-95">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+      <span class="text-[10px] font-bold">História</span>
+    </button>
+    
+    <button onclick="switchTab('tab-rules')" id="nav-tab-rules" class="nav-btn text-slate-400 flex flex-col items-center gap-1 w-20 transition active:scale-95">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+      <span class="text-[10px] font-bold">Pravidlá</span>
+    </button>
   </div>
 
   <script type="module">
+    // Import Firestore modulov
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
     import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-    import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 
-    // 🔴 TU ZADAJ VAŠE DVA REÁLNE GOOGLE EMAILY 🔴
-    const ALLOWED_EMAILS = [
-      'marekholubek@gmail.com',
-      'chundak2015@gmail.com'
-    ];
-
+    // Konfigurácia tvojej Firebase (Bez Auth)
     const firebaseConfig = {
       apiKey: "AIzaSyDdscBDRvZOdtSjz8filTYtRmmYCT8Fk_Y",
       authDomain: "futbal-one.firebaseapp.com",
@@ -160,54 +199,34 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
-    const auth = getAuth(app);
-    const provider = new GoogleAuthProvider();
-
+    
+    // Používame verejnú kolekciu
     const appId = typeof __app_id !== 'undefined' ? __app_id : 'futbal-one';
     const matchCollectionPath = `artifacts/${appId}/public/data/matches`;
-    
-    let matchesData = [];
-    let unsubscribeSnapshot = null;
 
-    // Pomocná funkcia pre +/- tlačidlá
+    let matchesData = [];
+
+    // Prepínanie tabov
+    window.switchTab = function(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.getElementById(tabId).classList.remove('hidden');
+      
+      document.querySelectorAll('.nav-btn').forEach(el => {
+        el.classList.remove('text-blue-500');
+        el.classList.add('text-slate-400');
+      });
+      document.getElementById('nav-' + tabId).classList.add('text-blue-500');
+      document.getElementById('nav-' + tabId).classList.remove('text-slate-400');
+    }
+
     window.modVal = function(id, delta) {
       let el = document.getElementById(id);
       if(!el) return;
       let val = parseInt(el.value) || 0;
       el.value = Math.max(0, val + delta);
-    };
-
-    // Zobrazenie chýb namiesto otravného alert()
-    function showError(msg) {
-      const errBox = document.getElementById('errorBox');
-      errBox.innerText = msg;
-      errBox.classList.remove('hidden');
-      setTimeout(() => errBox.classList.add('hidden'), 5000);
     }
 
-    // Modal pre potvrdenie vymazania (namiesto confirm())
-    window.confirmDelete = function(docId) {
-        const modal = document.createElement('div');
-        modal.className = 'fixed inset-0 bg-slate-900/50 flex items-center justify-center z-50 p-4';
-        modal.innerHTML = `
-            <div class="bg-white rounded-2xl p-6 max-w-sm w-full shadow-xl">
-                <h3 class="text-lg font-bold text-slate-800 mb-2">Vymazať zápas?</h3>
-                <p class="text-sm text-slate-500 mb-6">Tento krok sa nedá vrátiť späť.</p>
-                <div class="flex gap-3">
-                    <button id="cancelDel" class="w-1/2 p-3 bg-slate-100 text-slate-600 rounded-xl font-bold text-sm hover:bg-slate-200">Zrušiť</button>
-                    <button id="confirmDel" class="w-1/2 p-3 bg-red-500 text-white rounded-xl font-bold text-sm hover:bg-red-600 shadow-sm">Vymazať</button>
-                </div>
-            </div>
-        `;
-        document.body.appendChild(modal);
-        
-        document.getElementById('cancelDel').onclick = () => document.body.removeChild(modal);
-        document.getElementById('confirmDel').onclick = () => {
-            window.deleteMatch(docId);
-            document.body.removeChild(modal);
-        };
-    }
-
+    // Výpočet bodov presne podľa excelu
     function calculatePoints(betH, betA, resH, resA) {
       if (resH === null || resA === null) return 0;
       if (betH === resH && betA === resA) return 5;
@@ -218,131 +237,176 @@
       return pts;
     }
 
-    function renderApp() {
-      let totalK = 0;
-      let totalM = 0;
-      let pendingHTML = '';
-      let historyHTML = '';
-      let pendingCount = 0;
-
-      const sortedMatches = [...matchesData].sort((a, b) => b.createdAt - a.createdAt);
-
-      sortedMatches.forEach((match) => {
-        let isResolved = match.rH !== null && match.rA !== null;
-        let ptsK = calculatePoints(match.kH, match.kA, match.rH, match.rA);
-        let ptsM = calculatePoints(match.mH, match.mA, match.rH, match.rA);
-        
-        totalK += ptsK;
-        totalM += ptsM;
-
-        if (!isResolved) {
-          pendingCount++;
-          pendingHTML += `
+    // Generovanie HTML pre 1 zápas (použiteľné v domov aj v histórii)
+    function createMatchCard(match) {
+        if (!match.isResolved) {
+          return `
             <div class="relative bg-white p-5 rounded-xl shadow-sm border-2 border-dashed border-slate-300">
-              <button onclick="confirmDelete('${match.id}')" class="absolute top-3 right-4 text-slate-300 hover:text-red-500 font-bold text-lg transition active:scale-75">✕</button>
+              <button onclick="deleteMatch('${match.id}')" class="absolute top-3 right-4 text-slate-300 hover:text-red-500 font-bold text-lg">✕</button>
               <div class="text-center font-bold text-slate-700 mb-4 pb-2 border-b border-slate-100 text-lg">${match.tH} - ${match.tA}</div>
-              
               <div class="flex justify-between text-sm mb-4">
-                <span class="text-pink-500 font-semibold">Krevetka tip: <span class="bg-pink-50 px-2 py-1 rounded text-pink-700">${match.kH}:${match.kA}</span></span>
-                <span class="text-blue-500 font-semibold">Marek tip: <span class="bg-blue-50 px-2 py-1 rounded text-blue-700">${match.mH}:${match.mA}</span></span>
+                <span class="text-pink-500 font-semibold">Krevetka tip: ${match.kH}:${match.kA}</span>
+                <span class="text-blue-500 font-semibold">Marek tip: ${match.mH}:${match.mA}</span>
               </div>
-
-              <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
+              <div class="bg-slate-50 p-4 rounded-xl">
                 <label class="block text-xs text-center text-slate-500 mb-2 font-bold uppercase">Doplniť reálny výsledok</label>
                 <div class="flex items-center justify-center gap-3 mb-4">
-                  <div class="flex items-center border border-slate-200 rounded-lg overflow-hidden bg-white shadow-sm">
-                    <button type="button" onclick="modVal('resH_${match.id}', -1)" class="w-10 h-10 bg-slate-100 font-bold active:bg-slate-200">-</button>
-                    <input id="resH_${match.id}" type="number" value="0" readonly class="w-12 h-10 text-center font-bold text-lg text-slate-700">
-                    <button type="button" onclick="modVal('resH_${match.id}', 1)" class="w-10 h-10 bg-slate-100 font-bold active:bg-slate-200">+</button>
+                  <div class="flex items-center border border-slate-200 rounded-lg overflow-hidden bg-white">
+                    <button type="button" onclick="modVal('resH_${match.id}', -1)" class="w-10 h-10 bg-slate-100 font-bold">-</button>
+                    <input id="resH_${match.id}" type="number" value="0" readonly class="w-12 h-10 text-center font-bold text-lg">
+                    <button type="button" onclick="modVal('resH_${match.id}', 1)" class="w-10 h-10 bg-slate-100 font-bold">+</button>
                   </div>
                   <span class="font-bold text-slate-400">:</span>
-                  <div class="flex items-center border border-slate-200 rounded-lg overflow-hidden bg-white shadow-sm">
-                    <button type="button" onclick="modVal('resA_${match.id}', -1)" class="w-10 h-10 bg-slate-100 font-bold active:bg-slate-200">-</button>
-                    <input id="resA_${match.id}" type="number" value="0" readonly class="w-12 h-10 text-center font-bold text-lg text-slate-700">
-                    <button type="button" onclick="modVal('resA_${match.id}', 1)" class="w-10 h-10 bg-slate-100 font-bold active:bg-slate-200">+</button>
+                  <div class="flex items-center border border-slate-200 rounded-lg overflow-hidden bg-white">
+                    <button type="button" onclick="modVal('resA_${match.id}', -1)" class="w-10 h-10 bg-slate-100 font-bold">-</button>
+                    <input id="resA_${match.id}" type="number" value="0" readonly class="w-12 h-10 text-center font-bold text-lg">
+                    <button type="button" onclick="modVal('resA_${match.id}', 1)" class="w-10 h-10 bg-slate-100 font-bold">+</button>
                   </div>
                 </div>
-                <button onclick="window.saveResult('${match.id}')" class="w-full bg-emerald-500 text-white p-3 rounded-lg font-bold text-sm shadow-sm hover:bg-emerald-600 active:scale-95 transition">Vypočítať body</button>
+                <button onclick="saveResult('${match.id}')" class="w-full bg-green-500 text-white p-2 rounded-lg font-bold text-sm">Uložiť výsledok do cloudu</button>
               </div>
             </div>
           `;
         } else {
-          let styleK = ptsK > ptsM ? 'bg-green-50 border-green-400 shadow-inner' : 'bg-slate-50 border-transparent opacity-80';
-          let styleM = ptsM > ptsK ? 'bg-green-50 border-green-400 shadow-inner' : 'bg-slate-50 border-transparent opacity-80';
-          if (ptsK === ptsM && ptsK > 0) {
-              styleK = 'bg-yellow-50 border-yellow-300 shadow-inner';
-              styleM = 'bg-yellow-50 border-yellow-300 shadow-inner';
-          }
-
-          historyHTML += `
+          let styleK = match.ptsK > match.ptsM ? 'bg-green-50 border border-green-300' : 'bg-slate-50 border border-transparent';
+          let styleM = match.ptsM > match.ptsK ? 'bg-green-50 border border-green-300' : 'bg-slate-50 border border-transparent';
+          return `
             <div class="relative bg-white p-4 rounded-xl shadow-sm text-sm border-l-4 border-slate-800">
-              <button onclick="confirmDelete('${match.id}')" class="absolute top-3 right-3 text-slate-300 hover:text-red-500 font-bold text-lg transition active:scale-75">✕</button>
+              <button onclick="deleteMatch('${match.id}')" class="absolute top-3 right-3 text-slate-300 hover:text-red-500 font-bold text-lg">✕</button>
               <div class="flex justify-between items-center mb-3 pb-2 border-b border-slate-100 pr-6">
                 <span class="font-bold text-slate-700 text-base">${match.tH} - ${match.tA}</span>
                 <span class="bg-slate-800 px-3 py-1 rounded-lg text-white font-bold tracking-widest">${match.rH}:${match.rA}</span>
               </div>
               <div class="flex gap-2">
-                <div class="w-1/2 p-3 rounded-lg border ${styleK} transition">
-                  <div class="text-xs text-slate-500 mb-1 font-semibold uppercase tracking-wider">Krevetka</div>
+                <div class="w-1/2 p-2 rounded-lg ${styleK}">
+                  <div class="text-xs text-slate-500 mb-1">Krevetka</div>
                   <div class="flex justify-between items-center">
                     <span class="font-bold text-slate-700 text-lg">${match.kH}:${match.kA}</span>
-                    <span class="text-pink-500 font-black bg-white px-2 py-1 rounded-md shadow-sm">+${ptsK}</span>
+                    <span class="text-pink-500 font-black">+${match.ptsK}</span>
                   </div>
                 </div>
-                <div class="w-1/2 p-3 rounded-lg border ${styleM} transition">
-                  <div class="text-xs text-slate-500 mb-1 font-semibold uppercase tracking-wider">Marek</div>
+                <div class="w-1/2 p-2 rounded-lg ${styleM}">
+                  <div class="text-xs text-slate-500 mb-1">Marek</div>
                   <div class="flex justify-between items-center">
                     <span class="font-bold text-slate-700 text-lg">${match.mH}:${match.mA}</span>
-                    <span class="text-blue-500 font-black bg-white px-2 py-1 rounded-md shadow-sm">+${ptsM}</span>
+                    <span class="text-blue-500 font-black">+${match.ptsM}</span>
                   </div>
                 </div>
               </div>
             </div>
           `;
         }
+    }
+
+    // HLAVNÁ FUNKCIA: Dynamický výpočet setov
+    function renderApp() {
+      // Zoradíme dáta chronologicky od najstaršieho po najnovší, aby sme správne nasimulovali plynutie času a získavanie 30 bodov
+      const sortedMatches = [...matchesData].sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
+      
+      let setsK = 0, setsM = 0;
+      let curK = 0, curM = 0;
+      
+      let completedSets = [];
+      let currentSetMatches = [];
+
+      sortedMatches.forEach(match => {
+        let isResolved = match.rH !== null && match.rA !== null;
+        let ptsK = calculatePoints(match.kH, match.kA, match.rH, match.rA);
+        let ptsM = calculatePoints(match.mH, match.mA, match.rH, match.rA);
+        
+        if (isResolved) {
+          curK += ptsK;
+          curM += ptsM;
+        }
+
+        // Pridáme zápas do aktuálneho setu
+        currentSetMatches.push({...match, ptsK, ptsM, isResolved});
+
+        // Kontrola, či aktuálny set po tomto zápase niekto nevyhral (Dosiahol 30 bodov)
+        if (isResolved && (curK >= 30 || curM >= 30)) {
+          if (curK >= 30) setsK++;
+          else setsM++;
+
+          // Uložíme set do histórie
+          completedSets.push({
+            winner: curK > curM ? 'Krevetka' : (curM > curK ? 'Marek' : 'Remíza'),
+            scoreK: curK,
+            scoreM: curM,
+            matches: [...currentSetMatches].reverse() // Otočíme, aby najnovší zápas bol hore
+          });
+
+          // Vynulujeme aktuálne skóre pre ďalší set
+          curK = 0;
+          curM = 0;
+          currentSetMatches = [];
+        }
       });
 
-      document.getElementById('pendingList').innerHTML = pendingHTML;
-      document.getElementById('historyList').innerHTML = historyHTML;
-      document.getElementById('pendingEmpty').style.display = pendingCount > 0 ? 'none' : 'block';
-      document.getElementById('scoreK').innerText = totalK;
-      document.getElementById('scoreM').innerText = totalM;
+      // Vykreslenie UI DOMOV
+      document.getElementById('scoreK').innerText = curK;
+      document.getElementById('scoreM').innerText = curM;
+      document.getElementById('setsK').innerText = `🏆 ${setsK}`;
+      document.getElementById('setsM').innerText = `🏆 ${setsM}`;
 
-      let alertBox = document.getElementById('mrdkaAlert');
-      if(totalK >= 30 || totalM >= 30) {
-         let winner = totalK >= 30 ? "Krevetka" : "Marek";
-         alertBox.innerText = `🏆 ${winner} dosiahol 30 bodov! Získava 1 MRDKU a porazený platí kávu! ☕`;
-         alertBox.classList.remove('hidden');
-      } else {
-         alertBox.classList.add('hidden');
+      // Zápasy, ktoré ešte neuzavreli set
+      let homeHTML = '';
+      currentSetMatches.reverse().forEach(m => homeHTML += createMatchCard(m));
+      document.getElementById('homeMatchesList').innerHTML = homeHTML || '<p class="text-sm text-slate-400 italic text-center py-4">Žiadne zápasy v aktuálnom sete.</p>';
+
+      // Vykreslenie UI HISTÓRIA
+      let historyHTML = '';
+      // Otočíme sety, aby bol najnovší set prvý
+      completedSets.reverse().forEach((set, index) => {
+        let winnerColor = set.winner === 'Krevetka' ? 'text-pink-500' : 'text-blue-500';
+        if (set.winner === 'Remíza') winnerColor = 'text-slate-500';
+        
+        let setMatchesHTML = '';
+        set.matches.forEach(m => setMatchesHTML += createMatchCard(m));
+
+        historyHTML += `
+          <div class="border-2 border-slate-200 rounded-2xl overflow-hidden bg-white shadow-sm">
+            <div class="bg-slate-100 p-4 border-b border-slate-200 flex justify-between items-center">
+              <h4 class="font-bold text-slate-700">Skončený Set</h4>
+              <div class="text-sm font-bold bg-white px-3 py-1 rounded-full shadow-sm">
+                Víťaz: <span class="${winnerColor}">${set.winner}</span> (${set.scoreK}:${set.scoreM})
+              </div>
+            </div>
+            <div class="p-4 space-y-4 bg-slate-50">
+              ${setMatchesHTML}
+            </div>
+          </div>
+        `;
+      });
+      document.getElementById('historySetsList').innerHTML = historyHTML || '<p class="text-sm text-slate-400 italic text-center py-4">Zatiaľ žiadny set nedosiahol 30 bodov.</p>';
+
+      // Skrytie tlačidla na import z Excelu, ak už v databáze nejaké dáta sú
+      let seedBtn = document.getElementById('seedBtnContainer');
+      if (seedBtn) {
+        seedBtn.style.display = matchesData.length > 0 ? 'none' : 'block';
       }
     }
 
     window.saveResult = async function(docId) {
-      if(!auth.currentUser) return;
       const rH = parseInt(document.getElementById(`resH_${docId}`).value);
       const rA = parseInt(document.getElementById(`resA_${docId}`).value);
-      
       try {
-        const matchRef = doc(db, matchCollectionPath, docId);
-        await updateDoc(matchRef, { rH, rA });
+        await updateDoc(doc(db, matchCollectionPath, docId), { rH, rA });
       } catch (e) {
-        showError("Chyba pri ukladaní výsledku.");
+        alert("Chyba pri ukladaní: " + e.message);
       }
     };
 
     window.deleteMatch = async function(docId) {
-      if(!auth.currentUser) return;
-      try {
-        const matchRef = doc(db, matchCollectionPath, docId);
-        await deleteDoc(matchRef);
-      } catch (e) {
-        showError("Chyba pri mazaní zápasu.");
+      if(confirm('Naozaj chceš vymazať tento zápas z cloudu?')) {
+        try {
+          await deleteDoc(doc(db, matchCollectionPath, docId));
+        } catch (e) {
+          alert("Chyba pri mazaní: " + e.message);
+        }
       }
     };
 
-    document.getElementById('addMatchBtn').addEventListener('click', async () => {
-      if(!auth.currentUser) return;
+    window.addMatch = async function() {
       let tH = document.getElementById('teamH').value.trim();
       let tA = document.getElementById('teamA').value.trim();
       let kH = document.getElementById('betKH').value;
@@ -350,13 +414,7 @@
       let mH = document.getElementById('betMH').value;
       let mA = document.getElementById('betMA').value;
 
-      if (!tH || !tA) {
-        return showError('Musíš vyplniť názvy oboch tímov!');
-      }
-
-      const btn = document.getElementById('addMatchBtn');
-      btn.disabled = true;
-      btn.innerHTML = `Ukladám... <svg class="animate-spin h-4 w-4 ml-2 inline" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>`;
+      if (!tH || !tA) return alert('Musíš vyplniť názvy tímov!');
 
       try {
         await addDoc(collection(db, matchCollectionPath), {
@@ -364,73 +422,61 @@
           rH: null, rA: null, 
           kH: Number(kH), kA: Number(kA), 
           mH: Number(mH), mA: Number(mA),
-          createdAt: Date.now()
+          createdAt: Date.now() // Dôležité pre chronologické radenie
         });
 
         document.getElementById('teamH').value = '';
         document.getElementById('teamA').value = '';
         ['betKH', 'betKA', 'betMH', 'betMA'].forEach(id => document.getElementById(id).value = '0');
       } catch (e) {
-        showError("Chyba ukladania do cloudu.");
-      } finally {
-        btn.disabled = false;
-        btn.innerText = 'Uložiť tipy na cloud';
+        alert("Chyba pri pridávaní do cloudu: " + e.message);
       }
-    });
+    };
 
-    function loadAppData() {
-      const matchesQuery = collection(db, matchCollectionPath);
-      unsubscribeSnapshot = onSnapshot(matchesQuery, (snapshot) => {
-        matchesData = [];
-        snapshot.forEach((doc) => {
-          matchesData.push({ id: doc.id, ...doc.data() });
-        });
-        renderApp();
-      }, (error) => {
-        showError("Strata spojenia. Obnov stránku.");
-      });
-    }
+    window.seedData = async function() {
+      if(!confirm('Naozaj chceš načítať historické dáta z Excelu? (Klikni na to len raz!)')) return;
+      
+      const excelData = [
+        { tH: 'Marseille', tA: 'PSG', rH: 1, rA: 2, kH: 2, kA: 3, mH: 1, mA: 2 },
+        { tH: 'Sevilla', tA: 'Barcelona', rH: 1, rA: 3, kH: 1, kA: 3, mH: 0, mA: 3 },
+        { tH: 'Bayern', tA: 'Berlin', rH: 7, rA: 0, kH: 5, kA: 1, mH: 4, mA: 0 },
+        { tH: 'Brentford', tA: 'Chelsea', rH: 3, rA: 0, kH: 2, kA: 3, mH: 2, mA: 2 },
+        { tH: 'Juventus', tA: 'Nijmegen', rH: 5, rA: 0, kH: 3, kA: 1, mH: 3, mA: 0 },
+        { tH: 'AC Milan', tA: 'Benfica Lis.', rH: 0, rA: 2, kH: 2, kA: 1, mH: 3, mA: 0 },
+        { tH: 'Alaves', tA: 'Valencia', rH: 0, rA: 1, kH: 3, kA: 1, mH: 2, mA: 0 },
+        { tH: 'Leeds', tA: 'Newcastle', rH: 4, rA: 1, kH: 3, kA: 1, mH: 1, mA: 1 },
+        { tH: 'Torino', tA: 'AS Roma', rH: 0, rA: 2, kH: 1, kA: 2, mH: 0, mA: 2 },
+        { tH: 'Man Utd', tA: 'Man City', rH: 0, rA: 1, kH: 2, kA: 3, mH: 1, mA: 2 }
+      ];
 
-    document.getElementById('loginBtn').addEventListener('click', () => {
-      signInWithPopup(auth, provider).catch(error => {
-        showError("Prihlásenie zlyhalo: " + error.message);
-      });
-    });
-
-    document.getElementById('logoutBtn').addEventListener('click', () => {
-      signOut(auth);
-    });
-
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        // Kontrola povolených emailov - Pustí to len teba a partnerku
-        if (ALLOWED_EMAILS.length > 0 && user.email && !ALLOWED_EMAILS.includes(user.email)) {
-          showError(`Účet ${user.email} nemá prístup do tejto ligy.`);
-          await signOut(auth);
-          return;
+      try {
+        let baseTime = Date.now() - 100000;
+        // Zapisujeme postupne od najstaršieho zápasu (od konca poľa)
+        for (let i = excelData.length - 1; i >= 0; i--) {
+          let match = excelData[i];
+          await addDoc(collection(db, matchCollectionPath), {
+            ...match,
+            createdAt: baseTime + ((excelData.length - i) * 1000)
+          });
         }
-
-        document.getElementById('loginScreen').classList.add('hidden');
-        document.getElementById('appContent').classList.remove('hidden');
-        document.getElementById('userEmail').innerText = `(${user.email})`;
-        
-        loadAppData();
-      } else {
-        if (unsubscribeSnapshot) {
-          unsubscribeSnapshot();
-        }
-        document.getElementById('loginScreen').classList.remove('hidden');
-        document.getElementById('appContent').classList.add('hidden');
-        matchesData = [];
+        alert('Dáta boli úspešne naimportované!');
+      } catch (e) {
+        alert('Chyba pri nahrávaní dát: ' + e.message);
       }
+    };
+
+    // Neustále počúvanie zmien z Firestore (Real-time synchronizácia)
+    const matchesQuery = collection(db, matchCollectionPath);
+    onSnapshot(matchesQuery, (snapshot) => {
+      matchesData = [];
+      snapshot.forEach((doc) => {
+        matchesData.push({ id: doc.id, ...doc.data() });
+      });
+      renderApp();
+    }, (error) => {
+      console.error("Firebase Snapshot Error:", error);
     });
 
-    // Podpora pre zobrazenie v náhľade - upravené zachytenie chyby
-    if (typeof __initial_auth_token !== 'undefined') {
-        signInWithCustomToken(auth, __initial_auth_token).catch(err => {
-            console.warn("Automatické prihlásenie v náhľade zlyhalo (očakávané správanie). Použi tlačidlo Google.");
-        });
-    }
   </script>
 </body>
 </html>
