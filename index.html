@@ -25,7 +25,6 @@
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 4px; }
 
-    /* Skrytie šípok v inputoch pre istotu */
     input[type=number]::-webkit-inner-spin-button, 
     input[type=number]::-webkit-outer-spin-button { 
       -webkit-appearance: none; margin: 0; 
@@ -40,7 +39,6 @@
       to { opacity: 1; transform: translateY(0); }
     }
     
-    /* Pevná výška pre mobily (100dvh rieši problém s adresným riadkom) */
     .app-container {
         height: 100vh;
         height: 100dvh;
@@ -49,34 +47,54 @@
 </head>
 <body class="app-container w-full flex flex-col overflow-hidden text-zinc-100">
 
-  <!-- Hlavná Aplikácia -->
-  <div id="mainApp" class="flex-1 overflow-y-auto pb-[100px]">
+  <!-- ZAMKNUTÁ OBRAZOVKA (LOGIN) -->
+  <div id="authScreen" class="fixed inset-0 bg-zinc-950 z-50 flex flex-col items-center justify-center p-6">
+    <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-8 max-w-sm w-full text-center shadow-xl">
+      <h2 class="text-2xl font-black text-white mb-2">Súkromná Tipovačka</h2>
+      <p class="text-zinc-400 text-sm mb-8 font-medium">Pre prístup k aplikácii sa musíš prihlásiť overeným Google účtom.</p>
+      
+      <button onclick="loginWithGoogle()" class="w-full bg-white text-zinc-900 font-bold py-4 rounded-xl flex items-center justify-center gap-3 active:bg-zinc-200 transition-colors">
+        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+          <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+          <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+          <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+        </svg>
+        Prihlásiť sa cez Google
+      </button>
+      
+      <p id="loginError" class="text-red-500 text-sm mt-4 font-bold hidden">Prístup zamietnutý. Váš e-mail nemá oprávnenie.</p>
+    </div>
+  </div>
+
+  <!-- Hlavná Aplikácia (Skrytá kým nie je prihlásený) -->
+  <div id="mainApp" class="flex-1 overflow-y-auto pb-32 hidden">
     <div class="max-w-md mx-auto space-y-4 p-4 pt-4">
       
-      <!-- Skóre Hlavička (Kompaktná a Výrazná) -->
-      <div class="bg-zinc-900 p-3.5 rounded-xl flex justify-between items-center text-center">
+      <!-- Skóre Hlavička -->
+      <div class="bg-zinc-900 p-4 rounded-2xl flex justify-between items-center text-center">
         <!-- Krevetka Skóre -->
         <div class="flex-1 flex flex-col items-center justify-center border-r border-zinc-800">
-          <div class="flex items-center gap-1.5 mb-1.5">
-            <span class="text-[13px] font-black text-white tracking-widest uppercase">Krevetka</span>
+          <div class="flex items-center justify-center gap-2 mb-1">
+            <span class="text-sm font-black text-white tracking-widest uppercase">Krevetka</span>
             <div class="bg-zinc-800 px-2 py-0.5 rounded-full flex items-center gap-1">
               <span class="text-[10px]">🌟</span>
               <span id="setsK-val" class="text-xs font-bold text-zinc-300">0</span>
             </div>
           </div>
-          <div id="scoreK" class="text-[42px] font-black text-emerald-500 tracking-tight leading-none pb-1">0</div>
+          <div id="scoreK" class="text-5xl font-black text-emerald-500 tracking-tight leading-normal pb-1">0</div>
         </div>
         
         <!-- Marek Skóre -->
         <div class="flex-1 flex flex-col items-center justify-center">
-          <div class="flex items-center gap-1.5 mb-1.5">
-            <span class="text-[13px] font-black text-white tracking-widest uppercase">Marek</span>
+          <div class="flex items-center justify-center gap-2 mb-1">
+            <span class="text-sm font-black text-white tracking-widest uppercase">Marek</span>
             <div class="bg-zinc-800 px-2 py-0.5 rounded-full flex items-center gap-1">
               <span class="text-[10px]">🌟</span>
               <span id="setsM-val" class="text-xs font-bold text-zinc-300">0</span>
             </div>
           </div>
-          <div id="scoreM" class="text-[42px] font-black text-orange-500 tracking-tight leading-none pb-1">0</div>
+          <div id="scoreM" class="text-5xl font-black text-orange-500 tracking-tight leading-normal pb-1">0</div>
         </div>
       </div>
 
@@ -84,67 +102,66 @@
       <div id="tab-home" class="tab-content active space-y-5">
         
         <!-- Formulár na nový tip -->
-        <div class="bg-zinc-900 p-4 rounded-xl">
-          <h3 class="text-base font-bold mb-4 text-white tracking-wide">Pridať nový tip</h3>
+        <div class="bg-zinc-900 p-5 rounded-2xl">
+          <h3 class="text-lg font-bold mb-5 text-white tracking-wide">Pridať nový tip</h3>
           
-          <div class="flex gap-3 mb-5">
+          <div class="flex gap-4 mb-6">
             <div class="flex-1">
               <label class="block text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2">Domáci</label>
-              <input type="text" id="team1" placeholder="Tím 1" class="w-full bg-zinc-950 text-white rounded-lg p-3 focus:outline-none focus:ring-1 focus:ring-zinc-700 font-bold text-base">
+              <input type="text" id="team1" placeholder="Tím 1" class="w-full bg-zinc-950 text-white rounded-xl p-3 focus:outline-none focus:ring-1 focus:ring-zinc-700 font-bold text-base">
             </div>
             <div class="flex-1">
               <label class="block text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2">Hostia</label>
-              <input type="text" id="team2" placeholder="Tím 2" class="w-full bg-zinc-950 text-white rounded-lg p-3 focus:outline-none focus:ring-1 focus:ring-zinc-700 font-bold text-base">
+              <input type="text" id="team2" placeholder="Tím 2" class="w-full bg-zinc-950 text-white rounded-xl p-3 focus:outline-none focus:ring-1 focus:ring-zinc-700 font-bold text-base">
             </div>
           </div>
 
-          <div class="space-y-5">
+          <div class="space-y-6">
             <!-- Tip Krevetka -->
             <div>
-              <label class="block text-xs font-bold text-emerald-500 uppercase tracking-wider mb-2">Tip Krevetka</label>
-              <div class="flex items-center gap-2">
-                <div class="flex-1 flex bg-zinc-950 rounded-lg overflow-hidden border border-zinc-800">
-                  <button onclick="adjustVal('k1', -1)" class="w-24 h-14 flex items-center justify-center text-zinc-400 active:bg-zinc-700 active:text-white text-3xl font-bold transition-colors select-none">-</button>
-                  <input type="number" id="k1" value="0" readonly class="w-full bg-transparent text-center font-black text-2xl text-white pointer-events-none select-none focus:outline-none pb-1">
-                  <button onclick="adjustVal('k1', 1)" class="w-24 h-14 flex items-center justify-center text-zinc-400 active:bg-zinc-700 active:text-white text-2xl font-bold transition-colors select-none">+</button>
+              <label class="block text-sm font-black text-emerald-500 uppercase tracking-wider mb-2">Tip Krevetka</label>
+              <div class="flex items-center gap-3">
+                <div class="flex-1 flex bg-zinc-950 rounded-xl overflow-hidden">
+                  <button onclick="adjustVal('k1', -1)" class="w-16 h-16 flex items-center justify-center text-zinc-400 active:bg-zinc-700 active:text-white text-4xl font-black select-none">-</button>
+                  <input type="number" id="k1" value="0" readonly class="w-full bg-transparent text-center font-black text-3xl text-white pointer-events-none select-none focus:outline-none">
+                  <button onclick="adjustVal('k1', 1)" class="w-16 h-16 flex items-center justify-center text-zinc-400 active:bg-zinc-700 active:text-white text-3xl font-black select-none">+</button>
                 </div>
-                <span class="font-bold text-zinc-600 px-1 text-xl">:</span>
-                <div class="flex-1 flex bg-zinc-950 rounded-lg overflow-hidden border border-zinc-800">
-                  <button onclick="adjustVal('k2', -1)" class="w-24 h-14 flex items-center justify-center text-zinc-400 active:bg-zinc-700 active:text-white text-3xl font-bold transition-colors select-none">-</button>
-                  <input type="number" id="k2" value="0" readonly class="w-full bg-transparent text-center font-black text-2xl text-white pointer-events-none select-none focus:outline-none pb-1">
-                  <button onclick="adjustVal('k2', 1)" class="w-24 h-14 flex items-center justify-center text-zinc-400 active:bg-zinc-700 active:text-white text-2xl font-bold transition-colors select-none">+</button>
+                <span class="font-bold text-zinc-600 px-1 text-2xl">:</span>
+                <div class="flex-1 flex bg-zinc-950 rounded-xl overflow-hidden">
+                  <button onclick="adjustVal('k2', -1)" class="w-16 h-16 flex items-center justify-center text-zinc-400 active:bg-zinc-700 active:text-white text-4xl font-black select-none">-</button>
+                  <input type="number" id="k2" value="0" readonly class="w-full bg-transparent text-center font-black text-3xl text-white pointer-events-none select-none focus:outline-none">
+                  <button onclick="adjustVal('k2', 1)" class="w-16 h-16 flex items-center justify-center text-zinc-400 active:bg-zinc-700 active:text-white text-3xl font-black select-none">+</button>
                 </div>
               </div>
             </div>
 
             <!-- Tip Marek -->
             <div>
-              <label class="block text-xs font-bold text-orange-500 uppercase tracking-wider mb-2">Tip Marek</label>
-              <div class="flex items-center gap-2">
-                <div class="flex-1 flex bg-zinc-950 rounded-lg overflow-hidden border border-zinc-800">
-                  <button onclick="adjustVal('m1', -1)" class="w-24 h-14 flex items-center justify-center text-zinc-400 active:bg-zinc-700 active:text-white text-3xl font-bold transition-colors select-none">-</button>
-                  <input type="number" id="m1" value="0" readonly class="w-full bg-transparent text-center font-black text-2xl text-white pointer-events-none select-none focus:outline-none pb-1">
-                  <button onclick="adjustVal('m1', 1)" class="w-24 h-14 flex items-center justify-center text-zinc-400 active:bg-zinc-700 active:text-white text-2xl font-bold transition-colors select-none">+</button>
+              <label class="block text-sm font-black text-orange-500 uppercase tracking-wider mb-2">Tip Marek</label>
+              <div class="flex items-center gap-3">
+                <div class="flex-1 flex bg-zinc-950 rounded-xl overflow-hidden">
+                  <button onclick="adjustVal('m1', -1)" class="w-16 h-16 flex items-center justify-center text-zinc-400 active:bg-zinc-700 active:text-white text-4xl font-black select-none">-</button>
+                  <input type="number" id="m1" value="0" readonly class="w-full bg-transparent text-center font-black text-3xl text-white pointer-events-none select-none focus:outline-none">
+                  <button onclick="adjustVal('m1', 1)" class="w-16 h-16 flex items-center justify-center text-zinc-400 active:bg-zinc-700 active:text-white text-3xl font-black select-none">+</button>
                 </div>
-                <span class="font-bold text-zinc-600 px-1 text-xl">:</span>
-                <div class="flex-1 flex bg-zinc-950 rounded-lg overflow-hidden border border-zinc-800">
-                  <button onclick="adjustVal('m2', -1)" class="w-24 h-14 flex items-center justify-center text-zinc-400 active:bg-zinc-700 active:text-white text-3xl font-bold transition-colors select-none">-</button>
-                  <input type="number" id="m2" value="0" readonly class="w-full bg-transparent text-center font-black text-2xl text-white pointer-events-none select-none focus:outline-none pb-1">
-                  <button onclick="adjustVal('m2', 1)" class="w-24 h-14 flex items-center justify-center text-zinc-400 active:bg-zinc-700 active:text-white text-2xl font-bold transition-colors select-none">+</button>
+                <span class="font-bold text-zinc-600 px-1 text-2xl">:</span>
+                <div class="flex-1 flex bg-zinc-950 rounded-xl overflow-hidden">
+                  <button onclick="adjustVal('m2', -1)" class="w-16 h-16 flex items-center justify-center text-zinc-400 active:bg-zinc-700 active:text-white text-4xl font-black select-none">-</button>
+                  <input type="number" id="m2" value="0" readonly class="w-full bg-transparent text-center font-black text-3xl text-white pointer-events-none select-none focus:outline-none">
+                  <button onclick="adjustVal('m2', 1)" class="w-16 h-16 flex items-center justify-center text-zinc-400 active:bg-zinc-700 active:text-white text-3xl font-black select-none">+</button>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- Tlačidlo Natipovať -->
-          <button onclick="addMatch()" class="w-full mt-6 bg-white text-zinc-900 font-black py-4 rounded-lg active:bg-zinc-300 transition-colors uppercase tracking-widest text-sm">
+          <button onclick="addMatch()" class="w-full mt-8 bg-zinc-200 text-zinc-900 font-black py-4 rounded-xl active:bg-zinc-400 uppercase tracking-widest text-sm">
             Natipovať
           </button>
         </div>
 
         <div>
           <div class="flex items-center gap-2 mb-4 px-1">
-            <div class="w-2.5 h-2.5 rounded-full bg-emerald-500"></div>
+            <div class="w-3 h-3 rounded-full bg-emerald-500"></div>
             <h3 class="text-sm font-bold text-white tracking-widest uppercase">Aktuálny set</h3>
           </div>
           <div id="homeMatchesList" class="space-y-3">
@@ -156,7 +173,7 @@
       <!-- HISTÓRIA TAB -->
       <div id="tab-history" class="tab-content space-y-4">
         <div class="flex items-center gap-2 mb-4 px-1">
-          <div class="w-2.5 h-2.5 rounded-full bg-zinc-500"></div>
+          <div class="w-3 h-3 rounded-full bg-zinc-500"></div>
           <h3 class="text-sm font-bold text-white tracking-widest uppercase">Ukončené sety</h3>
         </div>
         <div id="historySetsList" class="space-y-4">
@@ -166,27 +183,27 @@
 
       <!-- PRAVIDLÁ TAB -->
       <div id="tab-rules" class="tab-content space-y-4">
-        <div class="bg-zinc-900 p-6 rounded-xl">
-          <h3 class="text-base font-bold mb-6 text-white tracking-widest uppercase">Pravidlá tipovania</h3>
+        <div class="bg-zinc-900 p-6 rounded-2xl">
+          <h3 class="text-lg font-bold mb-6 text-white tracking-widest uppercase">Pravidlá tipovania</h3>
           <ul class="space-y-6 text-base text-zinc-300 font-medium">
-            <li class="flex items-start gap-4">
-              <span class="text-xl mt-0.5">🎯</span>
+            <li class="flex items-center gap-4">
+              <span class="text-2xl mt-0.5">🎯</span>
               <p>Presný výsledok: <b class="text-white font-bold">5 bodov</b></p>
             </li>
-            <li class="flex items-start gap-4">
-              <span class="text-xl mt-0.5">🟢</span>
+            <li class="flex items-center gap-4">
+              <span class="text-2xl mt-0.5">🟢</span>
               <p>Správny výsledok (1/X/2): <b class="text-white font-bold">3 body</b></p>
             </li>
-            <li class="flex items-start gap-4">
-              <span class="text-xl mt-0.5">⚽</span>
+            <li class="flex items-center gap-4">
+              <span class="text-2xl mt-0.5">⚽</span>
               <p>Správny počet gólov jedného tímu: <b class="text-white font-bold">+1 bod</b></p>
             </li>
-            <li class="flex items-start gap-4">
-              <span class="text-xl mt-0.5">🏆</span>
-              <p>Pri dosiahnutí 30 bodov získava hráč 1 MRDKU (M-R-D-K-A) a skóre sa vynuluje.</p>
+            <li class="flex items-center gap-4">
+              <span class="text-2xl mt-0.5">🌟</span>
+              <p>Pri dosiahnutí 30 bodov získava hráč 1 MRDKU a skóre sa vynuluje.</p>
             </li>
-            <li class="flex items-start gap-4">
-              <span class="text-xl mt-0.5">☕</span>
+            <li class="flex items-center gap-4">
+              <span class="text-2xl mt-0.5">☕</span>
               <p>Hráč, ktorý prehrá, pozýva víťaza na kávu.</p>
             </li>
           </ul>
@@ -195,22 +212,12 @@
 
       <!-- PROFIL TAB -->
       <div id="tab-profile" class="tab-content space-y-4">
-        <div class="bg-zinc-900 p-8 rounded-xl text-center">
+        <div class="bg-zinc-900 p-8 rounded-2xl text-center">
           <img id="profile-avatar" src="https://ui-avatars.com/api/?name=User&background=3f3f46&color=fff" class="w-24 h-24 rounded-full mx-auto mb-4 border-4 border-zinc-800 object-cover">
-          <h3 id="profile-name" class="text-white font-bold text-xl mb-1">Neprihlásený</h3>
-          <p id="profile-email" class="text-zinc-400 text-sm mb-8">Prihláste sa pre ukladanie dát do databázy.</p>
+          <h3 id="profile-name" class="text-white font-bold text-xl mb-1">Používateľ</h3>
+          <p id="profile-email" class="text-zinc-400 text-sm mb-8">Neznámy email</p>
           
-          <button id="btn-login" onclick="loginWithGoogle()" class="w-full bg-white text-zinc-900 font-bold py-3.5 rounded-lg flex items-center justify-center gap-3">
-            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-              <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-              <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
-              <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-            </svg>
-            Prihlásiť sa cez Google
-          </button>
-          
-          <button id="btn-logout" onclick="logoutApp()" class="w-full bg-zinc-800 text-white font-bold py-3.5 rounded-lg hidden uppercase tracking-wider text-sm active:bg-zinc-700">
+          <button onclick="logoutApp()" class="w-full bg-red-600/20 text-red-500 font-bold py-4 rounded-xl uppercase tracking-wider text-sm active:bg-red-600/40">
             Odhlásiť sa
           </button>
         </div>
@@ -221,45 +228,44 @@
 
   <!-- Modál pre Potvrdenie Vymazania -->
   <div id="confirmModal" class="fixed inset-0 bg-black/90 z-50 flex items-center justify-center hidden p-4">
-    <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-6 max-w-sm w-full">
+    <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 max-w-sm w-full">
       <h3 class="text-lg font-bold text-white mb-2">Vymazať zápas?</h3>
       <p class="text-base text-zinc-400 mb-6">Naozaj chceš natrvalo vymazať tento zápas? Tento krok sa nedá vrátiť späť.</p>
       <div class="flex gap-3">
-        <button onclick="closeConfirmModal()" class="flex-1 bg-zinc-800 active:bg-zinc-700 text-white font-bold py-3.5 rounded-lg text-sm uppercase tracking-widest">Zrušiť</button>
-        <button id="confirmDeleteBtn" class="flex-1 bg-red-600 active:bg-red-700 text-white font-bold py-3.5 rounded-lg text-sm uppercase tracking-widest">Vymazať</button>
+        <button onclick="closeConfirmModal()" class="flex-1 bg-zinc-800 active:bg-zinc-700 text-white font-bold py-4 rounded-xl text-sm uppercase tracking-widest">Zrušiť</button>
+        <button id="confirmDeleteBtn" class="flex-1 bg-red-600 active:bg-red-700 text-white font-bold py-4 rounded-xl text-sm uppercase tracking-widest">Vymazať</button>
       </div>
     </div>
   </div>
 
-  <!-- Spodná Tenká Navigácia -->
-  <nav class="fixed bottom-0 w-full bg-zinc-950 border-t border-zinc-900 flex justify-around items-center h-[70px] pb-safe z-40">
+  <!-- Spodná Tenká Navigácia (Skrytá pri logine) -->
+  <nav id="bottomNav" class="fixed bottom-0 w-full bg-zinc-950 border-t border-zinc-900 flex justify-around items-center h-[70px] pb-safe z-40 hidden">
     <button onclick="switchTab('tab-home')" id="nav-tab-home" class="nav-btn flex flex-col items-center gap-1.5 w-16 text-white">
-      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
-      <span class="text-[9px] font-bold uppercase tracking-widest">Domov</span>
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+      <span class="text-[10px] font-bold uppercase tracking-widest">Domov</span>
     </button>
     <button onclick="switchTab('tab-history')" id="nav-tab-history" class="nav-btn flex flex-col items-center gap-1.5 w-16 text-zinc-600">
-      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-      <span class="text-[9px] font-bold uppercase tracking-widest">História</span>
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+      <span class="text-[10px] font-bold uppercase tracking-widest">História</span>
     </button>
     <button onclick="switchTab('tab-rules')" id="nav-tab-rules" class="nav-btn flex flex-col items-center gap-1.5 w-16 text-zinc-600">
-      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-      <span class="text-[9px] font-bold uppercase tracking-widest">Pravidlá</span>
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+      <span class="text-[10px] font-bold uppercase tracking-widest">Pravidlá</span>
     </button>
     <button onclick="switchTab('tab-profile')" id="nav-tab-profile" class="nav-btn flex flex-col items-center gap-1.5 w-16 text-zinc-600">
-      <img id="nav-profile-img" src="https://ui-avatars.com/api/?name=User&background=3f3f46&color=fff" class="w-5 h-5 rounded-full object-cover">
-      <span class="text-[9px] font-bold uppercase tracking-widest">Profil</span>
+      <img id="nav-profile-img" src="https://ui-avatars.com/api/?name=User&background=3f3f46&color=fff" class="w-6 h-6 rounded-full object-cover border-2 border-transparent">
+      <span class="text-[10px] font-bold uppercase tracking-widest">Profil</span>
     </button>
   </nav>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-    import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
     import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
     // ---------------------------------------------------------------------------------
-    // POUŽÍVATEĽ (KREVETKA/MAREK): AK NASADZUJEŠ APPKU NA VERCEL, VLOŽ SEM SVOJ CONFIG!
-    // Ak to nevyplníš, na Verceli ti nepôjde databáza. Získaj to v nastaveniach Firebase.
-    const VERCEL_FIREBASE_CONFIG = {
+    // TVOJ_FIREBASE_CONFIG_PRE_VERCEL
+    const FIREBASE_CONFIG = {
       apiKey: "AIzaSyDdscBDRvZOdtSjz8filTYtRmmYCT8Fk_Y",
       authDomain: "futbal-one.firebaseapp.com",
       projectId: "futbal-one",
@@ -268,15 +274,22 @@
       appId: "1:689260745957:web:d3815cc1e8b80d9225b00c",
       measurementId: "G-40BYW7L13N"
     };
-    // ---------------------------------------------------------------------------------
+
+    // 🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴
+    // TU DOPLŇ VAŠE DVA REÁLNE E-MAILY, KTORÉ MAJÚ PRÍSTUP DO APPKY:
+    const POVOLENE_EMAILY = [
+      "marekholubek@gmail.com", 
+      "chundak2015@gmail.com" 
+    ];
+    // 🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴
 
     let matches = [];
     let matchToDeleteId = null;
     let auth, db;
     let isFirebaseActive = false;
-    let currentUser = null;
+    let unsubscribeSnapshot = null;
     
-    // Prednastavený 1. set presne podľa excelu
+    // Prednastavený 1. set z Excelu
     let historySets = [
       {
         title: "Set #1",
@@ -300,116 +313,100 @@
     ];
 
     try {
-        let configToUse = null;
-        if (typeof __firebase_config !== 'undefined') {
-            configToUse = JSON.parse(__firebase_config);
-        } else if (Object.keys(VERCEL_FIREBASE_CONFIG).length > 0) {
-            configToUse = VERCEL_FIREBASE_CONFIG;
-        }
+        const app = initializeApp(FIREBASE_CONFIG);
+        auth = getAuth(app);
+        db = getFirestore(app);
+        isFirebaseActive = true;
+        
+        onAuthStateChanged(auth, (user) => {
+            const authScreen = document.getElementById('authScreen');
+            const mainApp = document.getElementById('mainApp');
+            const bottomNav = document.getElementById('bottomNav');
+            const loginError = document.getElementById('loginError');
 
-        if (configToUse) {
-            const app = initializeApp(configToUse);
-            auth = getAuth(app);
-            db = getFirestore(app);
-            isFirebaseActive = true;
-            
-            onAuthStateChanged(auth, (user) => {
-                if (user) {
-                    currentUser = user;
+            if (user) {
+                // OVERENIE E-MAILU
+                if (POVOLENE_EMAILY.includes(user.email)) {
+                    loginError.classList.add('hidden');
+                    authScreen.classList.add('hidden');
+                    mainApp.classList.remove('hidden');
+                    bottomNav.classList.remove('hidden');
+                    
                     updateProfileUI(user);
                     syncData();
                 } else {
-                    currentUser = null;
-                    updateProfileUI(null);
+                    loginError.classList.remove('hidden');
+                    signOut(auth);
                 }
-            });
-
-            // Ak beží v AI prostredí, prihlás automaticky, ak nie, nechaj na Google
-            if (typeof __initial_auth_token !== 'undefined' && !auth.currentUser) {
-                signInWithCustomToken(auth, __initial_auth_token).catch(e => signInAnonymously(auth));
+            } else {
+                if (unsubscribeSnapshot) unsubscribeSnapshot();
+                authScreen.classList.remove('hidden');
+                mainApp.classList.add('hidden');
+                bottomNav.classList.add('hidden');
             }
-        }
+        });
     } catch(e) {
-        console.warn("Firebase offline mod. Data nebudu persistentne.", e);
+        console.error("Firebase inicializácia zlyhala", e);
     }
 
     function updateProfileUI(user) {
-        const nameEl = document.getElementById('profile-name');
-        const emailEl = document.getElementById('profile-email');
-        const imgEl = document.getElementById('profile-avatar');
-        const navImgEl = document.getElementById('nav-profile-img');
-        
-        if (user) {
-            nameEl.innerText = user.displayName || 'Hráč';
-            emailEl.innerText = user.email || 'Anonymné prihlásenie';
-            if (user.photoURL) {
-                imgEl.src = user.photoURL;
-                navImgEl.src = user.photoURL;
-            }
-            document.getElementById('btn-login').classList.add('hidden');
-            document.getElementById('btn-logout').classList.remove('hidden');
-        } else {
-            nameEl.innerText = 'Neprihlásený';
-            emailEl.innerText = 'Prihláste sa pre ukladanie dát do databázy.';
-            imgEl.src = navImgEl.src = 'https://ui-avatars.com/api/?name=User&background=3f3f46&color=fff';
-            document.getElementById('btn-login').classList.remove('hidden');
-            document.getElementById('btn-logout').classList.add('hidden');
+        document.getElementById('profile-name').innerText = user.displayName || 'Používateľ';
+        document.getElementById('profile-email').innerText = user.email || '';
+        if (user.photoURL) {
+            document.getElementById('profile-avatar').src = user.photoURL;
+            document.getElementById('nav-profile-img').src = user.photoURL;
         }
     }
 
     window.loginWithGoogle = function() {
         if(isFirebaseActive) {
-            signInWithPopup(auth, new GoogleAuthProvider()).catch(err => console.error(err));
-        } else {
-            alert("Firebase nie je nastavený. Doplňte VERCEL_FIREBASE_CONFIG do kódu.");
+            signInWithPopup(auth, new GoogleAuthProvider()).catch(err => {
+                console.error("Chyba prihlásenia:", err);
+            });
         }
     };
 
     window.logoutApp = function() {
-        if(isFirebaseActive) {
-            signOut(auth);
-        }
+        if(isFirebaseActive) signOut(auth);
     };
 
     function syncData() {
         if (!isFirebaseActive) return;
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'tipovacka';
-        // Na Verceli bude appId pravdepodobne defaultne, ukladame v public data pre zdielanie oboch hracov
-        const stateDoc = doc(db, 'artifacts', appId, 'public', 'data', 'gamestate');
+        // Spoločná cesta pre vás dvoch
+        const stateDoc = doc(db, 'spolocne', 'tipovacka_data');
         
-        onSnapshot(stateDoc, (docSnap) => {
+        unsubscribeSnapshot = onSnapshot(stateDoc, (docSnap) => {
             if (docSnap.exists()) {
                 let data = docSnap.data();
                 if(data.matches) matches = data.matches;
                 if(data.historySets && data.historySets.length > 0) historySets = data.historySets;
                 render();
             } else {
-                saveData(); // Initialize
+                saveData();
                 render();
             }
-        }, (error) => console.error(error));
+        }, (error) => console.error("Chyba čítania DB:", error));
     }
 
     function saveData() {
         if (!isFirebaseActive) return;
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'tipovacka';
-        setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'gamestate'), {
+        setDoc(doc(db, 'spolocne', 'tipovacka_data'), {
             matches: matches,
             historySets: historySets
-        }).catch(err => console.error(err));
+        }).catch(err => console.error("Chyba zápisu DB:", err));
     }
 
-    // Výpočet bodov (Presný 5, 1X2 3, Góly +1)
+    // NOVÉ BODOVANIE (Presný 5, 1X2 3, Góly jedného tímu +1)
     window.calculatePoints = function(t1, t2, r1, r2) {
-      if (t1 === r1 && t2 === r2) return 5;
+      if (t1 === r1 && t2 === r2) return 5; // Presný
       
       let pts = 0;
       let tip1x2 = Math.sign(t1 - t2);
       let real1x2 = Math.sign(r1 - r2);
       
-      if (tip1x2 === real1x2) pts += 3;
-      if (t1 === r1) pts += 1;
-      if (t2 === r2) pts += 1;
+      if (tip1x2 === real1x2) pts += 3; // 1X2
+      if (t1 === r1) pts += 1; // Presné góly domácich
+      if (t2 === r2) pts += 1; // Presné góly hostí
       
       return pts;
     };
@@ -420,7 +417,6 @@
       if (val >= 0) el.value = val;
     };
 
-    // Nové nastavenie skóre pri ukladaní výsledku
     window.adjustResolve = function(matchId, teamIdx, delta) {
         let el = document.getElementById(`res${teamIdx}-${matchId}`);
         let val = parseInt(el.innerText) + delta;
@@ -437,6 +433,10 @@
       });
       document.getElementById('nav-tab-' + tabId.split('-')[1]).classList.remove('text-zinc-600');
       document.getElementById('nav-tab-' + tabId.split('-')[1]).classList.add('text-white');
+      
+      let navImg = document.getElementById('nav-profile-img');
+      if(tabId === 'tab-profile') navImg.classList.add('border-zinc-300');
+      else navImg.classList.remove('border-zinc-300');
     };
 
     window.toggleSet = function(setId) {
@@ -471,79 +471,80 @@
     };
 
     function createMatchCard(match, isHistory = false) {
-      let bgClass = isHistory ? 'bg-zinc-800' : 'bg-zinc-900';
-
       if (!match.isResolved) {
-        // Tlačidlové pridávanie výsledku namiesto inputov
         return `
-          <div class="relative ${bgClass} p-5 rounded-xl">
-            <button onclick="deleteMatch('${match.id}')" class="absolute top-4 right-4 text-zinc-600 active:text-white font-bold text-xl w-8 h-8 flex items-center justify-center transition-colors">✕</button>
+          <div class="relative bg-zinc-900 p-5 rounded-2xl">
+            <button onclick="deleteMatch('${match.id}')" class="absolute top-4 right-4 text-zinc-600 active:text-white font-bold text-xl w-8 h-8 flex items-center justify-center">✕</button>
             <div class="text-center mb-5 pr-8 pl-8">
-              <h4 class="font-black text-lg text-white leading-tight">${match.team1} <span class="text-zinc-500 text-sm font-normal mx-2">vs</span> ${match.team2}</h4>
+              <h4 class="font-black text-xl text-white leading-tight">${match.team1} <span class="text-zinc-500 text-base font-normal mx-2">vs</span> ${match.team2}</h4>
             </div>
-            <div class="grid grid-cols-2 gap-4 mb-5">
-              <div class="bg-zinc-950 p-4 rounded-lg text-center border border-zinc-800">
-                <span class="block text-[10px] font-bold text-emerald-500 mb-1 tracking-widest uppercase">Krevetka</span>
-                <span class="text-2xl font-black text-white">${match.k1}:${match.k2}</span>
+            
+            <div class="grid grid-cols-2 gap-4 mb-6">
+              <div class="bg-zinc-950 p-4 rounded-xl text-center">
+                <span class="block text-xs font-black text-emerald-500 mb-1 tracking-widest uppercase">Krevetka</span>
+                <span class="text-3xl font-black text-white">${match.k1}:${match.k2}</span>
               </div>
-              <div class="bg-zinc-950 p-4 rounded-lg text-center border border-zinc-800">
-                <span class="block text-[10px] font-bold text-orange-500 mb-1 tracking-widest uppercase">Marek</span>
-                <span class="text-2xl font-black text-white">${match.m1}:${match.m2}</span>
+              <div class="bg-zinc-950 p-4 rounded-xl text-center">
+                <span class="block text-xs font-black text-orange-500 mb-1 tracking-widest uppercase">Marek</span>
+                <span class="text-3xl font-black text-white">${match.m1}:${match.m2}</span>
               </div>
             </div>
-            <div class="bg-zinc-950 p-3 rounded-lg border border-zinc-800">
-              <span class="block text-center text-[10px] text-zinc-500 font-bold uppercase tracking-widest mb-2">Výsledok zápasu</span>
-              <div class="flex items-center justify-between gap-2">
-                <div class="flex-1 flex bg-zinc-900 rounded overflow-hidden">
-                  <button onclick="adjustResolve('${match.id}', 1, -1)" class="w-12 h-12 flex justify-center items-center text-zinc-400 font-bold text-xl active:bg-zinc-700">-</button>
-                  <span id="res1-${match.id}" class="w-full flex justify-center items-center font-black text-xl text-white pb-0.5">0</span>
-                  <button onclick="adjustResolve('${match.id}', 1, 1)" class="w-12 h-12 flex justify-center items-center text-zinc-400 font-bold text-xl active:bg-zinc-700">+</button>
+            
+            <div class="bg-zinc-950 p-4 rounded-xl">
+              <span class="block text-center text-xs text-zinc-500 font-bold uppercase tracking-widest mb-3">Zadaj reálny výsledok</span>
+              <div class="flex items-center justify-between gap-3">
+                <div class="flex-1 flex bg-zinc-900 rounded-xl overflow-hidden">
+                  <button onclick="adjustResolve('${match.id}', 1, -1)" class="w-14 h-14 flex justify-center items-center text-zinc-400 font-black text-3xl active:bg-zinc-700 active:text-white select-none">-</button>
+                  <span id="res1-${match.id}" class="w-full flex justify-center items-center font-black text-2xl text-white pb-0.5">0</span>
+                  <button onclick="adjustResolve('${match.id}', 1, 1)" class="w-14 h-14 flex justify-center items-center text-zinc-400 font-black text-2xl active:bg-zinc-700 active:text-white select-none">+</button>
                 </div>
-                <span class="font-bold text-zinc-600 text-lg">:</span>
-                <div class="flex-1 flex bg-zinc-900 rounded overflow-hidden">
-                  <button onclick="adjustResolve('${match.id}', 2, -1)" class="w-12 h-12 flex justify-center items-center text-zinc-400 font-bold text-xl active:bg-zinc-700">-</button>
-                  <span id="res2-${match.id}" class="w-full flex justify-center items-center font-black text-xl text-white pb-0.5">0</span>
-                  <button onclick="adjustResolve('${match.id}', 2, 1)" class="w-12 h-12 flex justify-center items-center text-zinc-400 font-bold text-xl active:bg-zinc-700">+</button>
+                <span class="font-black text-zinc-600 text-xl">:</span>
+                <div class="flex-1 flex bg-zinc-900 rounded-xl overflow-hidden">
+                  <button onclick="adjustResolve('${match.id}', 2, -1)" class="w-14 h-14 flex justify-center items-center text-zinc-400 font-black text-3xl active:bg-zinc-700 active:text-white select-none">-</button>
+                  <span id="res2-${match.id}" class="w-full flex justify-center items-center font-black text-2xl text-white pb-0.5">0</span>
+                  <button onclick="adjustResolve('${match.id}', 2, 1)" class="w-14 h-14 flex justify-center items-center text-zinc-400 font-black text-2xl active:bg-zinc-700 active:text-white select-none">+</button>
                 </div>
               </div>
-              <button onclick="resolveMatch('${match.id}')" class="w-full mt-3 bg-white text-zinc-900 font-bold py-3 rounded-md transition-colors text-xs uppercase tracking-widest active:bg-zinc-300">Uložiť výsledok</button>
+              <button onclick="resolveMatch('${match.id}')" class="w-full mt-4 bg-zinc-200 text-zinc-900 font-black py-3.5 rounded-xl text-sm uppercase tracking-widest active:bg-zinc-400">Uložiť výsledok</button>
             </div>
           </div>
         `;
       } else {
         let isTie = match.ptsK === match.ptsM;
-        let textK = match.ptsK > match.ptsM ? 'text-emerald-400' : (isTie ? 'text-emerald-400' : 'text-zinc-600');
-        let textM = match.ptsM > match.ptsK ? 'text-orange-400' : (isTie ? 'text-orange-400' : 'text-zinc-600');
+        let textK = match.ptsK > match.ptsM ? 'text-emerald-400' : (isTie ? 'text-emerald-400' : 'text-zinc-500');
+        let textM = match.ptsM > match.ptsK ? 'text-orange-400' : (isTie ? 'text-orange-400' : 'text-zinc-500');
         
         let winnerDot = '';
-        if (match.ptsK > match.ptsM) winnerDot = '<div class="absolute top-4 left-4 w-2 h-2 rounded-full bg-emerald-500"></div>';
-        else if (match.ptsM > match.ptsK) winnerDot = '<div class="absolute top-4 left-4 w-2 h-2 rounded-full bg-orange-500"></div>';
-        else winnerDot = '<div class="absolute top-4 left-4 w-2 h-2 rounded-full bg-zinc-500"></div>';
+        if (match.ptsK > match.ptsM) winnerDot = '<div class="absolute top-5 left-5 w-2 h-2 rounded-full bg-emerald-500"></div>';
+        else if (match.ptsM > match.ptsK) winnerDot = '<div class="absolute top-5 left-5 w-2 h-2 rounded-full bg-orange-500"></div>';
+        else winnerDot = '<div class="absolute top-5 left-5 w-2 h-2 rounded-full bg-zinc-500"></div>';
+
+        let bgClass = isHistory ? 'bg-zinc-800' : 'bg-zinc-900';
 
         return `
-          <div class="relative ${bgClass} p-5 rounded-xl">
+          <div class="relative ${bgClass} p-5 rounded-2xl">
             ${winnerDot}
-            ${!isHistory ? `<button onclick="deleteMatch('${match.id}')" class="absolute top-4 right-4 text-zinc-600 active:text-white font-bold text-lg w-6 h-6 flex items-center justify-center transition-colors">✕</button>` : ''}
+            ${!isHistory ? `<button onclick="deleteMatch('${match.id}')" class="absolute top-4 right-4 text-zinc-600 active:text-white font-bold text-xl w-6 h-6 flex items-center justify-center">✕</button>` : ''}
             
-            <div class="flex items-center justify-between mb-4 pb-4 border-b border-zinc-800 pr-6 pl-4">
-              <h4 class="font-bold text-white text-base truncate">${match.team1} <span class="text-zinc-500 font-normal text-xs mx-1">vs</span> ${match.team2}</h4>
-              <div class="bg-zinc-950 border border-zinc-800 text-zinc-200 font-black px-3 py-1.5 rounded-lg text-sm tracking-wider">${match.r1}:${match.r2}</div>
+            <div class="flex items-center justify-between mb-4 pb-4 border-b border-zinc-800/50 pr-6 pl-6">
+              <h4 class="font-bold text-white text-lg truncate">${match.team1} <span class="text-zinc-500 font-normal text-sm mx-1">vs</span> ${match.team2}</h4>
+              <div class="bg-zinc-950 text-zinc-200 font-black px-3.5 py-1.5 rounded-xl text-base tracking-wider">${match.r1}:${match.r2}</div>
             </div>
             
             <div class="grid grid-cols-2 gap-4">
               <div class="flex items-center justify-between pr-3">
                 <div>
-                  <span class="block text-[9px] font-bold text-emerald-500 mb-1 tracking-widest uppercase">Krevetka</span>
-                  <span class="text-lg font-black text-white">${match.k1}:${match.k2}</span>
+                  <span class="block text-[10px] font-black text-emerald-500 mb-1 tracking-widest uppercase">Krevetka</span>
+                  <span class="text-xl font-black text-white">${match.k1}:${match.k2}</span>
                 </div>
-                <div class="text-lg font-black ${textK}">+${match.ptsK}</div>
+                <div class="text-xl font-black ${textK}">+${match.ptsK}</div>
               </div>
-              <div class="flex items-center justify-between border-l border-zinc-800 pl-4">
+              <div class="flex items-center justify-between border-l border-zinc-800/50 pl-4">
                 <div>
-                  <span class="block text-[9px] font-bold text-orange-500 mb-1 tracking-widest uppercase">Marek</span>
-                  <span class="text-lg font-black text-white">${match.m1}:${match.m2}</span>
+                  <span class="block text-[10px] font-black text-orange-500 mb-1 tracking-widest uppercase">Marek</span>
+                  <span class="text-xl font-black text-white">${match.m1}:${match.m2}</span>
                 </div>
-                <div class="text-lg font-black ${textM}">+${match.ptsM}</div>
+                <div class="text-xl font-black ${textM}">+${match.ptsM}</div>
               </div>
             </div>
           </div>
@@ -594,7 +595,7 @@
 
       let homeHTML = '';
       currentSet.slice().reverse().forEach(m => homeHTML += createMatchCard(m, false));
-      document.getElementById('homeMatchesList').innerHTML = homeHTML || '<div class="bg-zinc-900 p-8 rounded-xl text-center"><p class="text-sm font-semibold text-zinc-500">Žiadne zápasy v aktuálnom sete.</p></div>';
+      document.getElementById('homeMatchesList').innerHTML = homeHTML || '<div class="bg-zinc-900 p-8 rounded-2xl text-center"><p class="text-sm font-semibold text-zinc-500">Zatiaľ žiadne zápasy.</p></div>';
 
       let historyHTML = '';
       [...historySets].reverse().forEach((set, index) => {
@@ -604,22 +605,22 @@
         let dotCol = set.winner === 'K' ? 'bg-emerald-500' : (set.winner === 'M' ? 'bg-orange-500' : 'bg-zinc-500');
 
         historyHTML += `
-          <div class="bg-zinc-900 rounded-xl overflow-hidden">
-            <button onclick="toggleSet('set-${index}')" class="w-full p-5 flex items-center transition-colors">
+          <div class="bg-zinc-900 rounded-2xl overflow-hidden">
+            <button onclick="toggleSet('set-${index}')" class="w-full p-5 flex items-center">
               <div class="flex items-center gap-3">
-                <div class="w-2.5 h-2.5 rounded-full ${dotCol}"></div>
+                <div class="w-3 h-3 rounded-full ${dotCol}"></div>
                 <h4 class="font-bold text-white tracking-widest text-sm uppercase">${set.title}</h4>
               </div>
-              <span class="ml-auto mr-4 font-black text-zinc-300 text-sm">${set.scoreK}:${set.scoreM}</span>
+              <span class="ml-auto mr-4 font-black text-zinc-300 text-base">${set.scoreK} : ${set.scoreM}</span>
               <svg id="set-${index}-arrow" class="w-5 h-5 text-zinc-500 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
             </button>
-            <div id="set-${index}" class="hidden p-4 pt-0 space-y-4">
+            <div id="set-${index}" class="hidden p-4 pt-0 space-y-4 bg-zinc-950/30">
               ${setMatchesHTML}
             </div>
           </div>
         `;
       });
-      document.getElementById('historySetsList').innerHTML = historyHTML || '<div class="bg-zinc-900 p-8 rounded-xl text-center"><p class="text-sm font-semibold text-zinc-500">Zatiaľ žiadny set nedosiahol 30 bodov.</p></div>';
+      document.getElementById('historySetsList').innerHTML = historyHTML || '<div class="bg-zinc-900 p-8 rounded-2xl text-center"><p class="text-sm font-semibold text-zinc-500">Zatiaľ žiadny set nedosiahol 30 bodov.</p></div>';
     }
 
     window.addMatch = function() {
