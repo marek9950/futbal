@@ -86,35 +86,25 @@
   <div id="mainApp" class="flex-1 overflow-y-auto pb-36 hidden">
     <div class="max-w-md mx-auto space-y-4 p-4 pt-4">
       
-      <!-- Skóre Hlavička (Football Scoreboard Style with Stars Above Names) -->
-      <div class="bg-zinc-900 p-4 rounded-xl flex items-center justify-between border border-zinc-800 shadow-sm">
+      <!-- Skóre Hlavička (Centered Football Scoreboard Style with Stars Above Names) -->
+      <div class="bg-zinc-900 p-3 rounded-xl flex items-center justify-between border border-zinc-800 shadow-sm">
         <!-- Krevetka Side -->
-        <div class="flex items-center gap-3">
-          <div class="flex flex-col items-start">
-            <div class="flex items-center gap-1 mb-0.5">
-              <span class="text-xs">🌟</span>
-              <span id="setsK-val" class="text-xs font-black text-emerald-400">0</span>
-            </div>
-            <span class="text-xs font-black text-white tracking-widest uppercase">Krevetka</span>
-          </div>
+        <div class="flex flex-col items-center flex-1 text-center">
+          <span class="text-xs font-black text-emerald-400 mb-0.5 flex items-center gap-1">🌟 <span id="setsK-val">0</span></span>
+          <span class="text-xs font-black text-white uppercase tracking-wider">Krevetka</span>
         </div>
         
         <!-- Center Score Box -->
-        <div class="bg-zinc-950 px-5 py-2 rounded-lg border border-zinc-800 flex items-center gap-3">
+        <div class="bg-zinc-950 px-5 py-2 rounded-lg border border-zinc-800 flex items-center justify-center gap-3">
           <span id="scoreK" class="text-3xl font-black text-emerald-400">0</span>
           <span class="text-zinc-600 font-black text-2xl">:</span>
           <span id="scoreM" class="text-3xl font-black text-orange-400">0</span>
         </div>
         
         <!-- Marek Side -->
-        <div class="flex items-center gap-3 justify-end">
-          <div class="flex flex-col items-end">
-            <div class="flex items-center gap-1 mb-0.5">
-              <span id="setsM-val" class="text-xs font-black text-orange-400">0</span>
-              <span class="text-xs">🌟</span>
-            </div>
-            <span class="text-xs font-black text-white tracking-widest uppercase">Marek</span>
-          </div>
+        <div class="flex flex-col items-center flex-1 text-center">
+          <span class="text-xs font-black text-orange-400 mb-0.5 flex items-center gap-1">🌟 <span id="setsM-val">0</span></span>
+          <span class="text-xs font-black text-white uppercase tracking-wider">Marek</span>
         </div>
       </div>
 
@@ -558,8 +548,8 @@
 
       if (!match.isResolved) {
         return `
-          <div class="relative bg-zinc-900 p-4 pr-12 rounded-xl border border-zinc-800 border-l-4 ${stripeColor}">
-            <button onclick="deleteMatch('${match.id}')" class="absolute top-2.5 right-2.5 text-zinc-500 active:text-white font-bold text-xl w-8 h-8 flex items-center justify-center">✕</button>
+          <div class="relative bg-zinc-900 py-3.5 pr-12 pl-4 rounded-xl border border-zinc-800 border-l-4 ${stripeColor}">
+            <button onclick="deleteMatch('${match.id}')" class="absolute top-2.5 right-2 text-zinc-500 active:text-white font-bold text-xl w-8 h-8 flex items-center justify-center">✕</button>
             <div class="text-center mb-3 pr-2">
               <h4 class="font-bold text-base text-white leading-tight">${match.team1} <span class="text-zinc-500 text-xs font-normal mx-1.5">vs</span> ${match.team2}</h4>
             </div>
@@ -725,21 +715,21 @@
 
         historyHTML += `
           <div class="bg-zinc-900 rounded-xl overflow-hidden border border-zinc-800">
-            <button type="button" onclick="toggleSet('set-${index}')" class="w-full py-4 px-4 flex items-center bg-zinc-900 active:bg-zinc-850">
+            <button type="button" onclick="toggleSet('set-${index}')" class="w-full py-5 px-5 flex items-center bg-zinc-900 active:bg-zinc-850">
               <div class="flex items-center gap-3">
                 <span class="w-3.5 h-3.5 rounded-full ${setDotColor} flex-shrink-0"></span>
-                <h4 class="font-extrabold text-white tracking-wider text-base uppercase">${set.title}</h4>
+                <h4 class="font-black text-white tracking-wide text-lg uppercase">${set.title}</h4>
               </div>
               
-              <div class="ml-auto mr-2 flex items-center gap-1.5 text-sm font-bold">
-                <span class="text-emerald-400 font-extrabold text-sm">Krevetka</span>
-                <span class="text-white text-base font-black">${set.scoreK} : ${set.scoreM}</span>
-                <span class="text-orange-400 font-extrabold text-sm">Marek</span>
+              <div class="ml-auto mr-3 flex items-center gap-2 text-sm font-bold">
+                <span class="text-emerald-400 font-black text-sm uppercase">Krevetka</span>
+                <span class="text-white text-lg font-black">${set.scoreK} : ${set.scoreM}</span>
+                <span class="text-orange-400 font-black text-sm uppercase">Marek</span>
               </div>
               
               <svg id="set-${index}-arrow" class="w-5 h-5 text-zinc-500 transition-transform duration-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
             </button>
-            <div id="set-${index}" class="hidden p-3.5 space-y-3 bg-zinc-950 border-t border-zinc-800">
+            <div id="set-${index}" class="hidden p-4 space-y-3 bg-zinc-950 border-t border-zinc-800">
               ${setMatchesHTML}
             </div>
           </div>
