@@ -54,7 +54,6 @@
 </head>
 <body class="app-container w-full flex flex-col overflow-hidden text-zinc-100 font-sans">
 
-  <!-- Pull to Refresh Indicator with Hold Feedback -->
   <div id="pullRefreshIndicator" class="fixed top-0 left-0 right-0 h-20 flex items-center justify-center bg-zinc-900 border-b border-zinc-800 text-zinc-300 text-xs font-bold transition-transform duration-200 z-50 -translate-y-full">
     <div class="flex items-center gap-2">
       <svg id="refreshSpinner" class="w-5 h-5 animate-spin text-emerald-400 hidden" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg>
@@ -62,13 +61,12 @@
     </div>
   </div>
 
-  <!-- Auth Screen (Google Login) -->
   <div id="authScreen" class="fixed inset-0 bg-zinc-950 z-50 flex flex-col items-center justify-center p-6 hidden">
-    <div class="bg-zinc-900 rounded-xl p-8 max-w-sm w-full text-center border border-zinc-800 shadow-xl">
+    <div class="bg-zinc-900 rounded-lg p-8 max-w-sm w-full text-center border border-zinc-800 shadow-xl">
       <h2 class="text-2xl font-black text-white mb-2">Súkromná Tipovačka</h2>
       <p class="text-zinc-400 text-base mb-8 font-medium">Pre prístup k aplikácii sa musíš prihlásiť overeným Google účtom.</p>
       
-      <button onclick="loginWithGoogle()" class="w-full bg-white text-zinc-950 font-black py-4 rounded-xl flex items-center justify-center gap-3 active:bg-zinc-200 transition-colors shadow-lg text-base">
+      <button onclick="loginWithGoogle()" class="w-full bg-white text-zinc-950 font-black py-4 rounded-lg flex items-center justify-center gap-3 active:bg-zinc-200 transition-colors shadow-lg text-base">
         <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
           <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
           <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
@@ -82,26 +80,22 @@
     </div>
   </div>
 
-  <!-- Main App Container -->
   <div id="mainApp" class="flex-1 overflow-y-auto pb-36 hidden">
     <div class="max-w-md mx-auto space-y-4 p-4 pt-4">
       
-      <!-- Skóre Hlavička (Scoreboard with Stars Above Edge-Aligned Names) -->
-      <div class="bg-zinc-900 p-4 rounded-xl flex items-center justify-between border border-zinc-800 shadow-sm">
-        <!-- Krevetka Side (Left Aligned) -->
+      <!-- Scoreboard Header -->
+      <div class="bg-zinc-900 p-4 rounded-lg flex items-center justify-between border border-zinc-800 shadow-sm">
         <div class="flex flex-col items-start flex-1">
           <span class="text-xs font-black text-amber-400 mb-1 flex items-center gap-1">🌟 <span id="setsK-val">0</span></span>
           <span class="text-base font-black text-white uppercase tracking-wider">Krevetka</span>
         </div>
         
-        <!-- Center Score Box -->
-        <div class="bg-zinc-950 px-6 py-2.5 rounded-lg border border-zinc-800 flex items-center justify-center gap-3">
+        <div class="bg-zinc-950 px-6 py-2 rounded-lg border border-zinc-800 flex items-center justify-center gap-3">
           <span id="scoreK" class="text-3xl font-black text-emerald-400">0</span>
           <span class="text-zinc-600 font-black text-2xl">:</span>
           <span id="scoreM" class="text-3xl font-black text-orange-400">0</span>
         </div>
         
-        <!-- Marek Side (Right Aligned) -->
         <div class="flex flex-col items-end flex-1 text-right">
           <span class="text-xs font-black text-amber-400 mb-1 flex items-center gap-1"><span id="setsM-val">0</span> 🌟</span>
           <span class="text-base font-black text-white uppercase tracking-wider">Marek</span>
@@ -109,69 +103,65 @@
       </div>
 
       <!-- Tab: Home -->
-      <div id="tab-home" class="tab-content active space-y-6">
+      <div id="tab-home" class="tab-content active space-y-5">
         
-        <!-- Toggle button for Add Match Form -->
         <div>
-          <button id="toggleFormBtn" type="button" onclick="toggleTipForm()" class="w-full bg-zinc-200 text-zinc-950 font-black py-4 rounded-xl uppercase tracking-widest text-sm shadow transition-colors">
+          <button id="toggleFormBtn" type="button" onclick="toggleTipForm()" class="w-full bg-zinc-200 text-zinc-950 font-black py-4 rounded-lg uppercase tracking-widest text-sm shadow transition-colors">
             + Pridať nový tip
           </button>
         </div>
 
-        <!-- Formulár na nový tip (Initially Hidden, Form wrapper for keyboard enter handling) -->
-        <form id="tipFormContainer" class="bg-zinc-900 p-5 rounded-xl border border-zinc-800 hidden space-y-5" onsubmit="event.preventDefault(); addMatch();">
+        <form id="tipFormContainer" class="bg-zinc-900 p-5 rounded-lg border border-zinc-800 hidden space-y-5" onsubmit="event.preventDefault(); addMatch();">
           <h3 class="text-lg font-bold text-white tracking-wide">Pridať nový tip</h3>
           
           <div class="flex gap-4">
             <div class="flex-1">
               <label class="block text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2">Domáci</label>
-              <input type="text" id="team1" placeholder="Tím 1" required enterkeyhint="next" class="w-full bg-zinc-950 text-white text-lg rounded-xl p-3.5 focus:outline-none focus:ring-1 focus:ring-zinc-700 font-bold border border-zinc-800">
+              <input type="text" id="team1" placeholder="Tím 1" required enterkeyhint="next" class="w-full bg-zinc-950 text-white text-base rounded-lg p-3.5 focus:outline-none focus:ring-1 focus:ring-zinc-700 font-bold border border-zinc-800">
             </div>
             <div class="flex-1">
               <label class="block text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2">Hostia</label>
-              <input type="text" id="team2" placeholder="Tím 2" required enterkeyhint="done" class="w-full bg-zinc-950 text-white text-lg rounded-xl p-3.5 focus:outline-none focus:ring-1 focus:ring-zinc-700 font-bold border border-zinc-800">
+              <input type="text" id="team2" placeholder="Tím 2" required enterkeyhint="done" class="w-full bg-zinc-950 text-white text-base rounded-lg p-3.5 focus:outline-none focus:ring-1 focus:ring-zinc-700 font-bold border border-zinc-800">
             </div>
           </div>
 
           <div class="space-y-5">
-            <!-- Tip Krevetka -->
             <div>
               <label class="block text-sm font-black text-emerald-400 uppercase tracking-wider mb-2">Tip Krevetka</label>
               <div class="flex items-center gap-3">
-                <div class="flex-1 flex bg-zinc-950 rounded-xl overflow-hidden h-16 border border-zinc-800">
-                  <button type="button" onclick="adjustVal('k1', -1)" class="w-24 h-full flex items-center justify-center text-zinc-300 text-4xl font-black select-none">-</button>
+                <div class="flex-1 flex bg-zinc-950 rounded-lg overflow-hidden h-16 border border-zinc-800">
+                  <button type="button" onclick="adjustVal('k1', -1)" class="w-24 h-full flex items-center justify-center text-zinc-300 text-4xl font-black select-none active:bg-zinc-800">-</button>
                   <input type="number" id="k1" value="0" readonly class="w-full h-full bg-transparent text-center font-black text-2xl text-white pointer-events-none select-none focus:outline-none">
-                  <button type="button" onclick="adjustVal('k1', 1)" class="w-24 h-full flex items-center justify-center text-zinc-300 text-3xl font-black select-none">+</button>
+                  <button type="button" onclick="adjustVal('k1', 1)" class="w-24 h-full flex items-center justify-center text-zinc-300 text-3xl font-black select-none active:bg-zinc-800">+</button>
                 </div>
                 <span class="font-bold text-zinc-600 px-1 text-2xl">:</span>
-                <div class="flex-1 flex bg-zinc-950 rounded-xl overflow-hidden h-16 border border-zinc-800">
-                  <button type="button" onclick="adjustVal('k2', -1)" class="w-24 h-full flex items-center justify-center text-zinc-300 text-4xl font-black select-none">-</button>
+                <div class="flex-1 flex bg-zinc-950 rounded-lg overflow-hidden h-16 border border-zinc-800">
+                  <button type="button" onclick="adjustVal('k2', -1)" class="w-24 h-full flex items-center justify-center text-zinc-300 text-4xl font-black select-none active:bg-zinc-800">-</button>
                   <input type="number" id="k2" value="0" readonly class="w-full h-full bg-transparent text-center font-black text-2xl text-white pointer-events-none select-none focus:outline-none">
-                  <button type="button" onclick="adjustVal('k2', 1)" class="w-24 h-full flex items-center justify-center text-zinc-300 text-3xl font-black select-none">+</button>
+                  <button type="button" onclick="adjustVal('k2', 1)" class="w-24 h-full flex items-center justify-center text-zinc-300 text-3xl font-black select-none active:bg-zinc-800">+</button>
                 </div>
               </div>
             </div>
 
-            <!-- Tip Marek -->
             <div>
               <label class="block text-sm font-black text-orange-400 uppercase tracking-wider mb-2">Tip Marek</label>
               <div class="flex items-center gap-3">
-                <div class="flex-1 flex bg-zinc-950 rounded-xl overflow-hidden h-16 border border-zinc-800">
-                  <button type="button" onclick="adjustVal('m1', -1)" class="w-24 h-full flex items-center justify-center text-zinc-300 text-4xl font-black select-none">-</button>
+                <div class="flex-1 flex bg-zinc-950 rounded-lg overflow-hidden h-16 border border-zinc-800">
+                  <button type="button" onclick="adjustVal('m1', -1)" class="w-24 h-full flex items-center justify-center text-zinc-300 text-4xl font-black select-none active:bg-zinc-800">-</button>
                   <input type="number" id="m1" value="0" readonly class="w-full h-full bg-transparent text-center font-black text-2xl text-white pointer-events-none select-none focus:outline-none">
-                  <button type="button" onclick="adjustVal('m1', 1)" class="w-24 h-full flex items-center justify-center text-zinc-300 text-3xl font-black select-none">+</button>
+                  <button type="button" onclick="adjustVal('m1', 1)" class="w-24 h-full flex items-center justify-center text-zinc-300 text-3xl font-black select-none active:bg-zinc-800">+</button>
                 </div>
                 <span class="font-bold text-zinc-600 px-1 text-2xl">:</span>
-                <div class="flex-1 flex bg-zinc-950 rounded-xl overflow-hidden h-16 border border-zinc-800">
-                  <button type="button" onclick="adjustVal('m2', -1)" class="w-24 h-full flex items-center justify-center text-zinc-300 text-4xl font-black select-none">-</button>
+                <div class="flex-1 flex bg-zinc-950 rounded-lg overflow-hidden h-16 border border-zinc-800">
+                  <button type="button" onclick="adjustVal('m2', -1)" class="w-24 h-full flex items-center justify-center text-zinc-300 text-4xl font-black select-none active:bg-zinc-800">-</button>
                   <input type="number" id="m2" value="0" readonly class="w-full h-full bg-transparent text-center font-black text-2xl text-white pointer-events-none select-none focus:outline-none">
-                  <button type="button" onclick="adjustVal('m2', 1)" class="w-24 h-full flex items-center justify-center text-zinc-300 text-3xl font-black select-none">+</button>
+                  <button type="button" onclick="adjustVal('m2', 1)" class="w-24 h-full flex items-center justify-center text-zinc-300 text-3xl font-black select-none active:bg-zinc-800">+</button>
                 </div>
               </div>
             </div>
           </div>
 
-          <button type="submit" class="w-full mt-2 bg-zinc-200 text-zinc-950 font-black py-4 rounded-xl uppercase tracking-widest text-sm shadow-md">
+          <button type="submit" class="w-full mt-2 bg-zinc-200 text-zinc-950 font-black py-4 rounded-lg uppercase tracking-widest text-sm shadow-md">
             Natipovať
           </button>
         </form>
@@ -198,7 +188,7 @@
 
       <!-- Tab: Rules -->
       <div id="tab-rules" class="tab-content space-y-4">
-        <div class="bg-zinc-900 p-6 rounded-xl border border-zinc-800">
+        <div class="bg-zinc-900 p-6 rounded-lg border border-zinc-800">
           <h3 class="text-lg font-bold mb-6 text-white tracking-widest uppercase">Pravidlá tipovania</h3>
           <ul class="space-y-6 text-base text-zinc-300 font-medium">
             <li class="flex items-center gap-4">
@@ -227,12 +217,12 @@
 
       <!-- Tab: Profile -->
       <div id="tab-profile" class="tab-content space-y-4">
-        <div class="bg-zinc-900 p-8 rounded-xl text-center border border-zinc-800">
+        <div class="bg-zinc-900 p-8 rounded-lg text-center border border-zinc-800">
           <img id="profile-avatar" src="https://ui-avatars.com/api/?name=User&background=3f3f46&color=fff" class="w-24 h-24 rounded-full mx-auto mb-4 border-4 border-zinc-800 object-cover">
           <h3 id="profile-name" class="text-white font-bold text-xl mb-1">Používateľ</h3>
           <p id="profile-email" class="text-zinc-400 text-sm mb-8">Neznámy email</p>
           
-          <button onclick="logoutApp()" class="w-full bg-zinc-800 text-zinc-300 font-bold py-4 rounded-xl uppercase tracking-wider text-sm">
+          <button onclick="logoutApp()" class="w-full bg-zinc-800 text-zinc-300 font-bold py-4 rounded-lg uppercase tracking-wider text-sm">
             Odhlásiť sa
           </button>
         </div>
@@ -241,20 +231,18 @@
     </div>
   </div>
 
-  <!-- Delete Confirmation Modal -->
   <div id="confirmModal" class="fixed inset-0 bg-black/90 z-50 flex items-center justify-center hidden p-4">
-    <div class="bg-zinc-900 rounded-xl p-6 max-w-sm w-full border border-zinc-800">
+    <div class="bg-zinc-900 rounded-lg p-6 max-w-sm w-full border border-zinc-800">
       <h3 class="text-lg font-bold text-white mb-2">Vymazať zápas?</h3>
       <p class="text-base text-zinc-400 mb-6">Naozaj chceš natrvalo vymazať tento zápas? Tento krok sa nedá vrátiť späť.</p>
       <div class="flex gap-3">
-        <button onclick="closeConfirmModal()" class="flex-1 bg-zinc-800 text-white font-bold py-4 rounded-xl text-sm uppercase tracking-widest">Zrušiť</button>
-        <button id="confirmDeleteBtn" class="flex-1 bg-zinc-700 text-white font-bold py-4 rounded-xl text-sm uppercase tracking-widest">Vymazať</button>
+        <button onclick="closeConfirmModal()" class="flex-1 bg-zinc-800 text-white font-bold py-4 rounded-lg text-sm uppercase tracking-widest">Zrušiť</button>
+        <button id="confirmDeleteBtn" class="flex-1 bg-zinc-700 text-white font-bold py-4 rounded-lg text-sm uppercase tracking-widest">Vymazať</button>
       </div>
     </div>
   </div>
 
-  <!-- Bottom Navigation Bar (Elevated for system gesture bars) -->
-  <nav id="bottomNav" class="fixed bottom-0 w-full bg-zinc-950 border-t border-zinc-900 flex justify-around items-center h-22 pt-3 pb-9 z-40 hidden">
+  <nav id="bottomNav" class="fixed bottom-0 w-full bg-zinc-950 border-t border-zinc-900 flex justify-around items-center h-22 pt-3 pb-11 z-40 hidden">
     <button onclick="switchTab('tab-home')" id="nav-tab-home" class="nav-btn flex flex-col items-center justify-center w-16 text-white h-full">
       <svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
       <span class="text-[9px] font-bold uppercase tracking-widest">Domov</span>
@@ -273,7 +261,6 @@
     </button>
   </nav>
 
-  <!-- Script with Firebase and App Logic -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
     import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
@@ -300,7 +287,6 @@
     let isFirebaseActive = false;
     let unsubscribeSnapshot = null;
     
-    // Prednastavený prvý odohratý set z Excelu
     let historySets = [
       {
         title: "Set #1",
@@ -539,7 +525,7 @@
     };
 
     function createMatchCard(match) {
-      let stripeColor = 'border-l-yellow-400';
+      let stripeColor = 'border-l-amber-400';
       if (match.isResolved) {
         if (match.ptsK === match.ptsM) stripeColor = 'border-l-white';
         else if (match.ptsK > match.ptsM) stripeColor = 'border-l-emerald-500';
@@ -548,39 +534,39 @@
 
       if (!match.isResolved) {
         return `
-          <div class="relative bg-zinc-900 py-4 pr-14 pl-4 rounded-xl border border-zinc-800 border-l-4 ${stripeColor}">
-            <button onclick="deleteMatch('${match.id}')" class="absolute top-3 right-3 text-zinc-500 active:text-white font-bold text-xl w-8 h-8 flex items-center justify-center">✕</button>
-            <div class="text-center mb-3 pr-2">
-              <h4 class="font-bold text-lg text-white leading-tight">${match.team1} <span class="text-zinc-500 text-sm font-normal mx-1.5">vs</span> ${match.team2}</h4>
+          <div class="relative bg-zinc-900 py-4 pr-4 pl-4 rounded-lg border border-zinc-800 border-l-4 ${stripeColor}">
+            <div class="flex items-center justify-between mb-3 pb-2 border-b border-zinc-800">
+              <h4 class="font-bold text-lg text-white leading-tight">${match.team1} <span class="text-zinc-500 text-sm font-normal mx-1">vs</span> ${match.team2}</h4>
+              <button onclick="deleteMatch('${match.id}')" class="text-zinc-500 hover:text-white font-bold text-lg w-7 h-7 flex items-center justify-center rounded-lg bg-zinc-950/50">✕</button>
             </div>
             
-            <div class="grid grid-cols-2 gap-2.5 mb-4 pr-2">
-              <div class="bg-zinc-950 p-3 rounded-xl text-center border border-zinc-850">
+            <div class="grid grid-cols-2 gap-3 mb-4">
+              <div class="bg-zinc-950 p-3 rounded-lg text-center border border-zinc-850">
                 <span class="block text-xs font-bold text-emerald-400 mb-0.5 tracking-wider uppercase">Krevetka</span>
                 <span class="text-2xl font-black text-white">${match.k1}:${match.k2}</span>
               </div>
-              <div class="bg-zinc-950 p-3 rounded-xl text-center border border-zinc-850">
+              <div class="bg-zinc-950 p-3 rounded-lg text-center border border-zinc-850">
                 <span class="block text-xs font-bold text-orange-400 mb-0.5 tracking-wider uppercase">Marek</span>
                 <span class="text-2xl font-black text-white">${match.m1}:${match.m2}</span>
               </div>
             </div>
             
-            <div class="bg-zinc-950 p-3.5 rounded-xl border border-zinc-850 pr-2">
+            <div class="bg-zinc-950 p-3.5 rounded-lg border border-zinc-850">
               <span class="block text-center text-xs text-zinc-400 font-semibold uppercase tracking-wider mb-2.5">Zadaj reálny výsledok</span>
               <div class="flex items-center justify-between gap-3">
-                <div class="flex-1 flex bg-zinc-900 rounded-xl overflow-hidden h-14 border border-zinc-800">
+                <div class="flex-1 flex bg-zinc-900 rounded-lg overflow-hidden h-14 border border-zinc-800">
                   <button type="button" onclick="adjustResolve('${match.id}', 1, -1)" class="w-20 h-full flex justify-center items-center text-zinc-300 font-black text-3xl active:bg-zinc-800 select-none">-</button>
                   <span id="res1-${match.id}" class="w-full h-full flex justify-center items-center font-black text-xl text-white">0</span>
                   <button type="button" onclick="adjustResolve('${match.id}', 1, 1)" class="w-20 h-full flex justify-center items-center text-zinc-300 font-black text-3xl active:bg-zinc-800 select-none">+</button>
                 </div>
                 <span class="font-bold text-zinc-600 text-xl">:</span>
-                <div class="flex-1 flex bg-zinc-900 rounded-xl overflow-hidden h-14 border border-zinc-800">
+                <div class="flex-1 flex bg-zinc-900 rounded-lg overflow-hidden h-14 border border-zinc-800">
                   <button type="button" onclick="adjustResolve('${match.id}', 2, -1)" class="w-20 h-full flex justify-center items-center text-zinc-300 font-black text-3xl active:bg-zinc-800 select-none">-</button>
                   <span id="res2-${match.id}" class="w-full h-full flex justify-center items-center font-black text-xl text-white">0</span>
                   <button type="button" onclick="adjustResolve('${match.id}', 2, 1)" class="w-20 h-full flex justify-center items-center text-zinc-300 font-black text-3xl active:bg-zinc-800 select-none">+</button>
                 </div>
               </div>
-              <button type="button" onclick="resolveMatch('${match.id}')" class="w-full mt-3.5 bg-zinc-200 text-zinc-950 font-black py-3 rounded-xl text-xs uppercase tracking-widest active:bg-zinc-400 shadow">Uložiť výsledok</button>
+              <button type="button" onclick="resolveMatch('${match.id}')" class="w-full mt-3.5 bg-zinc-200 text-zinc-950 font-black py-3 rounded-lg text-xs uppercase tracking-widest active:bg-zinc-400 shadow">Uložiť výsledok</button>
             </div>
           </div>
         `;
@@ -590,26 +576,27 @@
         let textM = match.ptsM > match.ptsK ? 'text-orange-400' : (isTie ? 'text-white' : 'text-zinc-500');
 
         return `
-          <div class="relative bg-zinc-900 py-4 pr-12 pl-4 rounded-xl border border-zinc-800 border-l-4 ${stripeColor}">
-            <button onclick="deleteMatch('${match.id}')" class="absolute top-3 right-3 text-zinc-500 active:text-white font-bold text-lg w-7 h-7 flex items-center justify-center">✕</button>
-            
-            <div class="flex items-center justify-between mb-3 pb-2 border-b border-zinc-800 pr-2">
-              <h4 class="font-bold text-white text-base truncate">${match.team1} <span class="text-zinc-500 font-normal text-xs mx-1">vs</span> ${match.team2}</h4>
-              <div class="bg-zinc-950 text-zinc-200 font-black px-3 py-1 rounded-lg text-sm tracking-wider border border-zinc-800">${match.r1}:${match.r2}</div>
+          <div class="relative bg-zinc-900 py-4 pr-4 pl-4 rounded-lg border border-zinc-800 border-l-4 ${stripeColor}">
+            <div class="flex items-center justify-between mb-3 pb-2 border-b border-zinc-800">
+              <h4 class="font-bold text-white text-lg truncate">${match.team1} <span class="text-zinc-500 font-normal text-sm mx-1">vs</span> ${match.team2}</h4>
+              <div class="flex items-center gap-2">
+                <div class="bg-zinc-950 text-zinc-200 font-black px-3 py-1 rounded-lg text-base tracking-wider border border-zinc-800">${match.r1}:${match.r2}</div>
+                <button onclick="deleteMatch('${match.id}')" class="text-zinc-500 hover:text-white font-bold text-lg w-7 h-7 flex items-center justify-center rounded-lg bg-zinc-950/50">✕</button>
+              </div>
             </div>
             
-            <div class="grid grid-cols-2 gap-2 pr-2">
-              <div class="flex items-center justify-between pr-2">
+            <div class="grid grid-cols-2 gap-2 pt-1">
+              <div class="flex items-center justify-between px-3 py-2 bg-zinc-950 rounded-lg border border-zinc-850">
                 <div>
-                  <span class="block text-[10px] font-extrabold text-emerald-400 mb-0.5 tracking-wider uppercase">Krevetka</span>
-                  <span class="text-lg font-bold text-white">${match.k1}:${match.k2}</span>
+                  <span class="block text-xs font-black text-emerald-400 mb-0.5 tracking-wider uppercase">Krevetka</span>
+                  <span class="text-base font-bold text-white">${match.k1}:${match.k2}</span>
                 </div>
                 <div class="text-lg font-black ${textK}">+${match.ptsK}</div>
               </div>
-              <div class="flex items-center justify-between border-l border-zinc-800 pl-3">
+              <div class="flex items-center justify-between px-3 py-2 bg-zinc-950 rounded-lg border border-zinc-850">
                 <div>
-                  <span class="block text-[10px] font-extrabold text-orange-400 mb-0.5 tracking-wider uppercase">Marek</span>
-                  <span class="text-lg font-bold text-white">${match.m1}:${match.m2}</span>
+                  <span class="block text-xs font-black text-orange-400 mb-0.5 tracking-wider uppercase">Marek</span>
+                  <span class="text-base font-bold text-white">${match.m1}:${match.m2}</span>
                 </div>
                 <div class="text-lg font-black ${textM}">+${match.ptsM}</div>
               </div>
@@ -620,7 +607,7 @@
     }
 
     function createHistoryMatchCard(match) {
-      let stripeColor = 'border-l-yellow-400';
+      let stripeColor = 'border-l-amber-400';
       if (match.isResolved) {
         if (match.ptsK === match.ptsM) stripeColor = 'border-l-white';
         else if (match.ptsK > match.ptsM) stripeColor = 'border-l-emerald-500';
@@ -632,24 +619,24 @@
       let textM = match.ptsM > match.ptsK ? 'text-orange-400' : (isTie ? 'text-white' : 'text-zinc-500');
 
       return `
-        <div class="relative bg-zinc-900 py-4 pr-4 pl-4 rounded-xl border border-zinc-800 border-l-4 ${stripeColor}">
+        <div class="relative bg-zinc-900 py-4 pr-4 pl-4 rounded-lg border border-zinc-800 border-l-4 ${stripeColor}">
           <div class="flex items-center justify-between mb-3 pb-2 border-b border-zinc-800">
-            <h4 class="font-bold text-white text-base truncate">${match.team1} <span class="text-zinc-500 font-normal text-xs mx-1">vs</span> ${match.team2}</h4>
-            <div class="bg-zinc-950 text-zinc-200 font-black px-3 py-1 rounded-lg text-sm tracking-wider border border-zinc-800">${match.r1}:${match.r2}</div>
+            <h4 class="font-bold text-white text-lg truncate">${match.team1} <span class="text-zinc-500 font-normal text-sm mx-1">vs</span> ${match.team2}</h4>
+            <div class="bg-zinc-950 text-zinc-200 font-black px-3 py-1 rounded-lg text-base tracking-wider border border-zinc-800">${match.r1}:${match.r2}</div>
           </div>
           
-          <div class="grid grid-cols-2 gap-2">
-            <div class="flex items-center justify-between pr-2">
+          <div class="grid grid-cols-2 gap-2 pt-1">
+            <div class="flex items-center justify-between px-3 py-2 bg-zinc-950 rounded-lg border border-zinc-850">
               <div>
-                <span class="block text-[10px] font-extrabold text-emerald-400 mb-0.5 tracking-wider uppercase">Krevetka</span>
-                <span class="text-lg font-bold text-white">${match.k1}:${match.k2}</span>
+                <span class="block text-xs font-black text-emerald-400 mb-0.5 tracking-wider uppercase">Krevetka</span>
+                <span class="text-base font-bold text-white">${match.k1}:${match.k2}</span>
               </div>
               <div class="text-lg font-black ${textK}">+${match.ptsK}</div>
             </div>
-            <div class="flex items-center justify-between border-l border-zinc-800 pl-3">
+            <div class="flex items-center justify-between px-3 py-2 bg-zinc-950 rounded-lg border border-zinc-850">
               <div>
-                <span class="block text-[10px] font-extrabold text-orange-400 mb-0.5 tracking-wider uppercase">Marek</span>
-                <span class="text-lg font-bold text-white">${match.m1}:${match.m2}</span>
+                <span class="block text-xs font-black text-orange-400 mb-0.5 tracking-wider uppercase">Marek</span>
+                <span class="text-base font-bold text-white">${match.m1}:${match.m2}</span>
               </div>
               <div class="text-lg font-black ${textM}">+${match.ptsM}</div>
             </div>
@@ -701,7 +688,7 @@
 
       let homeHTML = '';
       currentSet.slice().reverse().forEach(m => homeHTML += createMatchCard(m));
-      document.getElementById('homeMatchesList').innerHTML = homeHTML || '<div class="bg-zinc-900 p-6 rounded-xl text-center border border-zinc-800"><p class="text-base font-semibold text-zinc-500">Zatiaľ žiadne aktívne zápasy.</p></div>';
+      document.getElementById('homeMatchesList').innerHTML = homeHTML || '<div class="bg-zinc-900 p-6 rounded-lg text-center border border-zinc-800"><p class="text-base font-semibold text-zinc-500">Zatiaľ žiadne aktívne zápasy.</p></div>';
 
       let historyHTML = '';
       [...historySets].reverse().forEach((set, index) => {
@@ -714,20 +701,20 @@
         else if (set.winner === 'Remíza') setDotColor = 'bg-white';
 
         historyHTML += `
-          <div class="bg-zinc-900 rounded-xl overflow-hidden border border-zinc-800">
-            <button type="button" onclick="toggleSet('set-${index}')" class="w-full py-4 px-5 flex items-center bg-zinc-900 active:bg-zinc-850">
-              <div class="flex items-center gap-3.5">
-                <span class="w-3.5 h-3.5 rounded-full ${setDotColor} flex-shrink-0"></span>
-                <h4 class="font-black text-white tracking-wide text-lg uppercase">${set.title}</h4>
+          <div class="bg-zinc-900 rounded-lg overflow-hidden border border-zinc-800">
+            <button type="button" onclick="toggleSet('set-${index}')" class="w-full py-4 px-4 flex items-center justify-between bg-zinc-900 active:bg-zinc-850">
+              <div class="flex items-center gap-3">
+                <span class="w-2.5 h-2.5 rounded-full ${setDotColor} flex-shrink-0"></span>
+                <h4 class="font-bold text-white text-sm uppercase tracking-wide">${set.title}</h4>
               </div>
               
-              <div class="ml-auto mr-3 flex items-center gap-2 text-sm font-bold">
-                <span class="text-emerald-400 font-black text-sm uppercase">Krevetka</span>
-                <span class="text-white text-lg font-black">${set.scoreK} : ${set.scoreM}</span>
-                <span class="text-orange-400 font-black text-sm uppercase">Marek</span>
+              <div class="flex items-center gap-2 text-sm font-bold">
+                <span class="text-emerald-400 font-black text-base">${set.scoreK}</span>
+                <span class="text-zinc-600 font-black">:</span>
+                <span class="text-orange-400 font-black text-base">${set.scoreM}</span>
               </div>
               
-              <svg id="set-${index}-arrow" class="w-5 h-5 text-zinc-500 transition-transform duration-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+              <svg id="set-${index}-arrow" class="w-4 h-4 text-zinc-500 transition-transform duration-300 flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
             </button>
             <div id="set-${index}" class="hidden p-4 space-y-3 bg-zinc-950 border-t border-zinc-800">
               ${setMatchesHTML}
@@ -735,10 +722,9 @@
           </div>
         `;
       });
-      document.getElementById('historySetsList').innerHTML = historyHTML || '<div class="bg-zinc-900 p-6 rounded-xl text-center border border-zinc-800"><p class="text-base font-semibold text-zinc-500">Zatiaľ žiadny set v histórii.</p></div>';
+      document.getElementById('historySetsList').innerHTML = historyHTML || '<div class="bg-zinc-900 p-6 rounded-lg text-center border border-zinc-800"><p class="text-base font-semibold text-zinc-500">Zatiaľ žiadny set v histórii.</p></div>';
     }
 
-    // Pull-to-refresh with holding visual feedback
     let touchStartY = 0;
     let isPulling = false;
     const pullIndicator = document.getElementById('pullRefreshIndicator');
