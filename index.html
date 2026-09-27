@@ -2,22 +2,19 @@
 <html lang="sk">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Tipovačka - Krevetka vs Marek</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
   <style>
     body {
       font-family: 'Nunito', sans-serif;
-      background-color: #000000;
-      color: #f8fafc;
       -webkit-tap-highlight-color: transparent;
     }
     
-    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar { width: 4px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
-    ::-webkit-scrollbar-thumb:hover { background: #475569; }
 
     input[type=number]::-webkit-inner-spin-button, 
     input[type=number]::-webkit-outer-spin-button { 
@@ -35,114 +32,131 @@
       from { opacity: 0; transform: translateY(3px); }
       to { opacity: 1; transform: translateY(0); }
     }
+    
+    /* Zabezpečí, že sa appka na mobile prispôsobí aj panelu s adresou */
+    .app-container {
+        height: 100vh;
+        height: 100dvh;
+    }
   </style>
 </head>
-<body class="h-screen w-full flex flex-col overflow-hidden bg-black">
+<body class="app-container w-full flex flex-col overflow-hidden bg-slate-950 text-slate-100">
 
-  <div class="flex-1 overflow-y-auto pb-28">
-    <div class="max-w-md mx-auto space-y-4 p-4 pt-6">
+  <div id="loginOverlay" class="fixed inset-0 bg-slate-950 z-50 flex flex-col items-center justify-center p-6 transition-opacity duration-300">
+    <div class="bg-slate-800 p-8 rounded-[8px] w-full max-w-sm text-center border border-slate-700 shadow-xl">
+      <div class="text-4xl mb-4">⚽</div>
+      <h1 class="text-2xl font-bold text-slate-100 mb-2 tracking-wide">Tipovačka</h1>
+      <p class="text-sm text-slate-400 mb-8">Prihláste sa pre prístup k aplikácii</p>
+      <button onclick="loginWithGoogle()" class="w-full bg-white hover:bg-slate-200 text-slate-900 font-bold py-3.5 rounded-[8px] flex items-center justify-center gap-3 transition-colors text-sm">
+        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+        </svg>
+        Pokračovať cez Google
+      </button>
+      <button onclick="bypassLogin()" class="mt-4 text-xs font-bold text-slate-500 hover:text-slate-300 uppercase tracking-wider">
+        Testovací prístup (Offline)
+      </button>
+    </div>
+  </div>
+
+  <div id="mainApp" class="flex-1 overflow-y-auto pb-32 hidden">
+    <div class="max-w-md mx-auto space-y-4 p-4 pt-4">
       
-      <!-- Skóre Hlavička -->
-      <div class="bg-slate-800 p-5 rounded-[8px] border border-slate-700 flex justify-between items-center text-center">
+      <!-- Skóre Hlavička (Zmenšená a kompaktnejšia) -->
+      <div class="bg-slate-800 p-3 rounded-[8px] flex justify-between items-center text-center shadow-md">
         <!-- Krevetka Skóre -->
-        <div class="flex-1 flex flex-col items-center justify-center border-r border-slate-700 pr-2">
-          <span class="text-xs font-semibold text-slate-400 tracking-wider uppercase mb-1">Krevetka</span>
-          <div id="scoreK" class="text-5xl font-bold text-emerald-400 tracking-tight leading-normal pr-1">0</div>
-          <div id="setsK" class="text-xs font-semibold text-amber-400 flex items-center gap-1 mt-1">🌟 <span>0</span></div>
+        <div class="flex-1 flex flex-col items-center justify-center border-r border-slate-700">
+          <span class="text-[10px] font-bold text-slate-400 tracking-wider uppercase mb-0.5">Krevetka</span>
+          <div id="scoreK" class="text-4xl font-bold text-emerald-500 tracking-tight pb-0.5">0</div>
+          <div id="setsK" class="text-[11px] font-bold text-amber-400 flex items-center justify-center gap-1">🌟 <span id="setsK-val">0</span></div>
         </div>
         
         <!-- Marek Skóre -->
-        <div class="flex-1 flex flex-col items-center justify-center pl-2">
-          <span class="text-xs font-semibold text-slate-400 tracking-wider uppercase mb-1">Marek</span>
-          <div id="scoreM" class="text-5xl font-bold text-orange-400 tracking-tight leading-normal pr-1">0</div>
-          <div id="setsM" class="text-xs font-semibold text-amber-400 flex items-center gap-1 mt-1">🌟 <span>0</span></div>
+        <div class="flex-1 flex flex-col items-center justify-center">
+          <span class="text-[10px] font-bold text-slate-400 tracking-wider uppercase mb-0.5">Marek</span>
+          <div id="scoreM" class="text-4xl font-bold text-orange-400 tracking-tight pb-0.5">0</div>
+          <div id="setsM" class="text-[11px] font-bold text-amber-400 flex items-center justify-center gap-1">🌟 <span id="setsM-val">0</span></div>
         </div>
       </div>
 
-      <!-- TAB: DOMOV -->
       <div id="tab-home" class="tab-content active space-y-4">
         
         <!-- Formulár na nový tip -->
-        <div class="bg-slate-800 p-5 rounded-[8px] border border-slate-700">
-          <h3 class="text-sm font-bold mb-4 text-slate-100 tracking-wide">Pridať nový tip</h3>
+        <div class="bg-slate-800 p-4 rounded-[8px] shadow-md">
+          <h3 class="text-sm font-bold mb-3 text-slate-100 tracking-wide">Pridať nový tip</h3>
           
           <div class="flex gap-3 mb-4">
             <div class="flex-1">
-              <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Domáci</label>
-              <input type="text" id="team1" placeholder="Tím 1" class="w-full bg-slate-900 border border-slate-700 text-slate-200 rounded-[8px] p-3 focus:outline-none focus:border-slate-500 font-semibold transition-colors text-sm">
+              <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Domáci</label>
+              <input type="text" id="team1" placeholder="Tím 1" class="w-full bg-slate-900 border border-transparent text-slate-200 rounded-[8px] p-2.5 focus:outline-none focus:border-slate-600 font-semibold transition-colors text-sm">
             </div>
             <div class="flex-1">
-              <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Hostia</label>
-              <input type="text" id="team2" placeholder="Tím 2" class="w-full bg-slate-900 border border-slate-700 text-slate-200 rounded-[8px] p-3 focus:outline-none focus:border-slate-500 font-semibold transition-colors text-sm">
+              <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Hostia</label>
+              <input type="text" id="team2" placeholder="Tím 2" class="w-full bg-slate-900 border border-transparent text-slate-200 rounded-[8px] p-2.5 focus:outline-none focus:border-slate-600 font-semibold transition-colors text-sm">
             </div>
           </div>
 
           <div class="space-y-4">
-            <!-- Tip Krevetka -->
+            <!-- Tip Krevetka so zväčšenými tlačidlami -->
             <div>
-              <label class="block text-xs font-semibold text-emerald-400 uppercase tracking-wider mb-2">Tip Krevetka</label>
-              <div class="flex items-center gap-3">
-                <div class="flex-1 flex bg-slate-900 rounded-[8px] overflow-hidden border border-slate-700">
-                  <button onclick="adjustVal('k1', -1)" class="w-12 h-12 flex items-center justify-center text-slate-400 hover:bg-slate-800 text-lg font-bold transition-colors">-</button>
-                  <input type="number" id="k1" value="0" class="w-full bg-transparent text-center font-bold text-lg text-slate-200 focus:outline-none">
-                  <button onclick="adjustVal('k1', 1)" class="w-12 h-12 flex items-center justify-center text-slate-400 hover:bg-slate-800 text-lg font-bold transition-colors">+</button>
+              <label class="block text-[10px] font-bold text-emerald-500 uppercase tracking-wider mb-1.5">Tip Krevetka</label>
+              <div class="flex items-center gap-2">
+                <div class="flex-1 flex bg-slate-900 rounded-[8px] overflow-hidden">
+                  <button onclick="adjustVal('k1', -1)" class="w-16 h-12 flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-800 active:bg-slate-700 text-xl font-bold transition-colors">-</button>
+                  <input type="number" id="k1" value="0" inputmode="numeric" class="w-full bg-transparent text-center font-bold text-xl text-slate-200 focus:outline-none">
+                  <button onclick="adjustVal('k1', 1)" class="w-16 h-12 flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-800 active:bg-slate-700 text-xl font-bold transition-colors">+</button>
                 </div>
-                <span class="font-bold text-slate-600">:</span>
-                <div class="flex-1 flex bg-slate-900 rounded-[8px] overflow-hidden border border-slate-700">
-                  <button onclick="adjustVal('k2', -1)" class="w-12 h-12 flex items-center justify-center text-slate-400 hover:bg-slate-800 text-lg font-bold transition-colors">-</button>
-                  <input type="number" id="k2" value="0" class="w-full bg-transparent text-center font-bold text-lg text-slate-200 focus:outline-none">
-                  <button onclick="adjustVal('k2', 1)" class="w-12 h-12 flex items-center justify-center text-slate-400 hover:bg-slate-800 text-lg font-bold transition-colors">+</button>
+                <span class="font-bold text-slate-600 px-1">:</span>
+                <div class="flex-1 flex bg-slate-900 rounded-[8px] overflow-hidden">
+                  <button onclick="adjustVal('k2', -1)" class="w-16 h-12 flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-800 active:bg-slate-700 text-xl font-bold transition-colors">-</button>
+                  <input type="number" id="k2" value="0" inputmode="numeric" class="w-full bg-transparent text-center font-bold text-xl text-slate-200 focus:outline-none">
+                  <button onclick="adjustVal('k2', 1)" class="w-16 h-12 flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-800 active:bg-slate-700 text-xl font-bold transition-colors">+</button>
                 </div>
               </div>
             </div>
 
-            <!-- Tip Marek -->
+            <!-- Tip Marek so zväčšenými tlačidlami -->
             <div>
-              <label class="block text-xs font-semibold text-orange-400 uppercase tracking-wider mb-2">Tip Marek</label>
-              <div class="flex items-center gap-3">
-                <div class="flex-1 flex bg-slate-900 rounded-[8px] overflow-hidden border border-slate-700">
-                  <button onclick="adjustVal('m1', -1)" class="w-12 h-12 flex items-center justify-center text-slate-400 hover:bg-slate-800 text-lg font-bold transition-colors">-</button>
-                  <input type="number" id="m1" value="0" class="w-full bg-transparent text-center font-bold text-lg text-slate-200 focus:outline-none">
-                  <button onclick="adjustVal('m1', 1)" class="w-12 h-12 flex items-center justify-center text-slate-400 hover:bg-slate-800 text-lg font-bold transition-colors">+</button>
+              <label class="block text-[10px] font-bold text-orange-400 uppercase tracking-wider mb-1.5">Tip Marek</label>
+              <div class="flex items-center gap-2">
+                <div class="flex-1 flex bg-slate-900 rounded-[8px] overflow-hidden">
+                  <button onclick="adjustVal('m1', -1)" class="w-16 h-12 flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-800 active:bg-slate-700 text-xl font-bold transition-colors">-</button>
+                  <input type="number" id="m1" value="0" inputmode="numeric" class="w-full bg-transparent text-center font-bold text-xl text-slate-200 focus:outline-none">
+                  <button onclick="adjustVal('m1', 1)" class="w-16 h-12 flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-800 active:bg-slate-700 text-xl font-bold transition-colors">+</button>
                 </div>
-                <span class="font-bold text-slate-600">:</span>
-                <div class="flex-1 flex bg-slate-900 rounded-[8px] overflow-hidden border border-slate-700">
-                  <button onclick="adjustVal('m2', -1)" class="w-12 h-12 flex items-center justify-center text-slate-400 hover:bg-slate-800 text-lg font-bold transition-colors">-</button>
-                  <input type="number" id="m2" value="0" class="w-full bg-transparent text-center font-bold text-lg text-slate-200 focus:outline-none">
-                  <button onclick="adjustVal('m2', 1)" class="w-12 h-12 flex items-center justify-center text-slate-400 hover:bg-slate-800 text-lg font-bold transition-colors">+</button>
+                <span class="font-bold text-slate-600 px-1">:</span>
+                <div class="flex-1 flex bg-slate-900 rounded-[8px] overflow-hidden">
+                  <button onclick="adjustVal('m2', -1)" class="w-16 h-12 flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-800 active:bg-slate-700 text-xl font-bold transition-colors">-</button>
+                  <input type="number" id="m2" value="0" inputmode="numeric" class="w-full bg-transparent text-center font-bold text-xl text-slate-200 focus:outline-none">
+                  <button onclick="adjustVal('m2', 1)" class="w-16 h-12 flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-800 active:bg-slate-700 text-xl font-bold transition-colors">+</button>
                 </div>
               </div>
             </div>
           </div>
 
           <!-- Tlačidlo Natipovať -->
-          <button onclick="addMatch()" class="w-full mt-5 bg-slate-200 hover:bg-white text-slate-900 font-bold py-3.5 rounded-[8px] transition-all uppercase tracking-wider text-xs">
+          <button onclick="addMatch()" class="w-full mt-5 bg-slate-200 hover:bg-white text-slate-900 font-bold py-3.5 rounded-[8px] transition-colors uppercase tracking-wider text-xs shadow-sm">
             Natipovať
           </button>
         </div>
 
-        <!-- Zápasy aktuálneho setu -->
         <div>
           <div class="flex items-center gap-2 mb-3 px-1">
-            <div class="w-2 h-2 rounded-[8px] bg-emerald-500"></div>
+            <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
             <h3 class="text-xs font-bold text-slate-300 tracking-wider uppercase">Aktuálny set</h3>
           </div>
           <div id="homeMatchesList" class="space-y-3">
             <!-- Vyrenderované zápasy -->
           </div>
-          
-          <div id="seedBtnContainer" class="mt-4">
-            <button onclick="seedData()" class="w-full bg-slate-800 hover:bg-slate-700 text-amber-400 border border-slate-700 font-bold py-3.5 rounded-[8px] transition-all text-xs tracking-wide">
-              Načítať rozohranú partiu z Excelu
-            </button>
-          </div>
         </div>
       </div>
 
-      <!-- TAB: HISTÓRIA -->
       <div id="tab-history" class="tab-content space-y-3">
         <div class="flex items-center gap-2 mb-3 px-1">
-          <div class="w-2 h-2 rounded-[8px] bg-slate-500"></div>
+          <div class="w-2 h-2 rounded-full bg-slate-500"></div>
           <h3 class="text-xs font-bold text-slate-300 tracking-wider uppercase">Ukončené sety</h3>
         </div>
         <div id="historySetsList" class="space-y-3">
@@ -150,50 +164,39 @@
         </div>
       </div>
 
-      <!-- TAB: PRAVIDLÁ -->
       <div id="tab-rules" class="tab-content space-y-4">
-        <div class="bg-slate-800 p-5 rounded-[8px] border border-slate-700">
-          <h3 class="text-sm font-bold mb-4 text-slate-100 tracking-wide">Pravidlá tipovania</h3>
-          <ul class="space-y-3 text-sm text-slate-300 font-medium">
-            <li class="flex gap-3">
-              <span class="text-amber-400 text-base">🎯</span>
-              <p>Presný výsledok zápasu = <b class="text-slate-100 font-bold">5 bodov</b></p>
+        <div class="bg-slate-800 p-5 rounded-[8px] shadow-md">
+          <h3 class="text-sm font-bold mb-5 text-slate-100 tracking-wide uppercase">Pravidlá tipovania</h3>
+          <ul class="space-y-4 text-sm text-slate-300 font-medium">
+            <li class="flex items-start gap-3">
+              <span class="text-base mt-0.5">🎯</span>
+              <p>Presný výsledok: <b class="text-slate-100 font-bold">5 bodov</b></p>
             </li>
-            <li class="flex gap-3">
-              <span class="text-emerald-400 text-base">✅</span>
-              <p>Uhadnutie remízy s iným skóre = <b class="text-slate-100 font-bold">4 body</b></p>
+            <li class="flex items-start gap-3">
+              <span class="text-base mt-0.5">🟢</span>
+              <p>Správny výsledok (1/X/2): <b class="text-slate-100 font-bold">3 body</b></p>
             </li>
-            <li class="flex gap-3">
-              <span class="text-emerald-400 text-base">✅</span>
-              <p>Uhádnutie víťaza + presný gólový rozdiel = <b class="text-slate-100 font-bold">4 body</b></p>
+            <li class="flex items-start gap-3">
+              <span class="text-base mt-0.5">⚽</span>
+              <p>Správny počet gólov jedného tímu: <b class="text-slate-100 font-bold">+1 bod</b></p>
             </li>
-            <li class="flex gap-3">
-              <span class="text-blue-400 text-base">👍</span>
-              <p>Uhadnutie víťaza zápasu = <b class="text-slate-100 font-bold">3 body</b></p>
+            <li class="flex items-start gap-3">
+              <span class="text-base mt-0.5">🏆</span>
+              <p>Pri dosiahnutí 30 bodov získava hráč 1 MRDKU (M-R-D-K-A) a skóre sa vynuluje.</p>
             </li>
-            <li class="flex gap-3">
-              <span class="text-red-400 text-base">❌</span>
-              <p>Zlý tip, ale správny počet gólov jedného tímu = <b class="text-slate-100 font-bold">1 bod</b></p>
-            </li>
-            <li class="flex gap-3">
-              <span class="text-slate-500 text-base">☠️</span>
-              <p>Úplne vedľa = <b class="text-slate-100 font-bold">0 bodov</b></p>
+            <li class="flex items-start gap-3">
+              <span class="text-base mt-0.5">☕</span>
+              <p>Hráč, ktorý prehrá, pozýva víťaza na kávu.</p>
             </li>
           </ul>
-          <div class="mt-4 pt-4 border-t border-slate-700">
-            <p class="text-xs text-slate-400 leading-relaxed">
-              Set vyhráva ten, kto prvý dosiahne <b class="text-slate-200">30 bodov</b>. Za vyhratý set získava hráč 1 hviezdu (🌟). 
-              V prípade, že v jednom zápase prekročia 30 bodov obaja, set vyhráva ten, kto má po tomto zápase viac bodov. Ak majú rovnako, set je remíza (obaja získavajú hviezdu).
-            </p>
-          </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Vlastný Modal pre Potvrdenie Vymazania -->
-  <div id="confirmModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
-    <div class="bg-slate-800 border border-slate-700 rounded-[8px] p-5 max-w-sm w-full">
+  <!-- Modál pre Potvrdenie Vymazania -->
+  <div id="confirmModal" class="fixed inset-0 bg-slate-950/80 z-50 flex items-center justify-center hidden p-4 transition-opacity duration-200">
+    <div class="bg-slate-800 border border-slate-700 rounded-[8px] p-5 max-w-sm w-full shadow-xl">
       <h3 class="text-base font-bold text-slate-100 mb-2">Potvrdenie vymazania</h3>
       <p class="text-sm text-slate-300 mb-5">Naozaj chceš natrvalo vymazať tento zápas?</p>
       <div class="flex gap-3">
@@ -203,74 +206,148 @@
     </div>
   </div>
 
-  <!-- SPODNÁ NAVIGÁCIA -->
-  <nav class="fixed bottom-0 w-full bg-slate-900 border-t border-slate-800 flex justify-around items-center p-3 pb-6 sm:pb-3 z-40">
-    <button onclick="switchTab('tab-home')" id="nav-tab-home" class="nav-btn flex flex-col items-center gap-1 p-2 text-slate-200 transition-colors w-20">
-      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
-      <span class="text-[10px] font-bold uppercase tracking-wider">Domov</span>
+  <!-- Spodná Tenká Navigácia -->
+  <nav class="fixed bottom-0 w-full bg-slate-900 border-t border-slate-800 flex justify-around items-center h-[60px] pb-safe z-40">
+    <button onclick="switchTab('tab-home')" id="nav-tab-home" class="nav-btn flex flex-col items-center gap-1 w-20 text-slate-200 transition-colors">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+      <span class="text-[9px] font-bold uppercase tracking-wider">Domov</span>
     </button>
-    <button onclick="switchTab('tab-history')" id="nav-tab-history" class="nav-btn flex flex-col items-center gap-1 p-2 text-slate-500 hover:text-slate-300 transition-colors w-20">
-      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-      <span class="text-[10px] font-bold uppercase tracking-wider">História</span>
+    <button onclick="switchTab('tab-history')" id="nav-tab-history" class="nav-btn flex flex-col items-center gap-1 w-20 text-slate-500 transition-colors">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+      <span class="text-[9px] font-bold uppercase tracking-wider">História</span>
     </button>
-    <button onclick="switchTab('tab-rules')" id="nav-tab-rules" class="nav-btn flex flex-col items-center gap-1 p-2 text-slate-500 hover:text-slate-300 transition-colors w-20">
-      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-      <span class="text-[10px] font-bold uppercase tracking-wider">Pravidlá</span>
+    <button onclick="switchTab('tab-rules')" id="nav-tab-rules" class="nav-btn flex flex-col items-center gap-1 w-20 text-slate-500 transition-colors">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+      <span class="text-[9px] font-bold uppercase tracking-wider">Pravidlá</span>
     </button>
   </nav>
 
-  <script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    // App State Variables
     let matches = [];
     let matchToDeleteId = null;
-
-    let testHistorySets = [
+    let auth, db;
+    let isFirebaseActive = false;
+    
+    // Explicitne pridaná história podľa screenshotu
+    let historySets = [
       {
-        isTest: true,
-        title: "Testovací Set #3 (Víťaz Krevetka)",
-        winner: 'K',
+        title: "Set #1",
+        winner: "M",
         matches: [
-          {id: 't3', team1: 'Real Madrid', team2: 'Girona', k1:2, k2:1, m1:1, m2:1, r1:2, r2:1, ptsK:5, ptsM:0, isResolved:true}
-        ]
-      },
-      {
-        isTest: true,
-        title: "Testovací Set #2 (Víťaz Marek)",
-        winner: 'M',
-        matches: [
-          {id: 't2', team1: 'Arsenal', team2: 'Liverpool', k1:0, k2:2, m1:1, m2:2, r1:1, r2:2, ptsK:3, ptsM:5, isResolved:true}
-        ]
-      },
-      {
-        isTest: true,
-        title: "Testovací Set #1 (Víťaz Krevetka)",
-        winner: 'K',
-        matches: [
-          {id: 't1', team1: 'Chelsea', team2: 'Fulham', k1:2, k2:0, m1:0, m2:0, r1:3, r2:0, ptsK:3, ptsM:1, isResolved:true}
+          {id: 'h1', team1: 'Man Utd', team2: 'Man City', k1:2, k2:3, m1:1, m2:2, r1:0, r2:1, ptsK:3, ptsM:3, isResolved:true},
+          {id: 'h2', team1: 'Torino', team2: 'AS Roma', k1:1, k2:2, m1:0, m2:2, r1:0, r2:2, ptsK:4, ptsM:5, isResolved:true},
+          {id: 'h3', team1: 'Leeds', team2: 'Newcastle', k1:3, k2:1, m1:1, m2:1, r1:4, r2:1, ptsK:4, ptsM:1, isResolved:true},
+          {id: 'h4', team1: 'Alaves', team2: 'Valencia', k1:3, k2:1, m1:2, m2:0, r1:0, r2:1, ptsK:1, ptsM:0, isResolved:true},
+          {id: 'h5', team1: 'AC Milan', team2: 'Benfica Lis.', k1:2, k2:1, m1:3, m2:0, r1:0, r2:2, ptsK:0, ptsM:0, isResolved:true},
+          {id: 'h6', team1: 'Juventus', team2: 'Nijmegen', k1:3, k2:1, m1:3, m2:0, r1:5, r2:0, ptsK:3, ptsM:4, isResolved:true},
+          {id: 'h7', team1: 'Brentford', team2: 'Chelsea', k1:2, k2:3, m1:2, m2:2, r1:3, r2:0, ptsK:0, ptsM:0, isResolved:true},
+          {id: 'h8', team1: 'Bayern', team2: 'Berlin', k1:5, k2:1, m1:4, m2:0, r1:7, r2:0, ptsK:3, ptsM:4, isResolved:true},
+          {id: 'h9', team1: 'Sevilla', team2: 'Barcelona', k1:1, k2:3, m1:0, m2:3, r1:1, r2:3, ptsK:5, ptsM:4, isResolved:true},
+          {id: 'h10', team1: 'Marseille', team2: 'PSG', k1:2, k2:3, m1:1, m2:2, r1:1, r2:2, ptsK:3, ptsM:5, isResolved:true},
+          {id: 'h11', team1: 'Nórsko', team2: 'Dánsko', k1:2, k2:0, m1:3, m2:1, r1:3, r2:2, ptsK:3, ptsM:4, isResolved:true}
         ]
       }
     ];
 
-    function calculatePoints(t1, t2, r1, r2) {
-      if (t1 === r1 && t2 === r2) return 5;
-      let isDraw = (t1 === t2);
-      let isRealDraw = (r1 === r2);
-      if (isDraw && isRealDraw) return 4;
-      let diffT = t1 - t2;
-      let diffR = r1 - r2;
-      let sameWinner = (diffT > 0 && diffR > 0) || (diffT < 0 && diffR < 0);
-      if (sameWinner && diffT === diffR) return 4;
-      if (sameWinner) return 3;
-      if (t1 === r1 || t2 === r2) return 1;
-      return 0;
+    // Initialize Firebase
+    try {
+        const firebaseConfigStr = typeof __firebase_config !== 'undefined' ? __firebase_config : '{}';
+        if (firebaseConfigStr !== '{}') {
+            const app = initializeApp(JSON.parse(firebaseConfigStr));
+            auth = getAuth(app);
+            db = getFirestore(app);
+            isFirebaseActive = true;
+            
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    hideLogin();
+                    syncData();
+                }
+            });
+        }
+    } catch(e) {
+        console.warn("Firebase config not available. Running in local mode.");
     }
 
-    function adjustVal(id, delta) {
+    // Vystavenie funkcií do global window aby fungovali onClick eventy v HTML
+    window.loginWithGoogle = function() {
+        if(isFirebaseActive) {
+            signInWithPopup(auth, new GoogleAuthProvider()).catch(err => console.error(err));
+        } else {
+            window.bypassLogin();
+        }
+    };
+
+    window.bypassLogin = function() {
+        hideLogin();
+        render();
+    };
+
+    function hideLogin() {
+        document.getElementById('loginOverlay').style.display = 'none';
+        document.getElementById('mainApp').classList.remove('hidden');
+    }
+
+    function syncData() {
+        if (!isFirebaseActive) return;
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'tipovacka';
+        const stateDoc = doc(db, 'artifacts', appId, 'public', 'data', 'gamestate');
+        
+        onSnapshot(stateDoc, (docSnap) => {
+            if (docSnap.exists()) {
+                let data = docSnap.data();
+                if(data.matches) matches = data.matches;
+                if(data.historySets && data.historySets.length > 0) historySets = data.historySets;
+                render();
+            } else {
+                saveData(); // Initialize doc if it doesn't exist
+                render();
+            }
+        }, (error) => console.error(error));
+    }
+
+    function saveData() {
+        if (!isFirebaseActive) return;
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'tipovacka';
+        setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'gamestate'), {
+            matches: matches,
+            historySets: historySets
+        }).catch(err => console.error(err));
+    }
+
+    // Nový výpočet bodov podľa presných pravidiel z obrázka
+    window.calculatePoints = function(t1, t2, r1, r2) {
+      // 1. Presný výsledok (5 bodov)
+      if (t1 === r1 && t2 === r2) return 5;
+      
+      let pts = 0;
+      
+      // 2. Správny výsledok 1/X/2 (3 body)
+      let tip1x2 = Math.sign(t1 - t2);
+      let real1x2 = Math.sign(r1 - r2);
+      if (tip1x2 === real1x2) {
+          pts += 3;
+      }
+      
+      // 3. Správny počet gólov jedného tímu (+1 bod)
+      if (t1 === r1) pts += 1;
+      if (t2 === r2) pts += 1;
+      
+      return pts;
+    };
+
+    window.adjustVal = function(id, delta) {
       let el = document.getElementById(id);
       let val = parseInt(el.value) + delta;
       if (val >= 0) el.value = val;
-    }
+    };
 
-    function switchTab(tabId) {
+    window.switchTab = function(tabId) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
       document.getElementById(tabId).classList.add('active');
       
@@ -280,9 +357,9 @@
       });
       document.getElementById('nav-tab-' + tabId.split('-')[1]).classList.remove('text-slate-500');
       document.getElementById('nav-tab-' + tabId.split('-')[1]).classList.add('text-slate-200');
-    }
+    };
 
-    function toggleSet(setId) {
+    window.toggleSet = function(setId) {
       const content = document.getElementById(setId);
       const arrow = document.getElementById(setId + '-arrow');
       if (content.classList.contains('hidden')) {
@@ -292,49 +369,54 @@
         content.classList.add('hidden');
         arrow.style.transform = 'rotate(0deg)';
       }
-    }
+    };
 
-    function deleteMatch(id) {
+    window.deleteMatch = function(id) {
       matchToDeleteId = id;
       document.getElementById('confirmModal').classList.remove('hidden');
-    }
+    };
 
-    function closeConfirmModal() {
+    window.closeConfirmModal = function() {
       matchToDeleteId = null;
       document.getElementById('confirmModal').classList.add('hidden');
-    }
+    };
 
     document.getElementById('confirmDeleteBtn').onclick = function() {
       if (matchToDeleteId) {
         matches = matches.filter(m => m.id !== matchToDeleteId);
+        saveData();
         render();
-        closeConfirmModal();
+        window.closeConfirmModal();
       }
     };
 
-    function createMatchCard(match, isHistory = false) {
+    function createMatchCard(match) {
       if (!match.isResolved) {
         return `
-          <div class="relative bg-slate-800 p-4 rounded-[8px] border border-slate-700">
-            <button onclick="deleteMatch('${match.id}')" class="absolute top-4 right-4 text-slate-400 hover:text-red-400 font-bold text-base transition-colors bg-slate-900 w-8 h-8 rounded-[8px] flex items-center justify-center border border-slate-700">✕</button>
-            <div class="text-center mb-3 pr-8 pl-8">
-              <h4 class="font-bold text-sm text-slate-200 leading-tight">${match.team1} <span class="text-slate-500 text-xs font-normal mx-1">vs</span> ${match.team2}</h4>
+          <div class="relative bg-slate-800 p-4 rounded-[8px] shadow-sm">
+            <button onclick="deleteMatch('${match.id}')" class="absolute top-3 right-3 text-slate-500 hover:text-slate-300 font-bold text-lg w-8 h-8 flex items-center justify-center transition-colors">✕</button>
+            <div class="text-center mb-4 pr-6 pl-6">
+              <h4 class="font-bold text-sm text-slate-200 leading-tight">${match.team1} <span class="text-slate-500 text-xs font-normal mx-1.5">vs</span> ${match.team2}</h4>
             </div>
-            <div class="grid grid-cols-2 gap-3 mb-3">
-              <div class="bg-slate-900 p-2.5 rounded-[8px] border border-slate-700 text-center">
-                <span class="block text-[10px] font-semibold text-emerald-400 mb-0.5 tracking-wider uppercase">Krevetka</span>
-                <span class="text-lg font-bold text-slate-200">${match.k1}:${match.k2}</span>
+            <div class="grid grid-cols-2 gap-3 mb-4">
+              <div class="bg-slate-900 p-3 rounded-[8px] text-center">
+                <span class="block text-[9px] font-bold text-emerald-500 mb-1 tracking-wider uppercase">Krevetka</span>
+                <span class="text-xl font-bold text-slate-200">${match.k1}:${match.k2}</span>
               </div>
-              <div class="bg-slate-900 p-2.5 rounded-[8px] border border-slate-700 text-center">
-                <span class="block text-[10px] font-semibold text-orange-400 mb-0.5 tracking-wider uppercase">Marek</span>
-                <span class="text-lg font-bold text-slate-200">${match.m1}:${match.m2}</span>
+              <div class="bg-slate-900 p-3 rounded-[8px] text-center">
+                <span class="block text-[9px] font-bold text-orange-400 mb-1 tracking-wider uppercase">Marek</span>
+                <span class="text-xl font-bold text-slate-200">${match.m1}:${match.m2}</span>
               </div>
             </div>
-            <div class="flex items-center gap-3">
-              <input type="number" id="r1-${match.id}" placeholder="0" class="w-16 bg-slate-900 border border-slate-700 text-center text-sm font-bold rounded-[8px] py-2 text-slate-200 focus:border-slate-500 focus:outline-none">
-              <span class="font-bold text-slate-600">:</span>
-              <input type="number" id="r2-${match.id}" placeholder="0" class="w-16 bg-slate-900 border border-slate-700 text-center text-sm font-bold rounded-[8px] py-2 text-slate-200 focus:border-slate-500 focus:outline-none">
-              <button onclick="resolveMatch('${match.id}')" class="ml-auto bg-slate-200 hover:bg-white text-slate-900 font-bold py-2.5 px-4 rounded-[8px] transition-colors text-xs uppercase tracking-wider">Uložiť</button>
+            <div class="flex items-center gap-3 bg-slate-900 p-2 rounded-[8px]">
+              <div class="flex-1 flex justify-end">
+                <input type="number" id="r1-${match.id}" placeholder="0" inputmode="numeric" class="w-12 bg-slate-800 text-center text-base font-bold rounded-[8px] py-2 text-slate-200 focus:outline-none">
+              </div>
+              <span class="font-bold text-slate-500">:</span>
+              <div class="flex-1 flex justify-start">
+                <input type="number" id="r2-${match.id}" placeholder="0" inputmode="numeric" class="w-12 bg-slate-800 text-center text-base font-bold rounded-[8px] py-2 text-slate-200 focus:outline-none">
+              </div>
+              <button onclick="resolveMatch('${match.id}')" class="ml-1 bg-white hover:bg-slate-200 text-slate-900 font-bold py-2.5 px-4 rounded-[8px] transition-colors text-xs uppercase tracking-wider">Uložiť</button>
             </div>
           </div>
         `;
@@ -342,29 +424,26 @@
         let isTie = match.ptsK === match.ptsM;
         let textK = match.ptsK > match.ptsM ? 'text-emerald-400' : (isTie ? 'text-emerald-400' : 'text-slate-500');
         let textM = match.ptsM > match.ptsK ? 'text-orange-400' : (isTie ? 'text-orange-400' : 'text-slate-500');
-        
-        let delBtn = match.isTest ? '' : `<button onclick="deleteMatch('${match.id}')" class="absolute top-4 right-4 text-slate-400 hover:text-red-400 font-bold text-xs transition-colors w-7 h-7 flex items-center justify-center bg-slate-900 rounded-[8px] border border-slate-700">✕</button>`;
-
-        let borderCol = match.ptsK > match.ptsM ? 'border-l-emerald-500' : (match.ptsM > match.ptsK ? 'border-l-orange-500' : 'border-l-slate-400');
+        let borderCol = match.ptsK > match.ptsM ? 'border-l-emerald-500' : (match.ptsM > match.ptsK ? 'border-l-orange-500' : 'border-l-slate-600');
 
         return `
-          <div class="relative bg-slate-800 p-4 rounded-[8px] border border-slate-700 border-l-4 ${borderCol}">
-            ${delBtn}
-            <div class="flex items-center justify-between mb-2.5 pb-2 border-b border-slate-700 pr-8">
-              <h4 class="font-bold text-slate-200 text-xs w-3/4 truncate">${match.team1} <span class="text-slate-500 font-normal text-[11px] mx-1">vs</span> ${match.team2}</h4>
-              <div class="bg-slate-900 text-slate-300 font-bold px-2 py-0.5 rounded-[8px] border border-slate-700 text-xs tracking-wider">${match.r1}:${match.r2}</div>
+          <div class="relative bg-slate-800 p-4 rounded-[8px] border-l-4 ${borderCol} shadow-sm">
+            <button onclick="deleteMatch('${match.id}')" class="absolute top-3 right-3 text-slate-500 hover:text-slate-300 font-bold text-sm w-7 h-7 flex items-center justify-center transition-colors">✕</button>
+            <div class="flex items-center justify-between mb-3 pb-2.5 border-b border-slate-700 pr-6">
+              <h4 class="font-bold text-slate-200 text-xs truncate">${match.team1} <span class="text-slate-500 font-normal text-[10px] mx-1">vs</span> ${match.team2}</h4>
+              <div class="bg-slate-900 text-slate-300 font-bold px-2.5 py-1 rounded-[8px] text-xs tracking-wider">${match.r1}:${match.r2}</div>
             </div>
             <div class="grid grid-cols-2 gap-3">
               <div class="flex items-center justify-between pr-2">
                 <div>
-                  <span class="block text-[9px] font-semibold text-emerald-400 mb-0.5 tracking-wider uppercase">Krevetka</span>
+                  <span class="block text-[8px] font-bold text-emerald-500 mb-0.5 tracking-wider uppercase">Krevetka</span>
                   <span class="text-sm font-bold text-slate-300">${match.k1}:${match.k2}</span>
                 </div>
                 <div class="text-sm font-bold ${textK}">+${match.ptsK}</div>
               </div>
               <div class="flex items-center justify-between border-l border-slate-700 pl-3">
                 <div>
-                  <span class="block text-[9px] font-semibold text-orange-400 mb-0.5 tracking-wider uppercase">Marek</span>
+                  <span class="block text-[8px] font-bold text-orange-400 mb-0.5 tracking-wider uppercase">Marek</span>
                   <span class="text-sm font-bold text-slate-300">${match.m1}:${match.m2}</span>
                 </div>
                 <div class="text-sm font-bold ${textM}">+${match.ptsM}</div>
@@ -376,16 +455,18 @@
     }
 
     function render() {
-      let sets = [];
       let currentSet = [];
       let sumK = 0, sumM = 0;
-      let setsK = 0, setsM = 0;
+      let starsK = 0, starsM = 0;
 
-      testHistorySets.forEach(ts => {
-        if (ts.winner === 'K') setsK++;
-        if (ts.winner === 'M') setsM++;
+      // Počet hviezd z historických setov
+      historySets.forEach(ts => {
+        if (ts.winner === 'K') starsK++;
+        if (ts.winner === 'M') starsM++;
+        if (ts.winner === 'Remíza') { starsK++; starsM++; }
       });
 
+      // Iterácia aktuálnych zápasov
       matches.forEach(m => {
         currentSet.push(m);
         if (m.isResolved) {
@@ -394,68 +475,62 @@
           
           if (sumK >= 30 || sumM >= 30) {
             let winner = 'Remíza';
-            if (sumK > sumM) { winner = 'K'; setsK++; }
-            else if (sumM > sumK) { winner = 'M'; setsM++; }
-            else { winner = 'Remíza'; setsK++; setsM++; }
+            if (sumK > sumM) { winner = 'K'; starsK++; }
+            else if (sumM > sumK) { winner = 'M'; starsM++; }
+            else { winner = 'Remíza'; starsK++; starsM++; }
 
-            sets.push({
+            historySets.push({
+              title: `Set #${historySets.length + 1}`,
               matches: [...currentSet],
               winner: winner,
               scoreK: sumK,
-              scoreM: sumM,
-              isTest: false
+              scoreM: sumM
             });
+            
+            // Clean slate for new set
             currentSet = [];
             sumK = 0;
             sumM = 0;
+            
+            // Príprava na sync - vymažú sa hotové zápasy z DB, a aktualizuje sa historySets
+            matches = [];
           }
         }
       });
 
       document.getElementById('scoreK').innerText = sumK;
       document.getElementById('scoreM').innerText = sumM;
-      document.getElementById('setsK').innerHTML = `🌟 <span>${setsK}</span>`;
-      document.getElementById('setsM').innerHTML = `🌟 <span>${setsM}</span>`;
+      document.getElementById('setsK-val').innerText = starsK;
+      document.getElementById('setsM-val').innerText = starsM;
 
       let homeHTML = '';
-      currentSet.slice().reverse().forEach(m => homeHTML += createMatchCard(m, false));
-      document.getElementById('homeMatchesList').innerHTML = homeHTML || '<div class="bg-slate-800 p-6 rounded-[8px] border border-slate-700 text-center"><p class="text-xs font-semibold text-slate-400">Žiadne zápasy v aktuálnom sete.</p></div>';
+      currentSet.slice().reverse().forEach(m => homeHTML += createMatchCard(m));
+      document.getElementById('homeMatchesList').innerHTML = homeHTML || '<div class="bg-slate-800 p-6 rounded-[8px] text-center shadow-sm"><p class="text-xs font-semibold text-slate-400">Žiadne zápasy v aktuálnom sete.</p></div>';
 
       let historyHTML = '';
-      let allCompletedSets = [...sets].reverse().concat(testHistorySets);
-
-      allCompletedSets.forEach((set, index) => {
-        let title = set.isTest ? set.title : `Skončený Set #${sets.length - index}`;
-        let setBorderCol = set.winner === 'K' ? 'border-l-emerald-500' : (set.winner === 'M' ? 'border-l-orange-500' : 'border-l-slate-400');
-        
+      [...historySets].reverse().forEach((set, index) => {
+        let setBorderCol = set.winner === 'K' ? 'border-l-emerald-500' : (set.winner === 'M' ? 'border-l-orange-500' : 'border-l-slate-500');
         let setMatchesHTML = '';
-        set.matches.forEach(m => setMatchesHTML += createMatchCard(m, true));
+        set.matches.forEach(m => setMatchesHTML += createMatchCard(m));
 
         historyHTML += `
-          <div class="relative border border-slate-700 border-l-4 ${setBorderCol} rounded-[8px] overflow-hidden bg-slate-800">
-            <button onclick="toggleSet('set-${index}')" class="w-full p-3.5 border-b border-slate-700 flex justify-between items-center hover:bg-slate-700/50 transition-colors">
-              <div class="flex items-center gap-2.5">
-                <h4 class="font-bold text-slate-200 tracking-wide text-xs">${title}</h4>
+          <div class="relative border-l-4 ${setBorderCol} rounded-[8px] overflow-hidden bg-slate-800 shadow-sm">
+            <button onclick="toggleSet('set-${index}')" class="w-full p-4 flex justify-between items-center transition-colors">
+              <div class="flex items-center gap-3">
+                <h4 class="font-bold text-slate-200 tracking-wide text-xs uppercase">${set.title}</h4>
               </div>
               <svg id="set-${index}-arrow" class="w-4 h-4 text-slate-400 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
             </button>
-            <div id="set-${index}" class="hidden p-3 space-y-3 bg-slate-900/40">
+            <div id="set-${index}" class="hidden p-3 pt-0 space-y-3">
               ${setMatchesHTML}
             </div>
           </div>
         `;
       });
-      document.getElementById('historySetsList').innerHTML = historyHTML || '<div class="bg-slate-800 p-6 rounded-[8px] border border-slate-700 text-center"><p class="text-xs font-semibold text-slate-400">Zatiaľ žiadny set nedosiahol 30 bodov.</p></div>';
-
-      let seedBtn = document.getElementById('seedBtnContainer');
-      if (matches.length > 0) {
-        seedBtn.style.display = 'none';
-      } else {
-        seedBtn.style.display = 'block';
-      }
+      document.getElementById('historySetsList').innerHTML = historyHTML || '<div class="bg-slate-800 p-6 rounded-[8px] text-center shadow-sm"><p class="text-xs font-semibold text-slate-400">Zatiaľ žiadny set nedosiahol 30 bodov.</p></div>';
     }
 
-    function addMatch() {
+    window.addMatch = function() {
       let t1 = document.getElementById('team1').value;
       let t2 = document.getElementById('team2').value;
       if(!t1 || !t2) return;
@@ -471,15 +546,16 @@
       };
 
       matches.push(newMatch);
+      saveData();
       
       document.getElementById('team1').value = '';
       document.getElementById('team2').value = '';
       ['k1','k2','m1','m2'].forEach(id => document.getElementById(id).value = '0');
       
       render();
-    }
+    };
 
-    function resolveMatch(id) {
+    window.resolveMatch = function(id) {
       let r1 = document.getElementById(`r1-${id}`).value;
       let r2 = document.getElementById(`r2-${id}`).value;
       if (r1 === '' || r2 === '') return;
@@ -491,37 +567,11 @@
       match.ptsM = calculatePoints(match.m1, match.m2, match.r1, match.r2);
       match.isResolved = true;
 
+      saveData();
       render();
-    }
+    };
 
-    function seedData() {
-      let data = [
-        {team1: 'Man Utd', team2: 'Man City', k1:2, k2:3, m1:1, m2:2, r1:0, r2:1},
-        {team1: 'Torino', team2: 'AS Roma', k1:1, k2:2, m1:0, m2:2, r1:0, r2:2},
-        {team1: 'Leeds', team2: 'Newcastle', k1:3, k2:1, m1:1, m2:1, r1:4, r2:1},
-        {team1: 'Alaves', team2: 'Valencia', k1:3, k2:1, m1:2, m2:0, r1:0, r2:1},
-        {team1: 'AC Milan', team2: 'Benfica Lis.', k1:2, k2:1, m1:3, m2:0, r1:0, r2:2},
-        {team1: 'Juventus', team2: 'Nijmegen', k1:3, k2:1, m1:3, m2:0, r1:5, r2:0},
-        {team1: 'Brentford', team2: 'Chelsea', k1:2, k2:3, m1:2, m2:2, r1:3, r2:0},
-        {team1: 'Bayern', team2: 'Berlin', k1:5, k2:1, m1:4, m2:0, r1:7, r2:0},
-        {team1: 'Sevilla', team2: 'Barcelona', k1:1, k2:3, m1:0, m2:3, r1:1, r2:3},
-        {team1: 'Marseille', team2: 'PSG', k1:2, k2:3, m1:1, m2:2, r1:1, r2:2}
-      ];
-
-      data.forEach((d, i) => {
-        matches.push({
-          id: Date.now().toString() + i,
-          team1: d.team1, team2: d.team2,
-          k1: d.k1, k2: d.k2, m1: d.m1, m2: d.m2,
-          r1: d.r1, r2: d.r2,
-          ptsK: calculatePoints(d.k1, d.k2, d.r1, d.r2),
-          ptsM: calculatePoints(d.m1, d.m2, d.r1, d.r2),
-          isResolved: true
-        });
-      });
-      render();
-    }
-
+    // Počiatočný render v prípade offline prechodu
     render();
   </script>
 </body>
