@@ -91,32 +91,32 @@
     <div class="max-w-md mx-auto space-y-4 p-4 pt-4">
       
       <!-- Scoreboard Header -->
-      <div class="bg-zinc-900 p-4 rounded-lg border border-zinc-800 shadow-sm space-y-2">
+      <div class="bg-zinc-900 p-3 rounded-lg border border-zinc-800 shadow-sm space-y-2">
         <div class="relative flex items-center justify-between px-1 w-full">
           
-          <div class="flex flex-col items-start z-10">
-            <span class="text-xs font-black text-amber-400 mb-1 flex items-center gap-1">
-              <span class="bg-zinc-950 w-5 h-5 rounded flex items-center justify-center border border-zinc-800 shadow-sm">🌟</span> 
-              <span id="setsK-val" class="ml-1 text-sm">0</span>
+          <div class="flex flex-col items-start z-10 max-w-[32%] overflow-hidden">
+            <span class="text-[10px] font-black text-amber-400 mb-1 flex items-center gap-1">
+              <span class="bg-zinc-950 w-4 h-4 rounded flex items-center justify-center border border-zinc-800 shadow-sm leading-none">🌟</span> 
+              <span id="setsK-val" class="ml-0.5 text-xs">0</span>
             </span>
-            <span class="text-xl font-black text-white uppercase tracking-wider">Krevetka</span>
+            <span class="text-base font-black text-white uppercase tracking-wide truncate w-full">Krevetka</span>
           </div>
           
           <!-- Absolútne vycentrované skóre -->
           <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <div class="flex bg-zinc-950 py-3 px-6 rounded-lg border border-zinc-800 items-center justify-center gap-4 flex-none pointer-events-auto">
-              <span id="scoreK" class="text-4xl font-black text-emerald-400">0</span>
-              <span class="text-zinc-700 font-black text-3xl">:</span>
-              <span id="scoreM" class="text-4xl font-black text-orange-400">0</span>
+            <div class="flex bg-zinc-950 py-2.5 px-4 rounded-lg border border-zinc-800 items-center justify-center gap-2.5 flex-none pointer-events-auto shadow-sm">
+              <span id="scoreK" class="text-3xl font-black text-emerald-400 leading-none">0</span>
+              <span class="text-zinc-700 font-black text-2xl leading-none pb-1">:</span>
+              <span id="scoreM" class="text-3xl font-black text-orange-400 leading-none">0</span>
             </div>
           </div>
 
-          <div class="flex flex-col items-end z-10">
-            <span class="text-xs font-black text-amber-400 mb-1 flex items-center gap-1">
-              <span id="setsM-val" class="mr-1 text-sm">0</span> 
-              <span class="bg-zinc-950 w-5 h-5 rounded flex items-center justify-center border border-zinc-800 shadow-sm">🌟</span>
+          <div class="flex flex-col items-end z-10 max-w-[32%] overflow-hidden text-right">
+            <span class="text-[10px] font-black text-amber-400 mb-1 flex items-center gap-1 justify-end">
+              <span id="setsM-val" class="mr-0.5 text-xs">0</span> 
+              <span class="bg-zinc-950 w-4 h-4 rounded flex items-center justify-center border border-zinc-800 shadow-sm leading-none">🌟</span>
             </span>
-            <span class="text-xl font-black text-white uppercase tracking-wider">Marek</span>
+            <span class="text-base font-black text-white uppercase tracking-wide truncate w-full">Marek</span>
           </div>
           
         </div>
@@ -626,21 +626,22 @@
       let contentBody = '';
       if (!match.isResolved) {
         contentBody = `
-          <div class="flex items-center justify-between pb-2 mb-2 border-b border-zinc-800/60">
-            <span class="text-base font-extrabold text-white tracking-wide">${match.team1} - ${match.team2}</span>
-            <div class="flex items-center">
-              <span class="text-xs font-bold text-zinc-500 uppercase tracking-widest mr-2">Čaká sa</span>
-              ${deleteBtn}
-            </div>
+          <div class="flex items-center w-full pb-2 mb-2 border-b border-zinc-800/60">
+            <div class="flex-1 text-right text-sm font-bold text-white truncate pr-3">${match.team1}</div>
+            <div class="flex-none font-black text-zinc-500 text-[10px] uppercase tracking-widest bg-zinc-950 px-2 py-0.5 rounded border border-zinc-800">VS</div>
+            <div class="flex-1 text-left text-sm font-bold text-white truncate pl-3">${match.team2}</div>
+            <div class="flex-none ml-1 w-6 flex justify-end">${deleteBtn}</div>
           </div>
           <div class="space-y-1.5">
-            <div class="flex items-center justify-between bg-zinc-950/40 p-2 rounded-lg">
-              <span class="text-sm font-black uppercase tracking-wider ${nameColorK}">Krevetka</span>
-              <span class="text-sm font-black ${colorK}">${match.k1} : ${match.k2}</span>
+            <div class="flex items-center w-full bg-zinc-950/40 p-2 rounded-lg">
+              <div class="flex-1 text-left text-xs font-black uppercase tracking-wider ${nameColorK}">Krevetka</div>
+              <div class="flex-none text-sm font-black ${colorK}">${match.k1} : ${match.k2}</div>
+              <div class="flex-1 text-right text-transparent text-xs select-none pointer-events-none">0 b</div>
             </div>
-            <div class="flex items-center justify-between bg-zinc-950/40 p-2 rounded-lg">
-              <span class="text-sm font-black uppercase tracking-wider ${nameColorM}">Marek</span>
-              <span class="text-sm font-black ${colorM}">${match.m1} : ${match.m2}</span>
+            <div class="flex items-center w-full bg-zinc-950/40 p-2 rounded-lg">
+              <div class="flex-1 text-left text-xs font-black uppercase tracking-wider ${nameColorM}">Marek</div>
+              <div class="flex-none text-sm font-black ${colorM}">${match.m1} : ${match.m2}</div>
+              <div class="flex-1 text-right text-transparent text-xs select-none pointer-events-none">0 b</div>
             </div>
           </div>
           <div class="mt-3 pt-3 border-t border-zinc-800/60">
@@ -663,26 +664,25 @@
         `;
       } else {
         contentBody = `
-          <div class="flex items-center justify-between pb-2 mb-2 border-b border-zinc-800/60">
-            <span class="text-base font-extrabold text-white tracking-wide">${match.team1} - ${match.team2}</span>
-            <div class="flex items-center gap-3">
-              <span class="text-base font-black text-white bg-zinc-950 px-2.5 py-0.5 rounded border border-zinc-800">${match.r1}:${match.r2}</span>
-              ${deleteBtn}
-            </div>
+          <div class="flex items-center w-full pb-2 mb-2 border-b border-zinc-800/60">
+            <div class="flex-1 text-right text-sm font-bold text-white truncate pr-3">${match.team1}</div>
+            <div class="flex-none font-black text-white bg-zinc-950 px-2.5 py-0.5 rounded border border-zinc-800">${match.r1}:${match.r2}</div>
+            <div class="flex-1 text-left text-sm font-bold text-white truncate pl-3">${match.team2}</div>
+            <div class="flex-none ml-1 w-6 flex justify-end">${deleteBtn}</div>
           </div>
           <div class="space-y-1.5">
-            <div class="flex items-center justify-between bg-zinc-950/40 p-2 rounded-lg">
-              <span class="text-sm font-black uppercase tracking-wider ${nameColorK}">Krevetka</span>
-              <div class="flex items-center gap-3">
-                <span class="text-xs font-bold text-zinc-400">(${match.ptsK}b)</span>
-                <span class="text-sm font-black ${colorK}">${match.k1} : ${match.k2}</span>
+            <div class="flex items-center w-full bg-zinc-950/40 p-2 rounded-lg">
+              <div class="flex-1 text-left text-xs font-black uppercase tracking-wider ${nameColorK}">Krevetka</div>
+              <div class="flex-none text-sm font-black ${colorK}">${match.k1} : ${match.k2}</div>
+              <div class="flex-1 text-right">
+                <span class="inline-block bg-zinc-800 text-zinc-200 px-2 py-0.5 rounded text-[10px] font-black border border-zinc-700/50 shadow-sm">${match.ptsK} b</span>
               </div>
             </div>
-            <div class="flex items-center justify-between bg-zinc-950/40 p-2 rounded-lg">
-              <span class="text-sm font-black uppercase tracking-wider ${nameColorM}">Marek</span>
-              <div class="flex items-center gap-3">
-                <span class="text-xs font-bold text-zinc-400">(${match.ptsM}b)</span>
-                <span class="text-sm font-black ${colorM}">${match.m1} : ${match.m2}</span>
+            <div class="flex items-center w-full bg-zinc-950/40 p-2 rounded-lg">
+              <div class="flex-1 text-left text-xs font-black uppercase tracking-wider ${nameColorM}">Marek</div>
+              <div class="flex-none text-sm font-black ${colorM}">${match.m1} : ${match.m2}</div>
+              <div class="flex-1 text-right">
+                <span class="inline-block bg-zinc-800 text-zinc-200 px-2 py-0.5 rounded text-[10px] font-black border border-zinc-700/50 shadow-sm">${match.ptsM} b</span>
               </div>
             </div>
           </div>
@@ -744,22 +744,23 @@
 
           setMatchesHTML += `
             <div class="bg-zinc-900 rounded-lg p-3 mb-3 border-l-4 ${bColor} space-y-1.5">
-              <div class="flex items-center justify-between pb-2 mb-2 border-b border-zinc-800/60">
-                <span class="text-sm font-bold text-white">${m.team1} - ${m.team2}</span>
-                <span class="text-sm font-black text-white bg-zinc-950 px-2 py-0.5 rounded border border-zinc-800">${m.r1}:${m.r2}</span>
+              <div class="flex items-center w-full pb-2 mb-2 border-b border-zinc-800/60">
+                <div class="flex-1 text-right text-xs font-bold text-white truncate pr-3">${m.team1}</div>
+                <div class="flex-none font-black text-white bg-zinc-950 px-2 py-0.5 rounded border border-zinc-800 text-xs">${m.r1}:${m.r2}</div>
+                <div class="flex-1 text-left text-xs font-bold text-white truncate pl-3">${m.team2}</div>
               </div>
-              <div class="flex items-center justify-between bg-zinc-950/40 p-2 rounded-lg">
-                <span class="text-xs font-bold uppercase tracking-wider ${hColorK}">Krevetka</span>
-                <div class="flex items-center gap-3">
-                  <span class="text-[10px] font-bold text-zinc-500">(${m.ptsK}b)</span>
-                  <span class="text-xs font-black ${hColorK}">${m.k1}:${m.k2}</span>
+              <div class="flex items-center w-full bg-zinc-950/40 p-2 rounded-lg">
+                <div class="flex-1 text-left text-[10px] font-bold uppercase tracking-wider ${hColorK}">Krevetka</div>
+                <div class="flex-none text-xs font-black ${hColorK}">${m.k1}:${m.k2}</div>
+                <div class="flex-1 text-right">
+                  <span class="inline-block bg-zinc-800 text-zinc-200 px-1.5 py-0.5 rounded text-[9px] font-black border border-zinc-700/50">${m.ptsK} b</span>
                 </div>
               </div>
-              <div class="flex items-center justify-between bg-zinc-950/40 p-2 rounded-lg">
-                <span class="text-xs font-bold uppercase tracking-wider ${hColorM}">Marek</span>
-                <div class="flex items-center gap-3">
-                  <span class="text-[10px] font-bold text-zinc-500">(${m.ptsM}b)</span>
-                  <span class="text-xs font-black ${hColorM}">${m.m1}:${m.m2}</span>
+              <div class="flex items-center w-full bg-zinc-950/40 p-2 rounded-lg">
+                <div class="flex-1 text-left text-[10px] font-bold uppercase tracking-wider ${hColorM}">Marek</div>
+                <div class="flex-none text-xs font-black ${hColorM}">${m.m1}:${m.m2}</div>
+                <div class="flex-1 text-right">
+                  <span class="inline-block bg-zinc-800 text-zinc-200 px-1.5 py-0.5 rounded text-[9px] font-black border border-zinc-700/50">${m.ptsM} b</span>
                 </div>
               </div>
             </div>
