@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="sk">
 <head>
@@ -264,21 +265,21 @@
   </div>
 
   <!-- Bottom Navigation -->
-  <nav id="bottomNav" class="fixed bottom-0 w-full bg-zinc-950 border-t border-zinc-900 flex justify-around items-center h-16 pb-6 pt-2 z-40 hidden">
+  <nav id="bottomNav" class="fixed bottom-0 w-full bg-zinc-950 border-t border-zinc-900 flex justify-around items-center h-[76px] pb-5 pt-1.5 z-40 hidden">
     <button onclick="switchTab('tab-home')" id="nav-tab-home" class="nav-btn flex flex-col items-center justify-center w-16 text-white h-full">
-      <svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+      <svg class="w-5 h-5 mb-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
       <span class="text-[9px] font-bold uppercase tracking-widest">Domov</span>
     </button>
     <button onclick="switchTab('tab-history')" id="nav-tab-history" class="nav-btn flex flex-col items-center justify-center w-16 text-zinc-500 h-full">
-      <svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+      <svg class="w-5 h-5 mb-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
       <span class="text-[9px] font-bold uppercase tracking-widest">História</span>
     </button>
     <button onclick="switchTab('tab-rules')" id="nav-tab-rules" class="nav-btn flex flex-col items-center justify-center w-16 text-zinc-500 h-full">
-      <svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+      <svg class="w-5 h-5 mb-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
       <span class="text-[9px] font-bold uppercase tracking-widest">Pravidlá</span>
     </button>
     <button onclick="switchTab('tab-profile')" id="nav-tab-profile" class="nav-btn flex flex-col items-center justify-center w-16 text-zinc-500 h-full">
-      <img id="nav-profile-img" src="https://ui-avatars.com/api/?name=User&background=3f3f46&color=fff" class="w-5 h-5 rounded-full object-cover border-2 border-transparent mb-0.5">
+      <img id="nav-profile-img" src="https://ui-avatars.com/api/?name=User&background=3f3f46&color=fff" class="w-5 h-5 rounded-full object-cover border-2 border-transparent mb-1.5">
       <span class="text-[9px] font-bold uppercase tracking-widest">Profil</span>
     </button>
   </nav>
@@ -671,18 +672,18 @@
             <div class="absolute right-0 top-1/2 -translate-y-1/2">${deleteBtn}</div>
           </div>
           <div class="space-y-1">
-            <div class="grid grid-cols-[1fr_auto_1fr] items-center w-full bg-zinc-950/40 px-2 py-1.5 rounded-lg">
-              <div class="text-left text-xs font-black uppercase tracking-wider ${nameColorK}">Krevetka</div>
-              <div class="text-sm font-black text-center w-14 ${colorK}">${match.k1}:${match.k2}</div>
-              <div class="text-right">
-                <span class="inline-block bg-zinc-800 text-zinc-200 px-2 py-0.5 rounded text-xs font-black border border-zinc-700/50 shadow-sm">${match.ptsK} b</span>
+            <div class="grid grid-cols-[1fr_56px_1fr] items-center w-full bg-zinc-950 px-3 py-2 rounded-lg mb-1">
+              <div class="text-left text-xs font-bold uppercase tracking-wider ${nameColorK}">Krevetka</div>
+              <div class="text-sm font-black text-center w-full ${colorK}">${match.k1}:${match.k2}</div>
+              <div class="text-right flex justify-end">
+                <span class="inline-block bg-zinc-800 text-white px-2.5 py-0.5 rounded text-sm font-black border border-zinc-700 shadow-sm">${match.ptsK} b</span>
               </div>
             </div>
-            <div class="grid grid-cols-[1fr_auto_1fr] items-center w-full bg-zinc-950/40 px-2 py-1.5 rounded-lg">
-              <div class="text-left text-xs font-black uppercase tracking-wider ${nameColorM}">Marek</div>
-              <div class="text-sm font-black text-center w-14 ${colorM}">${match.m1}:${match.m2}</div>
-              <div class="text-right">
-                <span class="inline-block bg-zinc-800 text-zinc-200 px-2 py-0.5 rounded text-xs font-black border border-zinc-700/50 shadow-sm">${match.ptsM} b</span>
+            <div class="grid grid-cols-[1fr_56px_1fr] items-center w-full bg-zinc-950 px-3 py-2 rounded-lg">
+              <div class="text-left text-xs font-bold uppercase tracking-wider ${nameColorM}">Marek</div>
+              <div class="text-sm font-black text-center w-full ${colorM}">${match.m1}:${match.m2}</div>
+              <div class="text-right flex justify-end">
+                <span class="inline-block bg-zinc-800 text-white px-2.5 py-0.5 rounded text-sm font-black border border-zinc-700 shadow-sm">${match.ptsM} b</span>
               </div>
             </div>
           </div>
@@ -750,18 +751,18 @@
                 <div class="text-left text-xs font-bold text-white truncate pl-3">${m.team2}</div>
               </div>
               <div class="space-y-1">
-                <div class="grid grid-cols-[1fr_auto_1fr] items-center w-full bg-zinc-950/40 px-2 py-1.5 rounded-lg">
-                  <div class="text-left text-[10px] font-bold uppercase tracking-wider ${hColorK}">Krevetka</div>
-                  <div class="text-xs font-black text-center w-12 ${hColorK}">${m.k1}:${m.k2}</div>
-                  <div class="text-right">
-                    <span class="inline-block bg-zinc-800 text-zinc-200 px-2 py-0.5 rounded text-xs font-black border border-zinc-700/50">${m.ptsK} b</span>
+                <div class="grid grid-cols-[1fr_56px_1fr] items-center w-full bg-zinc-950 px-3 py-2 rounded-lg mb-1">
+                  <div class="text-left text-xs font-bold uppercase tracking-wider ${hColorK}">Krevetka</div>
+                  <div class="text-sm font-black text-center w-full ${hColorK}">${m.k1}:${m.k2}</div>
+                  <div class="text-right flex justify-end">
+                    <span class="inline-block bg-zinc-800 text-white px-2.5 py-0.5 rounded text-sm font-black border border-zinc-700 shadow-sm">${m.ptsK} b</span>
                   </div>
                 </div>
-                <div class="grid grid-cols-[1fr_auto_1fr] items-center w-full bg-zinc-950/40 px-2 py-1.5 rounded-lg">
-                  <div class="text-left text-[10px] font-bold uppercase tracking-wider ${hColorM}">Marek</div>
-                  <div class="text-xs font-black text-center w-12 ${hColorM}">${m.m1}:${m.m2}</div>
-                  <div class="text-right">
-                    <span class="inline-block bg-zinc-800 text-zinc-200 px-2 py-0.5 rounded text-xs font-black border border-zinc-700/50">${m.ptsM} b</span>
+                <div class="grid grid-cols-[1fr_56px_1fr] items-center w-full bg-zinc-950 px-3 py-2 rounded-lg">
+                  <div class="text-left text-xs font-bold uppercase tracking-wider ${hColorM}">Marek</div>
+                  <div class="text-sm font-black text-center w-full ${hColorM}">${m.m1}:${m.m2}</div>
+                  <div class="text-right flex justify-end">
+                    <span class="inline-block bg-zinc-800 text-white px-2.5 py-0.5 rounded text-sm font-black border border-zinc-700 shadow-sm">${m.ptsM} b</span>
                   </div>
                 </div>
               </div>
@@ -840,3 +841,4 @@
   </script>
 </body>
 </html>
+```
