@@ -626,26 +626,26 @@
       let contentBody = '';
       if (!match.isResolved) {
         contentBody = `
-          <div class="relative grid grid-cols-[1fr_auto_1fr] items-center w-full pb-2 mb-2 border-b border-zinc-800/60">
+          <div class="relative grid grid-cols-[1fr_auto_1fr] items-center w-full pb-1.5 mb-1.5 border-b border-zinc-700">
             <div class="text-right text-sm font-bold text-white truncate pr-4">${match.team1}</div>
             <div class="font-black text-zinc-500 text-[10px] uppercase tracking-widest bg-zinc-950 rounded border border-zinc-800 text-center w-14 py-0.5">VS</div>
             <div class="text-left text-sm font-bold text-white truncate pl-4 pr-7">${match.team2}</div>
             <div class="absolute right-0 top-1/2 -translate-y-1/2">${deleteBtn}</div>
           </div>
-          <div class="space-y-1.5">
-            <div class="grid grid-cols-[1fr_auto_1fr] items-center w-full bg-zinc-950/40 p-2 rounded-lg">
+          <div class="space-y-1">
+            <div class="grid grid-cols-[1fr_auto_1fr] items-center w-full bg-zinc-950/40 px-2 py-1.5 rounded-lg">
               <div class="text-left text-xs font-black uppercase tracking-wider ${nameColorK}">Krevetka</div>
               <div class="text-sm font-black text-center w-14 ${colorK}">${match.k1}:${match.k2}</div>
               <div class="text-right"></div>
             </div>
-            <div class="grid grid-cols-[1fr_auto_1fr] items-center w-full bg-zinc-950/40 p-2 rounded-lg">
+            <div class="grid grid-cols-[1fr_auto_1fr] items-center w-full bg-zinc-950/40 px-2 py-1.5 rounded-lg">
               <div class="text-left text-xs font-black uppercase tracking-wider ${nameColorM}">Marek</div>
               <div class="text-sm font-black text-center w-14 ${colorM}">${match.m1}:${match.m2}</div>
               <div class="text-right"></div>
             </div>
           </div>
-          <div class="mt-3 pt-3 border-t border-zinc-800/60">
-            <div class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-2 text-center">Zadať výsledok zápasu</div>
+          <div class="mt-2.5 pt-2.5 border-t border-zinc-800/60">
+            <div class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-1.5 text-center">Zadať výsledok zápasu</div>
             <div class="flex items-center justify-center gap-2 mb-2">
               <div class="flex bg-zinc-950 rounded-lg overflow-hidden h-12 border border-zinc-800 flex-1">
                 <button type="button" onclick="adjustResolve('${match.id}', 0, -1)" class="w-1/3 h-full flex items-center justify-center text-zinc-400 active:bg-zinc-800 font-black text-xl select-none transition-colors">-</button>
@@ -664,25 +664,25 @@
         `;
       } else {
         contentBody = `
-          <div class="relative grid grid-cols-[1fr_auto_1fr] items-center w-full pb-2 mb-2 border-b border-zinc-800/60">
+          <div class="relative grid grid-cols-[1fr_auto_1fr] items-center w-full pb-1.5 mb-1.5 border-b border-zinc-700">
             <div class="text-right text-sm font-bold text-white truncate pr-4">${match.team1}</div>
             <div class="font-black text-white bg-zinc-950 rounded border border-zinc-800 text-center w-14 py-0.5">${match.r1}:${match.r2}</div>
             <div class="text-left text-sm font-bold text-white truncate pl-4 pr-7">${match.team2}</div>
             <div class="absolute right-0 top-1/2 -translate-y-1/2">${deleteBtn}</div>
           </div>
-          <div class="space-y-1.5">
-            <div class="grid grid-cols-[1fr_auto_1fr] items-center w-full bg-zinc-950/40 p-2 rounded-lg">
+          <div class="space-y-1">
+            <div class="grid grid-cols-[1fr_auto_1fr] items-center w-full bg-zinc-950/40 px-2 py-1.5 rounded-lg">
               <div class="text-left text-xs font-black uppercase tracking-wider ${nameColorK}">Krevetka</div>
               <div class="text-sm font-black text-center w-14 ${colorK}">${match.k1}:${match.k2}</div>
               <div class="text-right">
-                <span class="inline-block bg-zinc-800 text-zinc-200 px-2 py-0.5 rounded text-[10px] font-black border border-zinc-700/50 shadow-sm">${match.ptsK} b</span>
+                <span class="inline-block bg-zinc-800 text-zinc-200 px-2 py-0.5 rounded text-xs font-black border border-zinc-700/50 shadow-sm">${match.ptsK} b</span>
               </div>
             </div>
-            <div class="grid grid-cols-[1fr_auto_1fr] items-center w-full bg-zinc-950/40 p-2 rounded-lg">
+            <div class="grid grid-cols-[1fr_auto_1fr] items-center w-full bg-zinc-950/40 px-2 py-1.5 rounded-lg">
               <div class="text-left text-xs font-black uppercase tracking-wider ${nameColorM}">Marek</div>
               <div class="text-sm font-black text-center w-14 ${colorM}">${match.m1}:${match.m2}</div>
               <div class="text-right">
-                <span class="inline-block bg-zinc-800 text-zinc-200 px-2 py-0.5 rounded text-[10px] font-black border border-zinc-700/50 shadow-sm">${match.ptsM} b</span>
+                <span class="inline-block bg-zinc-800 text-zinc-200 px-2 py-0.5 rounded text-xs font-black border border-zinc-700/50 shadow-sm">${match.ptsM} b</span>
               </div>
             </div>
           </div>
@@ -690,7 +690,7 @@
       }
 
       return `
-        <div class="bg-zinc-900 rounded-lg p-3 border-l-4 ${borderLeftColor} shadow-sm">
+        <div class="bg-zinc-900 rounded-lg px-3 py-2 border-l-4 ${borderLeftColor} shadow-sm">
           ${contentBody}
         </div>
       `;
@@ -743,24 +743,26 @@
           let hColorM = m.ptsM > m.ptsK ? 'text-orange-400' : (m.ptsM === m.ptsK ? 'text-white' : 'text-zinc-400');
 
           setMatchesHTML += `
-            <div class="bg-zinc-900 rounded-lg p-3 mb-3 border-l-4 ${bColor} space-y-1.5">
-              <div class="relative grid grid-cols-[1fr_auto_1fr] items-center w-full pb-2 mb-2 border-b border-zinc-800/60">
+            <div class="bg-zinc-900 rounded-lg px-3 py-2 mb-3 border-l-4 ${bColor} shadow-sm">
+              <div class="relative grid grid-cols-[1fr_auto_1fr] items-center w-full pb-1.5 mb-1.5 border-b border-zinc-700">
                 <div class="text-right text-xs font-bold text-white truncate pr-3">${m.team1}</div>
                 <div class="font-black text-white bg-zinc-950 rounded border border-zinc-800 text-center w-12 py-0.5 text-xs">${m.r1}:${m.r2}</div>
                 <div class="text-left text-xs font-bold text-white truncate pl-3">${m.team2}</div>
               </div>
-              <div class="grid grid-cols-[1fr_auto_1fr] items-center w-full bg-zinc-950/40 p-2 rounded-lg">
-                <div class="text-left text-[10px] font-bold uppercase tracking-wider ${hColorK}">Krevetka</div>
-                <div class="text-xs font-black text-center w-12 ${hColorK}">${m.k1}:${m.k2}</div>
-                <div class="text-right">
-                  <span class="inline-block bg-zinc-800 text-zinc-200 px-1.5 py-0.5 rounded text-[9px] font-black border border-zinc-700/50">${m.ptsK} b</span>
+              <div class="space-y-1">
+                <div class="grid grid-cols-[1fr_auto_1fr] items-center w-full bg-zinc-950/40 px-2 py-1.5 rounded-lg">
+                  <div class="text-left text-[10px] font-bold uppercase tracking-wider ${hColorK}">Krevetka</div>
+                  <div class="text-xs font-black text-center w-12 ${hColorK}">${m.k1}:${m.k2}</div>
+                  <div class="text-right">
+                    <span class="inline-block bg-zinc-800 text-zinc-200 px-2 py-0.5 rounded text-xs font-black border border-zinc-700/50">${m.ptsK} b</span>
+                  </div>
                 </div>
-              </div>
-              <div class="grid grid-cols-[1fr_auto_1fr] items-center w-full bg-zinc-950/40 p-2 rounded-lg">
-                <div class="text-left text-[10px] font-bold uppercase tracking-wider ${hColorM}">Marek</div>
-                <div class="text-xs font-black text-center w-12 ${hColorM}">${m.m1}:${m.m2}</div>
-                <div class="text-right">
-                  <span class="inline-block bg-zinc-800 text-zinc-200 px-1.5 py-0.5 rounded text-[9px] font-black border border-zinc-700/50">${m.ptsM} b</span>
+                <div class="grid grid-cols-[1fr_auto_1fr] items-center w-full bg-zinc-950/40 px-2 py-1.5 rounded-lg">
+                  <div class="text-left text-[10px] font-bold uppercase tracking-wider ${hColorM}">Marek</div>
+                  <div class="text-xs font-black text-center w-12 ${hColorM}">${m.m1}:${m.m2}</div>
+                  <div class="text-right">
+                    <span class="inline-block bg-zinc-800 text-zinc-200 px-2 py-0.5 rounded text-xs font-black border border-zinc-700/50">${m.ptsM} b</span>
+                  </div>
                 </div>
               </div>
             </div>
