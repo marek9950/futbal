@@ -618,20 +618,20 @@
       let contentBody = '';
       if (!match.isResolved) {
         contentBody = `
-          <div class="relative grid grid-cols-[1fr_auto_1fr] items-center w-full pb-2 mb-2 border-b border-zinc-700">
+          <div class="relative grid grid-cols-[1fr_auto_1fr] items-center w-full pb-3 mb-2 border-b border-zinc-700">
             <div class="text-right text-base font-bold text-white truncate pr-4">${match.team1}</div>
-            <div class="font-black text-zinc-500 text-xs uppercase tracking-widest bg-zinc-950 rounded border border-zinc-700 text-center w-14 py-1">VS</div>
+            <div class="text-base font-black text-zinc-500 uppercase tracking-widest bg-zinc-950 rounded border border-zinc-700 text-center w-16 py-1 flex items-center justify-center">VS</div>
             <div class="text-left text-base font-bold text-white truncate pl-4 pr-7">${match.team2}</div>
             <div class="absolute right-0 top-1/2 -translate-y-1/2">${deleteBtn}</div>
           </div>
           <div class="space-y-1">
-            <div class="grid grid-cols-[1fr_56px_1fr] items-center w-full bg-zinc-950 px-3 py-2 rounded-lg mb-1">
-              <div class="text-left text-sm font-black uppercase tracking-wider ${nameColorK}">Krevetka</div>
+            <div class="grid grid-cols-[1fr_64px_1fr] items-center w-full bg-zinc-950 px-3 py-2 rounded-lg mb-1">
+              <div class="text-left text-sm font-bold uppercase tracking-wider ${nameColorK}">Krevetka</div>
               <div class="text-base font-black text-center w-full ${colorK}">${match.k1}:${match.k2}</div>
               <div class="text-right flex justify-end"></div>
             </div>
-            <div class="grid grid-cols-[1fr_56px_1fr] items-center w-full bg-zinc-950 px-3 py-2 rounded-lg">
-              <div class="text-left text-sm font-black uppercase tracking-wider ${nameColorM}">Marek</div>
+            <div class="grid grid-cols-[1fr_64px_1fr] items-center w-full bg-zinc-950 px-3 py-2 rounded-lg">
+              <div class="text-left text-sm font-bold uppercase tracking-wider ${nameColorM}">Marek</div>
               <div class="text-base font-black text-center w-full ${colorM}">${match.m1}:${match.m2}</div>
               <div class="text-right flex justify-end"></div>
             </div>
@@ -655,25 +655,25 @@
         `;
       } else {
         contentBody = `
-          <div class="relative grid grid-cols-[1fr_auto_1fr] items-center w-full pb-2 mb-2 border-b border-zinc-700">
+          <div class="relative grid grid-cols-[1fr_auto_1fr] items-center w-full pb-3 mb-2 border-b border-zinc-700">
             <div class="text-right text-base font-bold text-white truncate pr-4">${match.team1}</div>
-            <div class="font-black text-white bg-zinc-950 rounded border border-zinc-700 text-center w-14 py-1 text-sm">${match.r1}:${match.r2}</div>
+            <div class="text-base font-black text-white bg-zinc-950 rounded border border-zinc-700 text-center w-16 py-1 flex items-center justify-center">${match.r1}:${match.r2}</div>
             <div class="text-left text-base font-bold text-white truncate pl-4 pr-7">${match.team2}</div>
             <div class="absolute right-0 top-1/2 -translate-y-1/2">${deleteBtn}</div>
           </div>
           <div class="space-y-1">
-            <div class="grid grid-cols-[1fr_56px_1fr] items-center w-full bg-zinc-950 px-3 py-2 rounded-lg mb-1">
+            <div class="grid grid-cols-[1fr_64px_1fr] items-center w-full bg-zinc-950 px-3 py-2 rounded-lg mb-1">
               <div class="text-left text-sm font-bold uppercase tracking-wider ${nameColorK}">Krevetka</div>
               <div class="text-base font-black text-center w-full ${colorK}">${match.k1}:${match.k2}</div>
               <div class="text-right flex justify-end">
-                <span class="inline-block bg-zinc-800 text-white px-2.5 py-0.5 rounded text-base font-black border border-zinc-700 shadow-sm">${match.ptsK} b</span>
+                <span class="inline-block bg-zinc-800 ${colorK} px-2.5 py-0.5 rounded text-base font-black border border-zinc-700 shadow-sm">${match.ptsK} b</span>
               </div>
             </div>
-            <div class="grid grid-cols-[1fr_56px_1fr] items-center w-full bg-zinc-950 px-3 py-2 rounded-lg">
+            <div class="grid grid-cols-[1fr_64px_1fr] items-center w-full bg-zinc-950 px-3 py-2 rounded-lg">
               <div class="text-left text-sm font-bold uppercase tracking-wider ${nameColorM}">Marek</div>
               <div class="text-base font-black text-center w-full ${colorM}">${match.m1}:${match.m2}</div>
               <div class="text-right flex justify-end">
-                <span class="inline-block bg-zinc-800 text-white px-2.5 py-0.5 rounded text-base font-black border border-zinc-700 shadow-sm">${match.ptsM} b</span>
+                <span class="inline-block bg-zinc-800 ${colorM} px-2.5 py-0.5 rounded text-base font-black border border-zinc-700 shadow-sm">${match.ptsM} b</span>
               </div>
             </div>
           </div>
@@ -735,24 +735,24 @@
 
           setMatchesHTML += `
             <div class="bg-zinc-800 rounded-lg px-3 py-3 mb-3 border-l-4 ${bColor} shadow-sm">
-              <div class="relative grid grid-cols-[1fr_auto_1fr] items-center w-full pb-2 mb-2 border-b border-zinc-700">
-                <div class="text-right text-base font-bold text-white truncate pr-3">${m.team1}</div>
-                <div class="font-black text-white bg-zinc-950 rounded border border-zinc-700 text-center w-14 py-1 text-sm">${m.r1}:${m.r2}</div>
-                <div class="text-left text-base font-bold text-white truncate pl-3">${m.team2}</div>
+              <div class="relative grid grid-cols-[1fr_auto_1fr] items-center w-full pb-3 mb-2 border-b border-zinc-700">
+                <div class="text-right text-base font-bold text-white truncate pr-4">${m.team1}</div>
+                <div class="text-base font-black text-white bg-zinc-950 rounded border border-zinc-700 text-center w-16 py-1 flex items-center justify-center">${m.r1}:${m.r2}</div>
+                <div class="text-left text-base font-bold text-white truncate pl-4 pr-7">${m.team2}</div>
               </div>
               <div class="space-y-1">
-                <div class="grid grid-cols-[1fr_56px_1fr] items-center w-full bg-zinc-950 px-3 py-2 rounded-lg mb-1">
+                <div class="grid grid-cols-[1fr_64px_1fr] items-center w-full bg-zinc-950 px-3 py-2 rounded-lg mb-1">
                   <div class="text-left text-sm font-bold uppercase tracking-wider ${hColorK}">Krevetka</div>
                   <div class="text-base font-black text-center w-full ${hColorK}">${m.k1}:${m.k2}</div>
                   <div class="text-right flex justify-end">
-                    <span class="inline-block bg-zinc-800 text-white px-2.5 py-0.5 rounded text-base font-black border border-zinc-700 shadow-sm">${m.ptsK} b</span>
+                    <span class="inline-block bg-zinc-800 ${hColorK} px-2.5 py-0.5 rounded text-base font-black border border-zinc-700 shadow-sm">${m.ptsK} b</span>
                   </div>
                 </div>
-                <div class="grid grid-cols-[1fr_56px_1fr] items-center w-full bg-zinc-950 px-3 py-2 rounded-lg">
+                <div class="grid grid-cols-[1fr_64px_1fr] items-center w-full bg-zinc-950 px-3 py-2 rounded-lg">
                   <div class="text-left text-sm font-bold uppercase tracking-wider ${hColorM}">Marek</div>
                   <div class="text-base font-black text-center w-full ${hColorM}">${m.m1}:${m.m2}</div>
                   <div class="text-right flex justify-end">
-                    <span class="inline-block bg-zinc-800 text-white px-2.5 py-0.5 rounded text-base font-black border border-zinc-700 shadow-sm">${m.ptsM} b</span>
+                    <span class="inline-block bg-zinc-800 ${hColorM} px-2.5 py-0.5 rounded text-base font-black border border-zinc-700 shadow-sm">${m.ptsM} b</span>
                   </div>
                 </div>
               </div>
