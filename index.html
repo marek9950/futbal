@@ -84,43 +84,41 @@
     </div>
   </div>
 
-  <div id="mainApp" class="flex-1 overflow-y-auto pb-56 hidden bg-zinc-950">
-    <div class="max-w-md mx-auto space-y-4 p-4 pt-4">
+  <div id="mainApp" class="flex-1 overflow-y-auto pb-[100px] hidden bg-zinc-950 pt-2">
+    <div class="max-w-md mx-auto space-y-4 p-4 pt-2">
       
       <!-- Scoreboard Header -->
-      <div class="relative min-h-[64px] flex items-center justify-between overflow-hidden mb-2 px-1">
-        
+      <div class="relative min-h-[72px] flex items-center justify-between mb-4 px-2">
         <!-- Score Center Absolute -->
         <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
           <div class="flex items-center justify-center">
-            <span id="scoreK" class="text-3xl font-black text-emerald-400 leading-none">0</span>
-            <span class="text-zinc-500 font-black text-2xl leading-none pb-0.5 mx-2">:</span>
-            <span id="scoreM" class="text-3xl font-black text-orange-400 leading-none">0</span>
+            <span id="scoreK" class="text-5xl font-black text-emerald-400 leading-none">0</span>
+            <span class="text-zinc-500 font-black text-3xl leading-none pb-1 mx-2.5">:</span>
+            <span id="scoreM" class="text-5xl font-black text-orange-400 leading-none">0</span>
           </div>
         </div>
 
         <!-- Left / KREVETKA -->
         <div class="flex flex-col items-start z-10">
-          <div class="flex items-center gap-1 mb-0.5">
-            <span class="text-xs">🦠</span>
-            <span id="setsK-val" class="text-xs font-black text-zinc-300">0</span>
+          <div class="flex items-center gap-1.5 mb-1">
+            <span class="text-2xl leading-none">🦠</span>
+            <span id="setsK-val" class="text-2xl font-black text-zinc-300 leading-none">0</span>
           </div>
-          <span class="text-sm font-black text-emerald-400 uppercase tracking-wider">Krevetka</span>
+          <span class="text-base font-black text-emerald-400 uppercase tracking-wider drop-shadow-sm">Krevetka</span>
         </div>
 
         <!-- Right / MAREK -->
         <div class="flex flex-col items-end z-10">
-          <div class="flex items-center gap-1 mb-0.5">
-            <span id="setsM-val" class="text-xs font-black text-zinc-300">0</span>
-            <span class="text-xs">🦠</span>
+          <div class="flex items-center gap-1.5 mb-1">
+            <span id="setsM-val" class="text-2xl font-black text-zinc-300 leading-none">0</span>
+            <span class="text-2xl leading-none">🦠</span>
           </div>
-          <span class="text-sm font-black text-orange-400 uppercase tracking-wider">Marek</span>
+          <span class="text-base font-black text-orange-400 uppercase tracking-wider drop-shadow-sm">Marek</span>
         </div>
-
       </div>
 
       <!-- Tab: Home -->
-      <div id="tab-home" class="tab-content active space-y-4">
+      <div id="tab-home" class="tab-content active space-y-3">
         
         <div>
           <button id="toggleFormBtn" type="button" onclick="toggleTipForm()" class="w-full bg-zinc-200 text-zinc-950 font-black py-3.5 rounded-lg uppercase tracking-widest text-sm shadow transition-colors">
@@ -183,7 +181,7 @@
           </button>
         </form>
 
-        <div id="homeMatchesList" class="space-y-3 pb-8">
+        <div id="homeMatchesList" class="pb-8">
             <!-- Rendered matches -->
         </div>
       </div>
@@ -380,7 +378,12 @@
             if (docSnap.exists()) {
                 let data = docSnap.data();
                 if(data.matches) matches = data.matches;
-                historySets = [historySets[0]]; // Keep only Set #1
+                if(data.historySets && data.historySets.length > 0) {
+                    historySets = data.historySets;
+                }
+                // Bezpečnostná poistka pre udržanie maximálne jedného natvrdo definovaného setu v pamäti pre ukážku, 
+                // ale ak je v DB viac, necháme ich. Podľa požiadavky "zruš všetky okrem prvého" ho orežeme:
+                historySets = [historySets[0]].filter(Boolean);
                 render();
             } else {
                 saveData();
@@ -571,103 +574,111 @@
     };
 
     function createMatchCard(match) {
-      let deleteBtn = `<button onclick="confirmDeleteMatch('${match.id}')" class="absolute top-2.5 right-2 text-zinc-400 hover:text-white p-1 transition-colors flex items-center justify-center rounded-md"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>`;
+      let deleteBtn = `<button onclick="confirmDeleteMatch('${match.id}')" class="absolute top-2.5 right-2 text-zinc-400 hover:text-white p-1 transition-colors flex items-center justify-center rounded-md z-20"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>`;
 
       let colorK = 'text-zinc-400';
       let colorM = 'text-zinc-400';
-      let dotColor = '';
+      let bgK = 'bg-zinc-800 text-zinc-400'; 
+      let bgM = 'bg-zinc-800 text-zinc-400';
+      let hBorderClasses = 'border-l-transparent border-r-transparent';
 
       if (match.isResolved) {
         if (match.ptsK > match.ptsM) {
           colorK = 'text-emerald-400';
-          dotColor = 'bg-emerald-400';
+          bgK = 'bg-zinc-900 text-emerald-400'; 
+          hBorderClasses = 'border-l-emerald-400 border-r-emerald-400';
         } else if (match.ptsM > match.ptsK) {
           colorM = 'text-orange-400';
-          dotColor = 'bg-orange-400';
+          bgM = 'bg-zinc-900 text-orange-400';
+          hBorderClasses = 'border-l-orange-400 border-r-orange-400';
         } else {
           colorK = 'text-white';
           colorM = 'text-white';
-          dotColor = 'bg-white';
+          bgK = 'bg-zinc-900 text-white';
+          bgM = 'bg-zinc-900 text-white';
+          hBorderClasses = 'border-l-white border-r-white';
         }
       } else {
         colorK = 'text-emerald-400';
         colorM = 'text-orange-400';
       }
 
-      let winnerDot = match.isResolved ? `<div class="absolute top-4 left-3 w-2 h-2 rounded-full ${dotColor} shadow-sm"></div>` : '';
-
-      let contentBody = '';
       if (!match.isResolved) {
-        contentBody = `
-          <div class="grid grid-cols-[1fr_72px_1fr] items-center w-full pb-3 mb-3 border-b border-zinc-700">
-            <div class="text-right text-base font-bold text-white truncate pr-2 pl-3">${match.team1}</div>
-            <div class="text-xs font-black text-zinc-400 uppercase tracking-widest bg-zinc-900 rounded border border-zinc-700 text-center w-full py-1.5 flex items-center justify-center">VS</div>
-            <div class="text-left text-base font-bold text-white truncate pl-2 pr-7">${match.team2}</div>
-          </div>
-          
-          <div class="space-y-2">
-            <div class="grid grid-cols-[1fr_72px_1fr] items-center w-full">
-              <div class="text-left text-sm font-bold uppercase tracking-wider ${colorK}">Krevetka</div>
-              <div class="text-base font-black text-center w-full ${colorK}">${match.k1}&nbsp;<span class="opacity-50 mx-0.5">:</span>&nbsp;${match.k2}</div>
-              <div class="text-right flex justify-end"></div>
+        return `
+          <div class="bg-zinc-800 rounded-lg shadow-sm relative border border-zinc-700 overflow-hidden mb-3">
+            ${deleteBtn}
+            
+            <div class="px-4 py-3">
+              <div class="grid grid-cols-[1fr_64px_1fr] items-center w-full pb-3 mb-3 border-b border-zinc-700">
+                <div class="text-right text-base font-bold text-white truncate pr-2 pl-2">${match.team1}</div>
+                <div class="text-base font-black text-zinc-500 text-center w-full flex items-center justify-center">VS</div>
+                <div class="text-left text-base font-bold text-white truncate pl-2 pr-7">${match.team2}</div>
+              </div>
+              
+              <div class="space-y-2">
+                <div class="grid grid-cols-[1fr_64px_1fr] items-center w-full">
+                  <div class="text-left text-sm font-bold uppercase tracking-wider ${colorK}">Krevetka</div>
+                  <div class="text-base font-black text-center w-full ${colorK}">${match.k1}&nbsp;<span class="opacity-50 mx-0.5">:</span>&nbsp;${match.k2}</div>
+                  <div class="text-right flex justify-end"></div>
+                </div>
+                <div class="grid grid-cols-[1fr_64px_1fr] items-center w-full">
+                  <div class="text-left text-sm font-bold uppercase tracking-wider ${colorM}">Marek</div>
+                  <div class="text-base font-black text-center w-full ${colorM}">${match.m1}&nbsp;<span class="opacity-50 mx-0.5">:</span>&nbsp;${match.m2}</div>
+                  <div class="text-right flex justify-end"></div>
+                </div>
+              </div>
             </div>
-            <div class="grid grid-cols-[1fr_72px_1fr] items-center w-full">
-              <div class="text-left text-sm font-bold uppercase tracking-wider ${colorM}">Marek</div>
-              <div class="text-base font-black text-center w-full ${colorM}">${match.m1}&nbsp;<span class="opacity-50 mx-0.5">:</span>&nbsp;${match.m2}</div>
-              <div class="text-right flex justify-end"></div>
-            </div>
-          </div>
 
-          <div class="mt-3 pt-3 border-t border-zinc-700">
-            <div class="flex items-center justify-center gap-2 mb-3">
-              <div class="flex bg-zinc-950 rounded-lg overflow-hidden h-12 border border-zinc-700 flex-1">
-                <button type="button" onclick="adjustResolve('${match.id}', 0, -1)" class="w-1/3 h-full flex items-center justify-center text-zinc-400 active:bg-zinc-800 active:text-white font-black text-2xl select-none transition-none">-</button>
-                <span id="res0-${match.id}" class="w-1/3 h-full flex items-center justify-center font-black text-base text-white select-none">0</span>
-                <button type="button" onclick="adjustResolve('${match.id}', 0, 1)" class="w-1/3 h-full flex items-center justify-center text-zinc-400 active:bg-zinc-800 active:text-white font-black text-xl select-none transition-none">+</button>
+            <div class="px-4 pb-4 pt-1">
+              <div class="flex items-center justify-center gap-2 mb-3">
+                <div class="flex bg-zinc-950 rounded-lg overflow-hidden h-12 border border-zinc-700 flex-1">
+                  <button type="button" onclick="adjustResolve('${match.id}', 0, -1)" class="w-1/3 h-full flex items-center justify-center text-zinc-400 active:bg-zinc-800 active:text-white font-black text-2xl select-none transition-none">-</button>
+                  <span id="res0-${match.id}" class="w-1/3 h-full flex items-center justify-center font-black text-base text-white select-none">0</span>
+                  <button type="button" onclick="adjustResolve('${match.id}', 0, 1)" class="w-1/3 h-full flex items-center justify-center text-zinc-400 active:bg-zinc-800 active:text-white font-black text-xl select-none transition-none">+</button>
+                </div>
+                <span class="font-bold text-zinc-500 px-1 text-lg">:</span>
+                <div class="flex bg-zinc-950 rounded-lg overflow-hidden h-12 border border-zinc-700 flex-1">
+                  <button type="button" onclick="adjustResolve('${match.id}', 1, -1)" class="w-1/3 h-full flex items-center justify-center text-zinc-400 active:bg-zinc-800 active:text-white font-black text-2xl select-none transition-none">-</button>
+                  <span id="res1-${match.id}" class="w-1/3 h-full flex items-center justify-center font-black text-base text-white select-none">0</span>
+                  <button type="button" onclick="adjustResolve('${match.id}', 1, 1)" class="w-1/3 h-full flex items-center justify-center text-zinc-400 active:bg-zinc-800 active:text-white font-black text-xl select-none transition-none">+</button>
+                </div>
               </div>
-              <span class="font-bold text-zinc-500 px-1 text-lg">:</span>
-              <div class="flex bg-zinc-950 rounded-lg overflow-hidden h-12 border border-zinc-700 flex-1">
-                <button type="button" onclick="adjustResolve('${match.id}', 1, -1)" class="w-1/3 h-full flex items-center justify-center text-zinc-400 active:bg-zinc-800 active:text-white font-black text-2xl select-none transition-none">-</button>
-                <span id="res1-${match.id}" class="w-1/3 h-full flex items-center justify-center font-black text-base text-white select-none">0</span>
-                <button type="button" onclick="adjustResolve('${match.id}', 1, 1)" class="w-1/3 h-full flex items-center justify-center text-zinc-400 active:bg-zinc-800 active:text-white font-black text-xl select-none transition-none">+</button>
-              </div>
+              <button onclick="saveMatchResult('${match.id}')" class="w-full bg-zinc-200 text-zinc-950 active:bg-white h-12 rounded-lg font-black text-xs uppercase tracking-wider shadow transition-colors block">ULOŽIŤ VÝSLEDOK</button>
             </div>
-            <button onclick="saveMatchResult('${match.id}')" class="w-full bg-zinc-200 text-zinc-950 active:bg-white h-12 rounded-lg font-black text-xs uppercase tracking-wider shadow transition-colors block">ULOŽIŤ VÝSLEDOK</button>
           </div>
         `;
       } else {
-        contentBody = `
-          <div class="grid grid-cols-[1fr_72px_1fr] items-center w-full pb-3 mb-3 border-b border-zinc-700">
-            <div class="text-right text-base font-bold text-white truncate pr-2 pl-3">${match.team1}</div>
-            <div class="text-base font-black text-white bg-zinc-950 rounded border border-zinc-700 text-center w-full py-1 flex items-center justify-center">${match.r1}&nbsp;<span class="opacity-50 text-zinc-400 mx-0.5">:</span>&nbsp;${match.r2}</div>
-            <div class="text-left text-base font-bold text-white truncate pl-2 pr-7">${match.team2}</div>
-          </div>
-          <div class="space-y-2">
-            <div class="grid grid-cols-[1fr_72px_1fr] items-center w-full">
-              <div class="text-left text-sm font-bold uppercase tracking-wider ${colorK}">Krevetka</div>
-              <div class="text-base font-black text-center w-full ${colorK}">${match.k1}&nbsp;<span class="opacity-50 mx-0.5">:</span>&nbsp;${match.k2}</div>
-              <div class="text-right flex justify-end">
-                <span class="inline-block bg-zinc-950 ${colorK} px-2.5 py-1 rounded text-sm font-black border border-zinc-700 shadow-sm">${match.ptsK}&nbsp;b</span>
+        return `
+          <div class="bg-zinc-800 rounded-lg shadow-sm relative border border-zinc-700 border-l-[6px] border-r-[6px] ${hBorderClasses} overflow-hidden mb-3">
+            ${deleteBtn}
+            
+            <div class="bg-zinc-700 px-4 py-3 border-b border-zinc-600">
+              <div class="grid grid-cols-[1fr_64px_1fr] items-center w-full">
+                <div class="text-right text-base font-bold text-white truncate pr-2 pl-2">${match.team1}</div>
+                <div class="text-base font-black text-white text-center w-full flex items-center justify-center">${match.r1}&nbsp;<span class="opacity-50 text-zinc-400 mx-0.5">:</span>&nbsp;${match.r2}</div>
+                <div class="text-left text-base font-bold text-white truncate pl-2 pr-7">${match.team2}</div>
               </div>
             </div>
-            <div class="grid grid-cols-[1fr_72px_1fr] items-center w-full">
-              <div class="text-left text-sm font-bold uppercase tracking-wider ${colorM}">Marek</div>
-              <div class="text-base font-black text-center w-full ${colorM}">${match.m1}&nbsp;<span class="opacity-50 mx-0.5">:</span>&nbsp;${match.m2}</div>
-              <div class="text-right flex justify-end">
-                <span class="inline-block bg-zinc-950 ${colorM} px-2.5 py-1 rounded text-sm font-black border border-zinc-700 shadow-sm">${match.ptsM}&nbsp;b</span>
+
+            <div class="px-4 py-3 space-y-2">
+              <div class="grid grid-cols-[1fr_64px_1fr] items-center w-full">
+                <div class="text-left text-sm font-bold uppercase tracking-wider ${colorK}">Krevetka</div>
+                <div class="text-base font-black text-center w-full ${colorK}">${match.k1}&nbsp;<span class="opacity-50 mx-0.5">:</span>&nbsp;${match.k2}</div>
+                <div class="text-right flex justify-end">
+                  <span class="inline-block ${bgK} px-2.5 py-1 rounded-md text-base font-black border border-zinc-700 shadow-sm leading-none">${match.ptsK}&nbsp;b</span>
+                </div>
+              </div>
+              <div class="grid grid-cols-[1fr_64px_1fr] items-center w-full">
+                <div class="text-left text-sm font-bold uppercase tracking-wider ${colorM}">Marek</div>
+                <div class="text-base font-black text-center w-full ${colorM}">${match.m1}&nbsp;<span class="opacity-50 mx-0.5">:</span>&nbsp;${match.m2}</div>
+                <div class="text-right flex justify-end">
+                  <span class="inline-block ${bgM} px-2.5 py-1 rounded-md text-base font-black border border-zinc-700 shadow-sm leading-none">${match.ptsM}&nbsp;b</span>
+                </div>
               </div>
             </div>
           </div>
         `;
       }
-
-      return `
-        <div class="bg-zinc-800 rounded-lg px-3.5 py-3 shadow-sm relative border border-zinc-700">
-          ${winnerDot}
-          ${deleteBtn}
-          ${contentBody}
-        </div>
-      `;
     }
 
     function render() {
@@ -695,11 +706,10 @@
 
       let homeHTML = '';
       
-      // Zoradenie zápasov: najprv tie, ktoré čakajú na výsledok (isResolved: false)
-      let sortedMatches = matches.slice().reverse().sort((a, b) => {
-        if (a.isResolved === b.isResolved) return 0;
-        return a.isResolved ? 1 : -1;
-      });
+      // ZORADENIE: Najprv neukončené (najnovšie hore), potom ukončené (najnovšie hore)
+      let unresolvedMatches = matches.filter(m => !m.isResolved).reverse();
+      let resolvedMatches = matches.filter(m => m.isResolved).reverse();
+      let sortedMatches = [...unresolvedMatches, ...resolvedMatches];
 
       sortedMatches.forEach(m => {
         homeHTML += createMatchCard(m);
@@ -717,16 +727,18 @@
         set.matches.forEach(m => {
           let hColorK = m.ptsK > m.ptsM ? 'text-emerald-400' : (m.ptsK === m.ptsM ? 'text-white' : 'text-zinc-400');
           let hColorM = m.ptsM > m.ptsK ? 'text-orange-400' : (m.ptsM === m.ptsK ? 'text-white' : 'text-zinc-400');
+          let hBgK = m.ptsK > m.ptsM ? 'bg-zinc-900 text-emerald-400' : (m.ptsK === m.ptsM ? 'bg-zinc-900 text-white' : 'bg-zinc-800 text-zinc-400');
+          let hBgM = m.ptsM > m.ptsK ? 'bg-zinc-900 text-orange-400' : (m.ptsM === m.ptsK ? 'bg-zinc-900 text-white' : 'bg-zinc-800 text-zinc-400');
           let hBorderClasses = m.ptsK > m.ptsM ? 'border-l-emerald-400 border-r-emerald-400' : (m.ptsM > m.ptsK ? 'border-l-orange-400 border-r-orange-400' : 'border-l-white border-r-white');
 
           setMatchesHTML += `
             <div class="bg-zinc-800 rounded-lg overflow-hidden shadow-sm mb-3.5 last:mb-0 relative border border-zinc-700 border-l-[6px] border-r-[6px] ${hBorderClasses}">
               
-              <div class="bg-zinc-700 px-4 py-2.5 border-b border-zinc-600">
+              <div class="bg-zinc-700 px-4 py-3 border-b border-zinc-600">
                 <div class="grid grid-cols-[1fr_64px_1fr] items-center w-full">
-                  <div class="text-right text-base font-bold text-white truncate pr-3 pl-2">${m.team1}</div>
+                  <div class="text-right text-base font-bold text-white truncate pr-2 pl-2">${m.team1}</div>
                   <div class="text-base font-black text-white text-center w-full flex items-center justify-center">${m.r1}&nbsp;<span class="opacity-50 text-zinc-400 mx-0.5">:</span>&nbsp;${m.r2}</div>
-                  <div class="text-left text-base font-bold text-white truncate pl-3 pr-2">${m.team2}</div>
+                  <div class="text-left text-base font-bold text-white truncate pl-2 pr-2">${m.team2}</div>
                 </div>
               </div>
 
@@ -735,14 +747,14 @@
                   <div class="text-left text-sm font-bold uppercase tracking-wider ${hColorK}">Krevetka</div>
                   <div class="text-base font-black text-center w-full ${hColorK}">${m.k1}&nbsp;<span class="opacity-50 mx-0.5">:</span>&nbsp;${m.k2}</div>
                   <div class="text-right flex justify-end">
-                    <span class="inline-block ${hColorK} bg-zinc-900 px-2.5 py-1 rounded text-sm font-black border border-zinc-700 shadow-sm">${m.ptsK}&nbsp;b</span>
+                    <span class="inline-block ${hBgK} px-2.5 py-1 rounded-md text-base font-black border border-zinc-700 shadow-sm leading-none">${m.ptsK}&nbsp;b</span>
                   </div>
                 </div>
                 <div class="grid grid-cols-[1fr_64px_1fr] items-center w-full">
                   <div class="text-left text-sm font-bold uppercase tracking-wider ${hColorM}">Marek</div>
                   <div class="text-base font-black text-center w-full ${hColorM}">${m.m1}&nbsp;<span class="opacity-50 mx-0.5">:</span>&nbsp;${m.m2}</div>
                   <div class="text-right flex justify-end">
-                    <span class="inline-block ${hColorM} bg-zinc-900 px-2.5 py-1 rounded text-sm font-black border border-zinc-700 shadow-sm">${m.ptsM}&nbsp;b</span>
+                    <span class="inline-block ${hBgM} px-2.5 py-1 rounded-md text-base font-black border border-zinc-700 shadow-sm leading-none">${m.ptsM}&nbsp;b</span>
                   </div>
                 </div>
               </div>
