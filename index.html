@@ -88,31 +88,31 @@
     <div class="max-w-md mx-auto space-y-4 p-4 pt-2">
       
       <!-- Scoreboard Header -->
-      <div class="flex items-center justify-between mb-8 mt-1 px-1">
+      <div class="flex items-center justify-between w-full mb-6 relative">
         
         <!-- Left / KREVETKA -->
-        <div class="flex flex-col items-center flex-1">
-          <div class="flex items-center gap-1.5 mb-2.5 bg-zinc-800/70 px-3 py-1 rounded-full border border-zinc-700/80 shadow-sm">
-            <span class="text-xl leading-none">🦠</span>
-            <span id="setsK-val" class="text-lg font-black text-white leading-none">0</span>
+        <div class="flex flex-col items-start">
+          <div class="flex items-center gap-1.5 mb-1">
+            <span class="text-2xl leading-none">🦠</span>
+            <span id="setsK-val" class="text-xl font-bold text-white leading-none mt-1">0</span>
           </div>
-          <span class="text-xs font-black text-emerald-400 uppercase tracking-widest drop-shadow-sm">Krevetka</span>
+          <span class="text-sm font-bold text-emerald-400 uppercase tracking-widest drop-shadow-sm">Krevetka</span>
         </div>
 
         <!-- Score Center -->
-        <div class="flex items-center justify-center shrink-0 px-2">
-          <span id="scoreK" class="text-6xl font-black text-emerald-400 leading-none tracking-tighter drop-shadow-sm text-right">0</span>
-          <span class="text-zinc-600 font-black text-4xl leading-none pb-2 mx-3">:</span>
-          <span id="scoreM" class="text-6xl font-black text-orange-400 leading-none tracking-tighter drop-shadow-sm text-left">0</span>
+        <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <span id="scoreK" class="text-5xl font-semibold text-emerald-400 leading-none tracking-tighter drop-shadow-sm text-right">0</span>
+          <span class="text-zinc-600 font-semibold text-4xl leading-none pb-2 mx-3">:</span>
+          <span id="scoreM" class="text-5xl font-semibold text-orange-400 leading-none tracking-tighter drop-shadow-sm text-left">0</span>
         </div>
 
         <!-- Right / MAREK -->
-        <div class="flex flex-col items-center flex-1">
-          <div class="flex items-center gap-1.5 mb-2.5 bg-zinc-800/70 px-3 py-1 rounded-full border border-zinc-700/80 shadow-sm">
-            <span id="setsM-val" class="text-lg font-black text-white leading-none">0</span>
-            <span class="text-xl leading-none">🦠</span>
+        <div class="flex flex-col items-end">
+          <div class="flex items-center gap-1.5 mb-1">
+            <span id="setsM-val" class="text-xl font-bold text-white leading-none mt-1">0</span>
+            <span class="text-2xl leading-none">🦠</span>
           </div>
-          <span class="text-xs font-black text-orange-400 uppercase tracking-widest drop-shadow-sm">Marek</span>
+          <span class="text-sm font-bold text-orange-400 uppercase tracking-widest drop-shadow-sm">Marek</span>
         </div>
 
       </div>
