@@ -25,36 +25,34 @@
   <div class="max-w-md mx-auto px-4 pb-56 relative min-h-screen">
     
     <!-- View: Home -->
-    <div id="homeView" class="block pt-2">
+    <div id="homeView" class="block pt-1">
       
       <!-- HLAVIČKA SO SKÓRE -->
-      <div class="flex items-center justify-between w-full mb-5 mt-4">
-        
+      <div class="flex items-center justify-between w-full mb-4 mt-1">
         <!-- Left / KREVETKA -->
-        <div class="flex flex-col items-start z-10 w-24">
-          <div class="flex items-center gap-1.5 mb-1.5">
+        <div class="flex-1 flex flex-col items-start z-10">
+          <div class="flex items-center gap-1.5 mb-0.5">
             <span class="text-3xl leading-none">🦠</span>
-            <span id="setsK-val" class="text-2xl font-bold text-white leading-none mt-1">0</span>
+            <span id="setsK-val" class="text-xl font-bold text-white leading-none mt-1">0</span>
           </div>
           <span class="text-sm font-bold text-emerald-400 uppercase tracking-widest drop-shadow-sm">Krevetka</span>
         </div>
 
-        <!-- Score Center Box (s rámčekom podľa požiadavky) -->
-        <div class="bg-zinc-900 border border-zinc-700 rounded-2xl px-5 py-2.5 flex items-center justify-center shadow-lg z-20">
+        <!-- Score Center Box -->
+        <div class="bg-zinc-900 border border-zinc-700 rounded-2xl px-5 py-2.5 flex items-center justify-center shadow-lg z-20 mx-2">
           <span id="scoreK" class="text-5xl font-semibold text-emerald-400 leading-none tracking-tighter text-right">0</span>
           <span class="text-zinc-600 font-semibold text-4xl leading-none pb-1 mx-3">:</span>
           <span id="scoreM" class="text-5xl font-semibold text-orange-400 leading-none tracking-tighter text-left">0</span>
         </div>
 
         <!-- Right / MAREK -->
-        <div class="flex flex-col items-end z-10 w-24">
-          <div class="flex items-center gap-1.5 mb-1.5">
-            <span id="setsM-val" class="text-2xl font-bold text-white leading-none mt-1">0</span>
+        <div class="flex-1 flex flex-col items-end z-10">
+          <div class="flex items-center gap-1.5 mb-0.5">
+            <span id="setsM-val" class="text-xl font-bold text-white leading-none mt-1">0</span>
             <span class="text-3xl leading-none">🦠</span>
           </div>
           <span class="text-sm font-bold text-orange-400 uppercase tracking-widest drop-shadow-sm">Marek</span>
         </div>
-
       </div>
 
       <button id="addTipBtn" class="w-full bg-zinc-200 text-zinc-950 font-bold text-sm tracking-widest uppercase py-4 rounded-2xl mb-6 shadow-sm active:scale-[0.98] transition-transform">
@@ -179,17 +177,15 @@
     import { getFirestore, collection, addDoc, getDocs, updateDoc, deleteDoc, doc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
     import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
 
-    // =========================================================
-    // POZOR!!! TU VLOŽ SVOJE FIREBASE KĽÚČE PRED NAHRANÍM NA GITHUB!
-    // Ak to nenahradíš, aplikácia sa nespojí s databázou.
-    // =========================================================
+    // Firebase config dodaný užívateľom
     const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_AUTH_DOMAIN",
-      projectId: "YOUR_PROJECT_ID",
-      storageBucket: "YOUR_STORAGE_BUCKET",
-      messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-      appId: "YOUR_APP_ID"
+      apiKey: "AIzaSyDdscBDRvZOdtSjz8filTYtRmmYCT8Fk_Y",
+      authDomain: "futbal-one.firebaseapp.com",
+      projectId: "futbal-one",
+      storageBucket: "futbal-one.firebasestorage.app",
+      messagingSenderId: "689260745957",
+      appId: "1:689260745957:web:d3815cc1e8b80d9225b00c",
+      measurementId: "G-40BYW7L13N"
     };
 
     let app, db, auth;
@@ -198,7 +194,7 @@
       db = getFirestore(app);
       auth = getAuth(app);
     } catch (e) {
-      console.error("Firebase init error (Zrejme chýbajú kľúče):", e);
+      console.error("Firebase init error:", e);
     }
 
     const ALLOWED_EMAILS = ['krevetka@example.com', 'marek@example.com']; 
@@ -311,60 +307,59 @@
       
       const isClosed = match.result && match.result.trim() !== "";
       
-      let borderColor = 'border-transparent';
+      let winnerColor = 'border-white bg-white';
+      let kColor = 'text-white border-white/20 bg-white/10';
+      let mColor = 'text-white border-white/20 bg-white/10';
+      
       if (isClosed) {
-        if (kPoints > mPoints) borderColor = 'border-emerald-500';
-        else if (mPoints > kPoints) borderColor = 'border-orange-500';
-        else borderColor = 'border-white';
+        if (kPoints > mPoints) {
+          winnerColor = 'bg-emerald-500';
+          kColor = 'text-emerald-400 border-emerald-500/30 bg-emerald-500/10';
+          mColor = 'text-white border-white/10 bg-white/5';
+        } else if (mPoints > kPoints) {
+          winnerColor = 'bg-orange-500';
+          kColor = 'text-white border-white/10 bg-white/5';
+          mColor = 'text-orange-400 border-orange-500/30 bg-orange-500/10';
+        }
       }
 
       const card = document.createElement('div');
-      
-      // Removed the left/right borders and added bg-zinc-800 for the whole card to make it lighter
       card.className = `relative rounded-2xl flex flex-col shadow-sm mb-4 overflow-hidden bg-zinc-800`;
 
       card.innerHTML = `
-        <!-- Match Header -->
-        <div class="py-4 px-4 flex items-center justify-between relative border-b border-zinc-700 ${isClosed ? 'bg-zinc-700/30' : ''}">
-          
-          <!-- Zvislé farebné pásy na okrajoch pre ukončené zápasy -->
-          ${isClosed ? `
-            <div class="absolute left-0 top-0 bottom-0 w-1.5 ${borderColor.replace('border-', 'bg-')}"></div>
-            <div class="absolute right-0 top-0 bottom-0 w-1.5 ${borderColor.replace('border-', 'bg-')}"></div>
-          ` : ''}
+        ${isClosed ? `
+          <div class="absolute left-0 top-0 bottom-0 w-1.5 ${winnerColor} z-10"></div>
+          <div class="absolute right-0 top-0 bottom-0 w-1.5 ${winnerColor} z-10"></div>
+        ` : ''}
 
+        <div class="py-4 px-5 flex items-center justify-between relative border-b border-zinc-700 ${isClosed ? 'bg-zinc-700/40' : ''}">
           <div class="flex-1 text-right pr-4 text-base font-bold text-white truncate">${match.team1}</div>
-          
-          <div class="w-16 flex justify-center items-center text-base font-black text-white tracking-widest">
+          <div class="w-16 flex justify-center items-center text-base font-black text-white tracking-widest relative">
             ${isClosed ? match.result : 'VS'}
           </div>
-          
           <div class="flex-1 text-left pl-4 text-base font-bold text-white truncate">${match.team2}</div>
           
           ${!isHistory ? `
-            <button onclick="deleteMatch('${match.id}')" class="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-red-400 px-2 py-1 z-10">
+            <button onclick="deleteMatch('${match.id}')" class="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-red-400 px-2 py-2 z-20">
               <i class="fas fa-times"></i>
             </button>
           ` : ''}
         </div>
         
-        <!-- User Tips -->
-        <div class="bg-zinc-900 p-4 space-y-3">
-          <!-- Krevetka -->
+        <div class="bg-zinc-900 p-4 space-y-3 relative z-0">
           <div class="flex items-center justify-between">
-            <div class="flex-1 text-left text-sm font-bold text-emerald-400">KREVETKA</div>
+            <div class="flex-1 text-left text-sm font-bold text-emerald-400 pl-2">KREVETKA</div>
             <div class="w-16 text-center text-base font-black text-emerald-400">${match.tipK || '-:-'}</div>
-            <div class="flex-1 text-right">
-              <span class="inline-block bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-base font-bold px-2.5 py-1 rounded-lg">${kPoints} b</span>
+            <div class="flex-1 text-right pr-2">
+              <span class="inline-block border text-sm font-bold px-2.5 py-1 rounded-lg ${isClosed ? kColor : 'text-emerald-400 border-emerald-500/30 bg-emerald-500/10'}">${kPoints} b</span>
             </div>
           </div>
           
-          <!-- Marek -->
           <div class="flex items-center justify-between">
-            <div class="flex-1 text-left text-sm font-bold text-orange-400">MAREK</div>
+            <div class="flex-1 text-left text-sm font-bold text-orange-400 pl-2">MAREK</div>
             <div class="w-16 text-center text-base font-black text-orange-400">${match.tipM || '-:-'}</div>
-            <div class="flex-1 text-right">
-              <span class="inline-block bg-orange-500/10 border border-orange-500/30 text-orange-400 text-base font-bold px-2.5 py-1 rounded-lg">${mPoints} b</span>
+            <div class="flex-1 text-right pr-2">
+              <span class="inline-block border text-sm font-bold px-2.5 py-1 rounded-lg ${isClosed ? mColor : 'text-orange-400 border-orange-500/30 bg-orange-500/10'}">${mPoints} b</span>
             </div>
           </div>
         </div>
@@ -409,5 +404,164 @@
       openList.innerHTML = '';
       closedList.innerHTML = '';
 
-      // TOTO ZABEZPEČÍ, ŽE NEUKONČENÉ SÚ NAVRCHU
-      const sortedMatches = [...matches].sort
+      const sortedMatches = [...matches].sort((a, b) => {
+        const aClosed = a.result && a.result.trim() !== "";
+        const bClosed = b.result && b.result.trim() !== "";
+        
+        if (!aClosed && bClosed) return -1;
+        if (aClosed && !bClosed) return 1;
+        
+        return b.createdAt - a.createdAt;
+      });
+
+      sortedMatches.forEach(match => {
+        const isClosed = match.result && match.result.trim() !== "";
+        if (isClosed) {
+           closedList.appendChild(createMatchCard(match));
+        } else {
+           openList.appendChild(createMatchCard(match));
+        }
+      });
+
+      renderHistory();
+    }
+
+    function renderHistory() {
+      const histCont = document.getElementById('historyContainer');
+      histCont.innerHTML = '';
+
+      if (historySets.length > 0) {
+        const set = historySets[0];
+        const isKrevetkaWinner = set.scoreK > set.scoreM;
+        const winnerColor = isKrevetkaWinner ? 'bg-emerald-500' : 'bg-orange-500';
+
+        const setWrapper = document.createElement('div');
+        setWrapper.className = 'bg-zinc-900 rounded-2xl border border-zinc-800 overflow-hidden mb-6 shadow-sm';
+        
+        setWrapper.innerHTML = `
+          <button class="w-full p-5 flex items-center justify-between bg-zinc-800/50 hover:bg-zinc-800 transition-colors" onclick="this.nextElementSibling.classList.toggle('hidden')">
+            <div class="flex items-center gap-4">
+              <div class="w-2.5 h-2.5 rounded-full ${winnerColor}"></div>
+              <span class="font-bold text-white text-sm">SET #1</span>
+            </div>
+            <div class="flex items-center gap-4">
+              <div class="flex items-center gap-2">
+                 <span class="text-xl font-bold text-emerald-400">${set.scoreK}</span>
+                 <span class="text-zinc-600">:</span>
+                 <span class="text-xl font-bold text-orange-400">${set.scoreM}</span>
+              </div>
+              <i class="fas fa-chevron-down text-zinc-500 text-sm"></i>
+            </div>
+          </button>
+          <div class="hidden p-4 space-y-4 bg-zinc-950 border-t border-zinc-800 pb-6">
+            ${set.matches.map(m => createMatchCard(m, true).outerHTML).join('')}
+          </div>
+        `;
+        histCont.appendChild(setWrapper);
+      }
+    }
+
+    async function loadData() {
+      if (!db || !currentUser) return;
+      try {
+        const qMatches = query(collection(db, "matches"), orderBy("createdAt", "desc"));
+        const snap = await getDocs(qMatches);
+        matches = [];
+        snap.forEach(doc => { matches.push({id: doc.id, ...doc.data()}); });
+
+        const qSets = query(collection(db, "sets"), orderBy("createdAt", "asc"));
+        const snapSets = await getDocs(qSets);
+        historySets = [];
+        setsWonK = 0;
+        setsWonM = 0;
+        
+        snapSets.forEach(doc => { 
+          const s = {id: doc.id, ...doc.data()};
+          historySets.push(s);
+          if (s.scoreK > s.scoreM) setsWonK++;
+          if (s.scoreM > s.scoreK) setsWonM++;
+        });
+
+        if (historySets.length > 1) {
+            historySets = [historySets[0]];
+        }
+
+        updateUI();
+      } catch(e) {
+        console.error("Load error", e);
+      }
+    }
+
+    saveTipBtn.addEventListener('click', async () => {
+      const t1 = document.getElementById('team1').value;
+      const t2 = document.getElementById('team2').value;
+      const tk1 = document.getElementById('tipK1').value;
+      const tk2 = document.getElementById('tipK2').value;
+      const tm1 = document.getElementById('tipM1').value;
+      const tm2 = document.getElementById('tipM2').value;
+
+      if (!t1 || !t2 || !tk1 || !tk2 || !tm1 || !tm2) return alert('Vyplň všetky polia!');
+
+      const newMatch = {
+        team1: t1, team2: t2,
+        tipK: `${tk1}:${tk2}`,
+        tipM: `${tm1}:${tm2}`,
+        result: "",
+        createdAt: Date.now()
+      };
+
+      try {
+        if(db) await addDoc(collection(db, "matches"), newMatch);
+        tipForm.classList.add('hidden');
+        
+        document.getElementById('team1').value = ''; document.getElementById('team2').value = '';
+        document.getElementById('tipK1').value = ''; document.getElementById('tipK2').value = '';
+        document.getElementById('tipM1').value = ''; document.getElementById('tipM2').value = '';
+        
+        loadData();
+      } catch(e) { console.error(e); }
+    });
+
+    window.saveResult = async (matchId) => {
+      const r1 = document.getElementById(`res1-${matchId}`).value;
+      const r2 = document.getElementById(`res2-${matchId}`).value;
+      if (!r1 || !r2) return alert('Zadaj výsledok!');
+
+      try {
+        if(db) await updateDoc(doc(db, "matches", matchId), { result: `${r1}:${r2}` });
+        await loadData();
+        checkSetWinner();
+      } catch(e) { console.error(e); }
+    };
+
+    window.deleteMatch = async (matchId) => {
+      if (!confirm('Naozaj zmazať zápas?')) return;
+      try {
+        if(db) await deleteDoc(doc(db, "matches", matchId));
+        loadData();
+      } catch(e) { console.error(e); }
+    };
+
+    async function checkSetWinner() {
+      if (totalScoreK >= 30 || totalScoreM >= 30) {
+        const sortedMatches = [...matches].sort((a, b) => a.createdAt - b.createdAt);
+        const newSet = {
+          scoreK: totalScoreK,
+          scoreM: totalScoreM,
+          matches: sortedMatches,
+          createdAt: Date.now()
+        };
+        
+        try {
+          if(db) await addDoc(collection(db, "sets"), newSet);
+          for (let m of matches) {
+            await deleteDoc(doc(db, "matches", m.id));
+          }
+          alert(`SET UKONČENÝ! Dosiahlo sa 30 bodov.`);
+          loadData();
+        } catch(e) { console.error(e); }
+      }
+    }
+  </script>
+</body>
+</html>
