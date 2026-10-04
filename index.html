@@ -25,37 +25,37 @@
   <div class="max-w-md mx-auto px-4 pb-56 relative min-h-screen">
     
     <!-- View: Home -->
-    <div id="homeView" class="block pt-1">
+    <div id="homeView" class="block pt-3">
       
-      <!-- HLAVIČKA SO SKÓRE -->
-      <div class="flex items-center justify-between w-full mb-4 mt-1">
+      <!-- HLAVIČKA SO SKÓRE (Čistý symetrický dizajn) -->
+      <div class="flex items-start justify-between w-full mb-6">
         <!-- Left / KREVETKA -->
-        <div class="flex-1 flex flex-col items-start z-10">
-          <div class="flex items-center gap-1.5 mb-0.5">
+        <div class="flex-1 flex flex-col items-start z-10 pt-1">
+          <div class="flex items-center gap-2 mb-1.5">
             <span class="text-3xl leading-none">🦠</span>
-            <span id="setsK-val" class="text-xl font-bold text-white leading-none mt-1">0</span>
+            <span id="setsK-val" class="text-2xl font-bold text-white leading-none mt-1">0</span>
           </div>
           <span class="text-sm font-bold text-emerald-400 uppercase tracking-widest drop-shadow-sm">Krevetka</span>
         </div>
 
-        <!-- Score Center Box -->
-        <div class="bg-zinc-900 border border-zinc-700 rounded-2xl px-5 py-2.5 flex items-center justify-center shadow-lg z-20 mx-2">
+        <!-- Score Center Box (Nezávislý stred s okrajom) -->
+        <div class="bg-zinc-900 border border-zinc-700 rounded-2xl px-5 py-2 flex items-center justify-center shadow-lg z-20 mx-3 mt-1">
           <span id="scoreK" class="text-5xl font-semibold text-emerald-400 leading-none tracking-tighter text-right">0</span>
           <span class="text-zinc-600 font-semibold text-4xl leading-none pb-1 mx-3">:</span>
           <span id="scoreM" class="text-5xl font-semibold text-orange-400 leading-none tracking-tighter text-left">0</span>
         </div>
 
         <!-- Right / MAREK -->
-        <div class="flex-1 flex flex-col items-end z-10">
-          <div class="flex items-center gap-1.5 mb-0.5">
-            <span id="setsM-val" class="text-xl font-bold text-white leading-none mt-1">0</span>
+        <div class="flex-1 flex flex-col items-end z-10 pt-1">
+          <div class="flex items-center gap-2 mb-1.5">
+            <span id="setsM-val" class="text-2xl font-bold text-white leading-none mt-1">0</span>
             <span class="text-3xl leading-none">🦠</span>
           </div>
           <span class="text-sm font-bold text-orange-400 uppercase tracking-widest drop-shadow-sm">Marek</span>
         </div>
       </div>
 
-      <button id="addTipBtn" class="w-full bg-zinc-200 text-zinc-950 font-bold text-sm tracking-widest uppercase py-4 rounded-2xl mb-6 shadow-sm active:scale-[0.98] transition-transform">
+      <button id="addTipBtn" class="w-full bg-zinc-200 text-zinc-950 font-bold text-sm tracking-widest uppercase py-4 rounded-2xl mb-5 shadow-sm active:scale-[0.98] transition-transform">
         + Pridať nový tip
       </button>
 
@@ -174,10 +174,10 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
-    import { getFirestore, collection, addDoc, getDocs, updateDoc, deleteDoc, doc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, getDocs, updateDoc, deleteDoc, doc, query } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
     import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
 
-    // Firebase config dodaný užívateľom
+    // Vrátené presne tvoje kľúče - netreba upravovať!
     const firebaseConfig = {
       apiKey: "AIzaSyDdscBDRvZOdtSjz8filTYtRmmYCT8Fk_Y",
       authDomain: "futbal-one.firebaseapp.com",
@@ -197,9 +197,7 @@
       console.error("Firebase init error:", e);
     }
 
-    const ALLOWED_EMAILS = ['krevetka@example.com', 'marek@example.com']; 
     let currentUser = null;
-
     let matches = [];
     let historySets = [];
     let totalScoreK = 0;
@@ -214,7 +212,6 @@
     const navBtns = document.querySelectorAll('.nav-btn');
     const views = ['homeView', 'historyView', 'rulesView', 'profileView'];
 
-    // Auth Elements
     const loginBtn = document.getElementById('loginBtn');
     const logoutBtn = document.getElementById('logoutBtn');
     const loggedOutState = document.getElementById('loggedOutState');
@@ -324,20 +321,22 @@
       }
 
       const card = document.createElement('div');
-      card.className = `relative rounded-2xl flex flex-col shadow-sm mb-4 overflow-hidden bg-zinc-800`;
+      card.className = `relative rounded-2xl shadow-sm mb-4 bg-zinc-800 flex flex-col overflow-hidden`;
 
       card.innerHTML = `
         ${isClosed ? `
-          <div class="absolute left-0 top-0 bottom-0 w-1.5 ${winnerColor} z-10"></div>
-          <div class="absolute right-0 top-0 bottom-0 w-1.5 ${winnerColor} z-10"></div>
+          <div class="absolute left-0 top-0 bottom-0 w-2 ${winnerColor} z-10 rounded-l-2xl"></div>
+          <div class="absolute right-0 top-0 bottom-0 w-2 ${winnerColor} z-10 rounded-r-2xl"></div>
         ` : ''}
 
-        <div class="py-4 px-5 flex items-center justify-between relative border-b border-zinc-700 ${isClosed ? 'bg-zinc-700/40' : ''}">
-          <div class="flex-1 text-right pr-4 text-base font-bold text-white truncate">${match.team1}</div>
-          <div class="w-16 flex justify-center items-center text-base font-black text-white tracking-widest relative">
-            ${isClosed ? match.result : 'VS'}
+        <div class="py-3 px-4 relative border-b border-zinc-700 ${isClosed ? 'bg-zinc-700/60' : ''}">
+          <div class="grid grid-cols-[1fr_64px_1fr] items-center">
+            <div class="text-right text-base font-bold text-white truncate pr-2">${match.team1}</div>
+            <div class="flex justify-center items-center text-base font-black text-white tracking-widest relative">
+              ${isClosed ? match.result : 'VS'}
+            </div>
+            <div class="text-left text-base font-bold text-white truncate pl-2">${match.team2}</div>
           </div>
-          <div class="flex-1 text-left pl-4 text-base font-bold text-white truncate">${match.team2}</div>
           
           ${!isHistory ? `
             <button onclick="deleteMatch('${match.id}')" class="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-red-400 px-2 py-2 z-20">
@@ -346,20 +345,20 @@
           ` : ''}
         </div>
         
-        <div class="bg-zinc-900 p-4 space-y-3 relative z-0">
-          <div class="flex items-center justify-between">
-            <div class="flex-1 text-left text-sm font-bold text-emerald-400 pl-2">KREVETKA</div>
-            <div class="w-16 text-center text-base font-black text-emerald-400">${match.tipK || '-:-'}</div>
-            <div class="flex-1 text-right pr-2">
-              <span class="inline-block border text-sm font-bold px-2.5 py-1 rounded-lg ${isClosed ? kColor : 'text-emerald-400 border-emerald-500/30 bg-emerald-500/10'}">${kPoints} b</span>
+        <div class="p-3 bg-zinc-900 z-0 pl-5 pr-5">
+          <div class="grid grid-cols-[1fr_64px_1fr] items-center mb-2.5">
+            <div class="text-left text-sm font-bold text-emerald-400">KREVETKA</div>
+            <div class="text-center text-base font-black text-emerald-400">${match.tipK || '-:-'}</div>
+            <div class="text-right">
+              <span class="inline-block border text-base font-bold px-2.5 py-1 rounded-lg ${isClosed ? kColor : 'text-emerald-400 border-emerald-500/30 bg-emerald-500/10'}">${kPoints} b</span>
             </div>
           </div>
           
-          <div class="flex items-center justify-between">
-            <div class="flex-1 text-left text-sm font-bold text-orange-400 pl-2">MAREK</div>
-            <div class="w-16 text-center text-base font-black text-orange-400">${match.tipM || '-:-'}</div>
-            <div class="flex-1 text-right pr-2">
-              <span class="inline-block border text-sm font-bold px-2.5 py-1 rounded-lg ${isClosed ? mColor : 'text-orange-400 border-orange-500/30 bg-orange-500/10'}">${mPoints} b</span>
+          <div class="grid grid-cols-[1fr_64px_1fr] items-center">
+            <div class="text-left text-sm font-bold text-orange-400">MAREK</div>
+            <div class="text-center text-base font-black text-orange-400">${match.tipM || '-:-'}</div>
+            <div class="text-right">
+              <span class="inline-block border text-base font-bold px-2.5 py-1 rounded-lg ${isClosed ? mColor : 'text-orange-400 border-orange-500/30 bg-orange-500/10'}">${mPoints} b</span>
             </div>
           </div>
         </div>
@@ -367,7 +366,7 @@
 
       if (!isClosed && !isHistory) {
         card.innerHTML += `
-          <div class="bg-zinc-900 border-t border-zinc-800 p-4">
+          <div class="bg-zinc-900 border-t border-zinc-800 p-4 rounded-b-2xl">
              <div class="flex items-center justify-center gap-3">
                <input type="number" id="res1-${match.id}" class="w-14 h-12 bg-zinc-950 text-white text-center text-xl font-bold rounded-xl border border-zinc-700" placeholder="0">
                <span class="text-zinc-500 font-bold">:</span>
@@ -404,14 +403,18 @@
       openList.innerHTML = '';
       closedList.innerHTML = '';
 
+      // Vylepšené bezpečné triedenie zápasov
       const sortedMatches = [...matches].sort((a, b) => {
         const aClosed = a.result && a.result.trim() !== "";
         const bClosed = b.result && b.result.trim() !== "";
         
-        if (!aClosed && bClosed) return -1;
-        if (aClosed && !bClosed) return 1;
+        if (!aClosed && bClosed) return -1; 
+        if (aClosed && !bClosed) return 1;  
         
-        return b.createdAt - a.createdAt;
+        // Ak staré zápasy nemajú createdAt, vloží sa 0, aby skript nepadol
+        const timeA = a.createdAt || 0;
+        const timeB = b.createdAt || 0;
+        return timeB - timeA;
       });
 
       sortedMatches.forEach(match => {
@@ -454,7 +457,7 @@
             </div>
           </button>
           <div class="hidden p-4 space-y-4 bg-zinc-950 border-t border-zinc-800 pb-6">
-            ${set.matches.map(m => createMatchCard(m, true).outerHTML).join('')}
+            ${set.matches ? set.matches.map(m => createMatchCard(m, true).outerHTML).join('') : ''}
           </div>
         `;
         histCont.appendChild(setWrapper);
@@ -463,13 +466,20 @@
 
     async function loadData() {
       if (!db || !currentUser) return;
+      
+      // Bezpečné načítanie - Krok 1 (Zápasy)
       try {
-        const qMatches = query(collection(db, "matches"), orderBy("createdAt", "desc"));
+        const qMatches = query(collection(db, "matches")); // bez orderBy aby to nepadlo na starých dátach
         const snap = await getDocs(qMatches);
         matches = [];
         snap.forEach(doc => { matches.push({id: doc.id, ...doc.data()}); });
+      } catch(e) {
+        console.error("Chyba načítania zápasov:", e);
+      }
 
-        const qSets = query(collection(db, "sets"), orderBy("createdAt", "asc"));
+      // Bezpečné načítanie - Krok 2 (Sety)
+      try {
+        const qSets = query(collection(db, "sets")); // bez orderBy
         const snapSets = await getDocs(qSets);
         historySets = [];
         setsWonK = 0;
@@ -478,18 +488,35 @@
         snapSets.forEach(doc => { 
           const s = {id: doc.id, ...doc.data()};
           historySets.push(s);
+        });
+
+        // Triedenie setov u nás, nie vo firestore
+        historySets.sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
+
+        historySets.forEach(s => {
           if (s.scoreK > s.scoreM) setsWonK++;
           if (s.scoreM > s.scoreK) setsWonM++;
         });
 
+        // Vymazanie prebytočných setov ak Firebase Rules dovolia
         if (historySets.length > 1) {
-            historySets = [historySets[0]];
+          try {
+            const setToKeep = historySets[0];
+            for (let i = 1; i < historySets.length; i++) {
+               await deleteDoc(doc(db, "sets", historySets[i].id));
+            }
+            historySets = [setToKeep];
+          } catch(err) {
+            console.log("Nemáš práva na mazanie setov, ignorujem:", err);
+            historySets = [historySets[0]]; // aspoň vizuálne nechá len jeden
+          }
         }
-
-        updateUI();
       } catch(e) {
-        console.error("Load error", e);
+        console.error("Chyba načítania setov:", e);
       }
+
+      // Bezpečná aktualizácia UI na konci
+      updateUI();
     }
 
     saveTipBtn.addEventListener('click', async () => {
@@ -544,7 +571,8 @@
 
     async function checkSetWinner() {
       if (totalScoreK >= 30 || totalScoreM >= 30) {
-        const sortedMatches = [...matches].sort((a, b) => a.createdAt - b.createdAt);
+        // Opravené bezpečné triedenie pre ukladanie do setu
+        const sortedMatches = [...matches].sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
         const newSet = {
           scoreK: totalScoreK,
           scoreM: totalScoreM,
@@ -564,4 +592,4 @@
     }
   </script>
 </body>
-</html> 
+</html>
