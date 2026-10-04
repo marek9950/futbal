@@ -2,276 +2,178 @@
 <html lang="sk">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Tipovačka - Krevetka vs Marek</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Futbal Tipovačka</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: { sans: ['Nunito', 'sans-serif'] },
-          colors: {
-            zinc: {
-              850: '#1f1f22',
-              900: '#18181b',
-              950: '#09090b'
-            }
-          }
-        }
-      }
-    }
-  </script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
   <style>
-    body {
-      -webkit-tap-highlight-color: transparent;
-      background-color: #09090b;
-    }
-    
-    ::-webkit-scrollbar { width: 4px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 8px; }
-
+    body { font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     input[type=number]::-webkit-inner-spin-button, 
     input[type=number]::-webkit-outer-spin-button { 
       -webkit-appearance: none; margin: 0; 
     }
-    input[type=number] { -moz-appearance: textfield; }
-
-    .tab-content { display: none; }
-    .tab-content.active { display: block; animation: fadeIn 0.15s ease; }
-    
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(3px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    
-    .app-container {
-        height: 100vh;
-        height: 100dvh;
-    }
-
-    button:active {
-      filter: brightness(0.9);
-    }
   </style>
 </head>
-<body class="app-container w-full flex flex-col overflow-hidden text-zinc-100 font-sans text-[16px]">
+<body class="bg-zinc-950 text-white min-h-screen no-scrollbar relative">
 
-  <div id="pullRefreshIndicator" class="fixed top-0 left-0 right-0 h-20 flex items-center justify-center bg-zinc-900 border-b border-zinc-800 text-zinc-300 text-xs font-bold transition-transform duration-200 z-50 -translate-y-full rounded-b-lg">
-    <div class="flex items-center gap-2">
-      <svg id="refreshSpinner" class="w-5 h-5 animate-spin text-emerald-400 hidden" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg>
-      <span id="refreshText">Potiahnite a podržte pre obnovenie...</span>
-    </div>
-  </div>
-
-  <div id="authScreen" class="fixed inset-0 bg-zinc-950 z-50 flex flex-col items-center justify-center p-6 hidden">
-    <div class="bg-zinc-900 rounded-lg p-8 max-w-sm w-full text-center border border-zinc-800 shadow-xl">
-      <h2 class="text-2xl font-black text-white mb-2">Súkromná Tipovačka</h2>
-      <p class="text-zinc-400 text-base mb-8 font-medium">Pre prístup k aplikácii sa musíš prihlásiť overeným Google účtom.</p>
+  <div class="max-w-md mx-auto px-4 pb-56 relative min-h-screen">
+    
+    <!-- View: Home -->
+    <div id="homeView" class="block pt-6">
       
-      <button onclick="loginWithGoogle()" class="w-full bg-white text-zinc-950 font-black py-4 rounded-lg flex items-center justify-center gap-3 active:bg-zinc-200 transition-colors shadow-lg text-base">
-        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-          <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-          <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
-          <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-        </svg>
-        Prihlásiť sa cez Google
+      <!-- HLAVIČKA SO SKÓRE -->
+      <div class="flex items-center justify-between w-full mb-6 mt-1">
+        <!-- Ľavá strana (Krevetka) -->
+        <div class="flex-1 flex flex-col items-start justify-center">
+          <div class="flex items-center gap-1.5 mb-1">
+            <span class="text-4xl leading-none drop-shadow-md">🦠</span>
+            <span id="setsK-val" class="text-3xl font-bold text-white leading-none">0</span>
+          </div>
+          <span class="text-sm font-bold text-emerald-400 uppercase tracking-widest drop-shadow-sm">Krevetka</span>
+        </div>
+
+        <!-- Stredný Box so Skóre -->
+        <div class="bg-zinc-900 border border-zinc-700 rounded-2xl px-5 py-3 flex items-center justify-center shadow-lg shrink-0 mx-2">
+          <span id="scoreK" class="text-5xl font-semibold text-emerald-400 leading-none tracking-tighter w-14 text-right">0</span>
+          <span class="text-zinc-600 font-semibold text-3xl leading-none pb-1 mx-3">:</span>
+          <span id="scoreM" class="text-5xl font-semibold text-orange-400 leading-none tracking-tighter w-14 text-left">0</span>
+        </div>
+
+        <!-- Pravá strana (Marek) -->
+        <div class="flex-1 flex flex-col items-end justify-center">
+          <div class="flex items-center gap-1.5 mb-1">
+            <span id="setsM-val" class="text-3xl font-bold text-white leading-none">0</span>
+            <span class="text-4xl leading-none drop-shadow-md">🦠</span>
+          </div>
+          <span class="text-sm font-bold text-orange-400 uppercase tracking-widest drop-shadow-sm">Marek</span>
+        </div>
+      </div>
+
+      <button id="addTipBtn" class="w-full bg-zinc-200 text-zinc-950 font-bold text-sm tracking-widest uppercase py-4 rounded-2xl mb-8 shadow-sm active:scale-[0.98] transition-transform">
+        + Pridať nový tip
       </button>
+
+      <!-- Tip Form -->
+      <div id="tipForm" class="hidden bg-zinc-900 rounded-2xl p-5 mb-8 border border-zinc-800 shadow-xl">
+        <h3 class="text-lg font-bold text-white mb-4 text-center border-b border-zinc-800 pb-3">Nový zápas</h3>
+        
+        <div class="flex items-center justify-between gap-3 mb-5">
+          <input type="text" id="team1" class="flex-1 bg-zinc-950 text-white px-4 py-3 rounded-xl border border-zinc-700 text-center font-semibold placeholder-zinc-600" placeholder="Domáci">
+          <span class="text-zinc-500 font-bold text-sm">VS</span>
+          <input type="text" id="team2" class="flex-1 bg-zinc-950 text-white px-4 py-3 rounded-xl border border-zinc-700 text-center font-semibold placeholder-zinc-600" placeholder="Hostia">
+        </div>
+
+        <div class="space-y-4 mb-6">
+          <div class="bg-zinc-950/50 p-4 rounded-xl border border-emerald-900/30">
+            <label class="block text-emerald-400 font-bold text-xs mb-2 tracking-widest uppercase">Tip: Krevetka</label>
+            <div class="flex items-center justify-center gap-4">
+              <input type="number" id="tipK1" class="w-16 h-12 bg-zinc-900 text-white text-center text-xl font-bold rounded-xl border border-zinc-700" placeholder="0">
+              <span class="text-zinc-600 font-bold">:</span>
+              <input type="number" id="tipK2" class="w-16 h-12 bg-zinc-900 text-white text-center text-xl font-bold rounded-xl border border-zinc-700" placeholder="0">
+            </div>
+          </div>
+          
+          <div class="bg-zinc-950/50 p-4 rounded-xl border border-orange-900/30">
+            <label class="block text-orange-400 font-bold text-xs mb-2 tracking-widest uppercase">Tip: Marek</label>
+            <div class="flex items-center justify-center gap-4">
+              <input type="number" id="tipM1" class="w-16 h-12 bg-zinc-900 text-white text-center text-xl font-bold rounded-xl border border-zinc-700" placeholder="0">
+              <span class="text-zinc-600 font-bold">:</span>
+              <input type="number" id="tipM2" class="w-16 h-12 bg-zinc-900 text-white text-center text-xl font-bold rounded-xl border border-zinc-700" placeholder="0">
+            </div>
+          </div>
+        </div>
+
+        <button id="saveTipBtn" class="w-full bg-emerald-500 text-black font-bold py-3.5 rounded-xl uppercase tracking-widest text-sm active:scale-[0.98] transition-transform shadow-lg shadow-emerald-500/20">
+          Uložiť Tip
+        </button>
+      </div>
+
+      <!-- Neukončené zápasy -->
+      <div id="openMatchesList" class="space-y-4 mb-4"></div>
       
-      <p id="loginError" class="text-red-500 text-base mt-4 font-bold hidden">Prístup zamietnutý. Váš e-mail nemá oprávnenie.</p>
+      <!-- Ukončené zápasy -->
+      <div id="closedMatchesList" class="space-y-4 mt-6"></div>
     </div>
-  </div>
 
-  <div id="mainApp" class="flex-1 overflow-y-auto pb-[100px] hidden bg-zinc-950 pt-2">
-    <div class="max-w-md mx-auto space-y-4 p-4 pt-2">
-      
-      <!-- Scoreboard Header -->
-      <div class="flex items-center justify-between mb-8 mt-1 px-1">
-        
-        <!-- Left / KREVETKA -->
-        <div class="flex flex-col items-center flex-1">
-          <div class="flex items-center gap-1.5 mb-2.5 bg-zinc-800/70 px-3 py-1 rounded-full border border-zinc-700/80 shadow-sm">
-            <span class="text-xl leading-none">🦠</span>
-            <span id="setsK-val" class="text-lg font-black text-white leading-none">0</span>
-          </div>
-          <span class="text-xs font-black text-emerald-400 uppercase tracking-widest drop-shadow-sm">Krevetka</span>
-        </div>
+    <div id="historyView" class="hidden pt-4 pb-20">
+      <h2 class="text-2xl font-black text-white mb-6 pl-2 tracking-tight">História setov</h2>
+      <div id="historyContainer" class="space-y-4"></div>
+    </div>
 
-        <!-- Score Center -->
-        <div class="flex items-center justify-center shrink-0 px-2">
-          <span id="scoreK" class="text-6xl font-black text-emerald-400 leading-none tracking-tighter drop-shadow-sm text-right">0</span>
-          <span class="text-zinc-600 font-black text-4xl leading-none pb-2 mx-3">:</span>
-          <span id="scoreM" class="text-6xl font-black text-orange-400 leading-none tracking-tighter drop-shadow-sm text-left">0</span>
-        </div>
-
-        <!-- Right / MAREK -->
-        <div class="flex flex-col items-center flex-1">
-          <div class="flex items-center gap-1.5 mb-2.5 bg-zinc-800/70 px-3 py-1 rounded-full border border-zinc-700/80 shadow-sm">
-            <span id="setsM-val" class="text-lg font-black text-white leading-none">0</span>
-            <span class="text-xl leading-none">🦠</span>
-          </div>
-          <span class="text-xs font-black text-orange-400 uppercase tracking-widest drop-shadow-sm">Marek</span>
-        </div>
-
+    <div id="rulesView" class="hidden pt-4 pb-20">
+      <h2 class="text-2xl font-black text-white mb-6 pl-2 tracking-tight">Pravidlá</h2>
+      <div class="bg-zinc-900 rounded-2xl p-5 text-zinc-300 space-y-4 leading-relaxed border border-zinc-800 text-sm">
+        <p>Hrá sa do <strong class="text-white">30 bodov</strong>. Kto prvý dosiahne 30 bodov, získava <strong class="text-emerald-400">1x 🦠</strong> (mrdku).</p>
+        <ul class="space-y-3 list-none p-0">
+          <li class="flex items-start gap-3">
+            <span class="text-emerald-400 font-bold mt-0.5 text-base">4b</span>
+            <span><strong>Presný výsledok:</strong> Uhádnutý presný výsledok zápasu (napr. tip 2:1, výsledok 2:1).</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="text-emerald-400 font-bold mt-0.5 text-base">3b</span>
+            <span><strong>Gólový rozdiel:</strong> Uhádnutý víťaz a presný gólový rozdiel (napr. tip 2:0, výsledok 3:1). Platí aj pre remízu (tip 1:1, výsledok 2:2).</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="text-emerald-400 font-bold mt-0.5 text-base">2b</span>
+            <span><strong>Víťaz zápasu:</strong> Uhádnutý víťaz zápasu, ale nesprávny gólový rozdiel (napr. tip 2:0, výsledok 1:0).</span>
+          </li>
+        </ul>
       </div>
+    </div>
 
-      <!-- Tab: Home -->
-      <div id="tab-home" class="tab-content active space-y-3">
-        
-        <div>
-          <button id="toggleFormBtn" type="button" onclick="toggleTipForm()" class="w-full bg-zinc-200 text-zinc-950 font-black py-3.5 rounded-lg uppercase tracking-widest text-sm shadow transition-colors">
-            + Pridať nový tip
+    <div id="profileView" class="hidden pt-4 pb-20">
+      <h2 class="text-2xl font-black text-white mb-6 pl-2 tracking-tight">Profil</h2>
+      <div class="bg-zinc-900 rounded-2xl p-6 text-center border border-zinc-800">
+        <div id="loggedOutState">
+          <i class="fas fa-user-circle text-6xl text-zinc-700 mb-4"></i>
+          <p class="text-zinc-400 mb-6 text-sm">Prihláste sa pre ukladanie tipov do databázy.</p>
+          <button id="loginBtn" class="bg-white text-black font-bold px-6 py-3 rounded-xl w-full flex items-center justify-center gap-3">
+            <i class="fab fa-google text-red-500"></i> Prihlásiť sa cez Google
           </button>
         </div>
-
-        <form id="tipFormContainer" class="bg-zinc-900 p-4 rounded-lg border border-zinc-800 hidden space-y-4" onsubmit="event.preventDefault(); addMatch();">
-          <h3 class="text-sm font-bold text-white tracking-wide">Pridať nový tip</h3>
-          
-          <div class="flex gap-3">
-            <div class="flex-1">
-              <label class="block text-xs font-bold text-zinc-400 uppercase tracking-wider mb-1.5">Domáci</label>
-              <input type="text" id="team1" placeholder="Tím 1" required enterkeyhint="next" class="w-full bg-zinc-950 text-white text-base rounded-lg p-3 focus:outline-none focus:ring-1 focus:ring-zinc-700 font-bold border border-zinc-800">
-            </div>
-            <div class="flex-1">
-              <label class="block text-xs font-bold text-zinc-400 uppercase tracking-wider mb-1.5">Hostia</label>
-              <input type="text" id="team2" placeholder="Tím 2" required enterkeyhint="done" class="w-full bg-zinc-950 text-white text-base rounded-lg p-3 focus:outline-none focus:ring-1 focus:ring-zinc-700 font-bold border border-zinc-800">
-            </div>
-          </div>
-
-          <div class="space-y-4">
-            <div>
-              <label class="block text-xs font-black text-emerald-400 uppercase tracking-wider mb-1.5">Tip Krevetka</label>
-              <div class="flex items-center gap-2">
-                <div class="flex-1 flex bg-zinc-950 rounded-lg overflow-hidden h-14 border border-zinc-800">
-                  <button type="button" onclick="adjustVal('k1', -1)" class="w-20 h-full flex items-center justify-center text-zinc-400 active:bg-zinc-800 active:text-white text-3xl font-black select-none transition-none">-</button>
-                  <input type="number" id="k1" value="0" readonly class="w-full h-full bg-transparent text-center font-black text-base text-white pointer-events-none select-none focus:outline-none">
-                  <button type="button" onclick="adjustVal('k1', 1)" class="w-20 h-full flex items-center justify-center text-zinc-400 active:bg-zinc-800 active:text-white text-2xl font-black select-none transition-none">+</button>
-                </div>
-                <span class="font-bold text-zinc-600 px-3 text-xl">:</span>
-                <div class="flex-1 flex bg-zinc-950 rounded-lg overflow-hidden h-14 border border-zinc-800">
-                  <button type="button" onclick="adjustVal('k2', -1)" class="w-20 h-full flex items-center justify-center text-zinc-400 active:bg-zinc-800 active:text-white text-3xl font-black select-none transition-none">-</button>
-                  <input type="number" id="k2" value="0" readonly class="w-full h-full bg-transparent text-center font-black text-base text-white pointer-events-none select-none focus:outline-none">
-                  <button type="button" onclick="adjustVal('k2', 1)" class="w-20 h-full flex items-center justify-center text-zinc-400 active:bg-zinc-800 active:text-white text-2xl font-black select-none transition-none">+</button>
-                </div>
-              </div>
-            </div>
-
-            <div>
-              <label class="block text-xs font-black text-orange-400 uppercase tracking-wider mb-1.5">Tip Marek</label>
-              <div class="flex items-center gap-2">
-                <div class="flex-1 flex bg-zinc-950 rounded-lg overflow-hidden h-14 border border-zinc-800">
-                  <button type="button" onclick="adjustVal('m1', -1)" class="w-20 h-full flex items-center justify-center text-zinc-400 active:bg-zinc-800 active:text-white text-3xl font-black select-none transition-none">-</button>
-                  <input type="number" id="m1" value="0" readonly class="w-full h-full bg-transparent text-center font-black text-base text-white pointer-events-none select-none focus:outline-none">
-                  <button type="button" onclick="adjustVal('m1', 1)" class="w-20 h-full flex items-center justify-center text-zinc-400 active:bg-zinc-800 active:text-white text-2xl font-black select-none transition-none">+</button>
-                </div>
-                <span class="font-bold text-zinc-600 px-3 text-xl">:</span>
-                <div class="flex-1 flex bg-zinc-950 rounded-lg overflow-hidden h-14 border border-zinc-800">
-                  <button type="button" onclick="adjustVal('m2', -1)" class="w-20 h-full flex items-center justify-center text-zinc-400 active:bg-zinc-800 active:text-white text-3xl font-black select-none transition-none">-</button>
-                  <input type="number" id="m2" value="0" readonly class="w-full h-full bg-transparent text-center font-black text-base text-white pointer-events-none select-none focus:outline-none">
-                  <button type="button" onclick="adjustVal('m2', 1)" class="w-20 h-full flex items-center justify-center text-zinc-400 active:bg-zinc-800 active:text-white text-2xl font-black select-none transition-none">+</button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <button type="submit" class="w-full mt-2 bg-zinc-200 text-zinc-950 font-black py-3.5 rounded-lg uppercase tracking-widest text-sm shadow-md">
-            Natipovať
-          </button>
-        </form>
-
-        <div id="homeMatchesList" class="pb-8">
-            <!-- Rendered matches -->
-        </div>
-      </div>
-
-      <div id="tab-history" class="tab-content space-y-4">
-        <div id="historySetsList" class="space-y-4 pb-8">
-          <!-- History sets -->
-        </div>
-      </div>
-
-      <div id="tab-rules" class="tab-content space-y-4">
-        <div class="bg-zinc-800 p-5 rounded-lg border border-zinc-700">
-          <h3 class="text-sm font-bold mb-5 text-white tracking-widest uppercase">Pravidlá tipovania</h3>
-          <ul class="space-y-4 text-sm text-zinc-200 font-medium">
-            <li class="flex items-center gap-3">
-              <span class="text-xl">🎯</span>
-              <p>Presný výsledok: <b class="text-white font-bold">5 bodov</b></p>
-            </li>
-            <li class="flex items-center gap-3">
-              <span class="text-xl">🟢</span>
-              <p>Správny výsledok (1/X/2): <b class="text-white font-bold">3 body</b></p>
-            </li>
-            <li class="flex items-center gap-3">
-              <span class="text-xl">⚽</span>
-              <p>Správny počet gólov jedného tímu: <b class="text-white font-bold">+1 bod</b></p>
-            </li>
-            <li class="flex items-center gap-3">
-              <span class="text-xl">🦠</span>
-              <p>Pri dosiahnutí 30 bodov získava hráč 1 🦠 a skóre sa vynuluje.</p>
-            </li>
-            <li class="flex items-center gap-3">
-              <span class="text-xl">☕</span>
-              <p>Hráč, ktorý prehrá, pozýva víťaza na kávu.</p>
-            </li>
-          </ul>
-        </div>
-      </div>
-
-      <div id="tab-profile" class="tab-content space-y-4">
-        <div class="bg-zinc-800 p-6 rounded-lg text-center border border-zinc-700">
-          <img id="profile-avatar" src="https://ui-avatars.com/api/?name=User&background=3f3f46&color=fff" class="w-20 h-20 rounded-full mx-auto mb-3 border-2 border-zinc-700 object-cover">
-          <h3 id="profile-name" class="text-white font-bold text-lg mb-1">Používateľ</h3>
-          <p id="profile-email" class="text-zinc-400 text-xs mb-6">Neznámy email</p>
-          
-          <button onclick="logoutApp()" class="w-full bg-zinc-700 text-zinc-200 font-bold py-3.5 rounded-lg uppercase tracking-wider text-xs">
+        <div id="loggedInState" class="hidden">
+          <img id="userAvatar" src="" class="w-20 h-20 rounded-full mx-auto mb-4 border-2 border-zinc-700" alt="Avatar">
+          <h3 id="userName" class="text-lg font-bold text-white mb-1"></h3>
+          <p id="userEmail" class="text-zinc-500 text-sm mb-6"></p>
+          <button id="logoutBtn" class="bg-zinc-800 text-white font-bold px-6 py-3 rounded-xl w-full border border-zinc-700 hover:bg-red-500/20 hover:text-red-400 transition-colors">
             Odhlásiť sa
           </button>
         </div>
       </div>
-
     </div>
   </div>
 
-  <!-- Confirm Modal -->
-  <div id="confirmModal" class="fixed inset-0 bg-black/90 z-50 flex items-center justify-center hidden p-4">
-    <div class="bg-zinc-800 rounded-lg p-5 max-w-sm w-full border border-zinc-700">
-      <h3 class="text-base font-bold text-white mb-2">Vymazať zápas?</h3>
-      <p class="text-sm text-zinc-300 mb-5">Naozaj chceš natrvalo vymazať tento zápas? Tento krok sa nedá vrátiť späť.</p>
-      <div class="flex gap-3">
-        <button onclick="closeConfirmModal()" class="flex-1 bg-zinc-700 text-white font-bold py-3 rounded-lg text-xs uppercase tracking-widest">Zrušiť</button>
-        <button id="confirmDeleteBtn" class="flex-1 bg-zinc-600 text-white font-bold py-3 rounded-lg text-xs uppercase tracking-widest">Vymazať</button>
+  <div class="fixed bottom-0 left-0 right-0 bg-zinc-900 border-t border-zinc-800 h-[76px] px-6 pb-2 pt-1.5 flex justify-between items-center z-50">
+    <button onclick="switchTab('home')" class="nav-btn text-white flex flex-col items-center gap-1.5 w-16" data-target="homeView">
+      <i class="fas fa-home text-xl mb-1.5"></i>
+      <span class="text-[10px] font-bold tracking-wider">DOMOV</span>
+    </button>
+    <button onclick="switchTab('history')" class="nav-btn text-zinc-500 flex flex-col items-center gap-1.5 w-16" data-target="historyView">
+      <i class="fas fa-clock text-xl mb-1.5"></i>
+      <span class="text-[10px] font-bold tracking-wider">HISTÓRIA</span>
+    </button>
+    <button onclick="switchTab('rules')" class="nav-btn text-zinc-500 flex flex-col items-center gap-1.5 w-16" data-target="rulesView">
+      <i class="fas fa-info-circle text-xl mb-1.5"></i>
+      <span class="text-[10px] font-bold tracking-wider">PRAVIDLÁ</span>
+    </button>
+    <button onclick="switchTab('profile')" class="nav-btn text-zinc-500 flex flex-col items-center gap-1.5 w-16" data-target="profileView">
+      <div class="w-6 h-6 rounded-full bg-zinc-700 flex items-center justify-center mb-1.5 overflow-hidden">
+        <img id="navAvatar" src="" class="w-full h-full hidden" alt="">
+        <i id="navUserIcon" class="fas fa-user text-xs"></i>
       </div>
-    </div>
+      <span class="text-[10px] font-bold tracking-wider">PROFIL</span>
+    </button>
   </div>
-
-  <nav id="bottomNav" class="fixed bottom-0 w-full bg-zinc-950 border-t border-zinc-900 flex justify-around items-center h-[76px] pb-6 pt-1.5 z-40 hidden">
-    <button onclick="switchTab('tab-home')" id="nav-tab-home" class="nav-btn flex flex-col items-center justify-center w-16 text-white h-full">
-      <svg class="w-5 h-5 mb-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
-      <span class="text-[9px] font-bold uppercase tracking-widest">Domov</span>
-    </button>
-    <button onclick="switchTab('tab-history')" id="nav-tab-history" class="nav-btn flex flex-col items-center justify-center w-16 text-zinc-500 h-full">
-      <svg class="w-5 h-5 mb-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-      <span class="text-[9px] font-bold uppercase tracking-widest">História</span>
-    </button>
-    <button onclick="switchTab('tab-rules')" id="nav-tab-rules" class="nav-btn flex flex-col items-center justify-center w-16 text-zinc-500 h-full">
-      <svg class="w-5 h-5 mb-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-      <span class="text-[9px] font-bold uppercase tracking-widest">Pravidlá</span>
-    </button>
-    <button onclick="switchTab('tab-profile')" id="nav-tab-profile" class="nav-btn flex flex-col items-center justify-center w-16 text-zinc-500 h-full">
-      <img id="nav-profile-img" src="https://ui-avatars.com/api/?name=User&background=3f3f46&color=fff" class="w-5 h-5 rounded-full object-cover border-2 border-transparent mb-1.5">
-      <span class="text-[9px] font-bold uppercase tracking-widest">Profil</span>
-    </button>
-  </nav>
 
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-    import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-    import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs, updateDoc, deleteDoc, doc, query } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
+    import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
 
-    const FIREBASE_CONFIG = {
+    const firebaseConfig = {
       apiKey: "AIzaSyDdscBDRvZOdtSjz8filTYtRmmYCT8Fk_Y",
       authDomain: "futbal-one.firebaseapp.com",
       projectId: "futbal-one",
@@ -281,554 +183,400 @@
       measurementId: "G-40BYW7L13N"
     };
 
-    const POVOLENE_EMAILY = [
-      "marekholubek@gmail.com", 
-      "chundak2015@gmail.com" 
-    ];
-
-    let matches = [];
-    let matchToDeleteId = null;
-    let auth, db;
-    let isFirebaseActive = false;
-    let unsubscribeSnapshot = null;
-    
-    let historySets = [
-      {
-        title: "Set #1",
-        scoreK: 29,
-        scoreM: 30,
-        matches: [
-          { id: 'h1', team1: 'Man Utd', team2: 'Man City', k1: 2, k2: 3, m1: 1, m2: 2, r1: 0, r2: 1, ptsK: 3, ptsM: 3, isResolved: true },
-          { id: 'h2', team1: 'Torino', team2: 'AS Roma', k1: 1, k2: 2, m1: 0, m2: 2, r1: 0, r2: 2, ptsK: 4, ptsM: 5, isResolved: true },
-          { id: 'h3', team1: 'Leeds', team2: 'Newcastle', k1: 3, k2: 1, m1: 1, m2: 1, r1: 4, r2: 1, ptsK: 4, ptsM: 1, isResolved: true },
-          { id: 'h4', team1: 'Alaves', team2: 'Valencia', k1: 3, k2: 1, m1: 2, m2: 0, r1: 0, r2: 1, ptsK: 1, ptsM: 0, isResolved: true },
-          { id: 'h5', team1: 'AC Milan', team2: 'Benfica Lis.', k1: 2, k2: 1, m1: 3, m2: 0, r1: 0, r2: 2, ptsK: 0, ptsM: 0, isResolved: true },
-          { id: 'h6', team1: 'Juventus', team2: 'Nijmegen', k1: 3, k2: 1, m1: 3, m2: 0, r1: 5, r2: 0, ptsK: 3, ptsM: 4, isResolved: true },
-          { id: 'h7', team1: 'Brentford', team2: 'Chelsea', k1: 2, k2: 3, m1: 2, m2: 2, r1: 3, r2: 0, ptsK: 0, ptsM: 0, isResolved: true },
-          { id: 'h8', team1: 'Bayern', team2: 'Berlin', k1: 5, k2: 1, m1: 4, m2: 0, r1: 7, r2: 0, ptsK: 3, ptsM: 4, isResolved: true },
-          { id: 'h9', team1: 'Sevilla', team2: 'Barcelona', k1: 1, k2: 3, m1: 0, m2: 3, r1: 1, r2: 3, ptsK: 5, ptsM: 4, isResolved: true },
-          { id: 'h10', team1: 'Marseille', team2: 'PSG', k1: 2, k2: 3, m1: 1, m2: 2, r1: 1, r2: 2, ptsK: 3, ptsM: 5, isResolved: true },
-          { id: 'h11', team1: 'Nórsko', team2: 'Dánsko', k1: 2, k2: 0, m1: 3, m2: 1, r1: 3, r2: 2, ptsK: 3, ptsM: 4, isResolved: true }
-        ]
-      }
-    ];
-
+    let app, db, auth;
     try {
-        const app = initializeApp(FIREBASE_CONFIG);
-        auth = getAuth(app);
-        db = getFirestore(app);
-        isFirebaseActive = true;
-        
+      app = initializeApp(firebaseConfig);
+      db = getFirestore(app);
+      auth = getAuth(app);
+    } catch (e) {
+      console.error("Firebase init error:", e);
+    }
+
+    let currentUser = null;
+    let matches = [];
+    let historySets = [];
+    let totalScoreK = 0;
+    let totalScoreM = 0;
+    let setsWonK = 0;
+    let setsWonM = 0;
+
+    const addTipBtn = document.getElementById('addTipBtn');
+    const tipForm = document.getElementById('tipForm');
+    const saveTipBtn = document.getElementById('saveTipBtn');
+    const navBtns = document.querySelectorAll('.nav-btn');
+    const views = ['homeView', 'historyView', 'rulesView', 'profileView'];
+
+    const loginBtn = document.getElementById('loginBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const loggedOutState = document.getElementById('loggedOutState');
+    const loggedInState = document.getElementById('loggedInState');
+    const userAvatar = document.getElementById('userAvatar');
+    const userName = document.getElementById('userName');
+    const userEmail = document.getElementById('userEmail');
+    const navAvatar = document.getElementById('navAvatar');
+    const navUserIcon = document.getElementById('navUserIcon');
+
+    if (auth) {
         onAuthStateChanged(auth, (user) => {
-            const authScreen = document.getElementById('authScreen');
-            const mainApp = document.getElementById('mainApp');
-            const bottomNav = document.getElementById('bottomNav');
-            const loginError = document.getElementById('loginError');
-
-            if (user) {
-                if (POVOLENE_EMAILY.includes(user.email)) {
-                    loginError.classList.add('hidden');
-                    authScreen.classList.add('hidden');
-                    mainApp.classList.remove('hidden');
-                    bottomNav.classList.remove('hidden');
-                    
-                    updateProfileUI(user);
-                    syncData();
-                } else {
-                    loginError.classList.remove('hidden');
-                    signOut(auth);
-                }
-            } else {
-                if (unsubscribeSnapshot) unsubscribeSnapshot();
-                authScreen.classList.remove('hidden');
-                mainApp.classList.add('hidden');
-                bottomNav.classList.add('hidden');
-            }
-        });
-    } catch(e) {
-        console.error("Firebase inicializácia zlyhala", e);
-    }
-
-    function updateProfileUI(user) {
-        document.getElementById('profile-name').innerText = user.displayName || 'Používateľ';
-        document.getElementById('profile-email').innerText = user.email || '';
-        if (user.photoURL) {
-            document.getElementById('profile-avatar').src = user.photoURL;
-            document.getElementById('nav-profile-img').src = user.photoURL;
-        }
-    }
-
-    window.loginWithGoogle = function() {
-        if(isFirebaseActive) {
-            signInWithPopup(auth, new GoogleAuthProvider()).catch(err => {
-                console.error("Chyba prihlásenia:", err);
-            });
-        }
-    };
-
-    window.logoutApp = function() {
-        if(isFirebaseActive) signOut(auth);
-    };
-
-    function syncData() {
-        if (!isFirebaseActive) return;
-        const stateDoc = doc(db, 'spolocne', 'tipovacka_data');
-        
-        unsubscribeSnapshot = onSnapshot(stateDoc, (docSnap) => {
-            if (docSnap.exists()) {
-                let data = docSnap.data();
-                if(data.matches) matches = data.matches;
-                if(data.historySets && data.historySets.length > 0) {
-                    historySets = data.historySets;
-                }
-                // Bezpečnostná poistka pre udržanie maximálne jedného natvrdo definovaného setu v pamäti pre ukážku, 
-                // ale ak je v DB viac, necháme ich. Podľa požiadavky "zruš všetky okrem prvého" ho orežeme:
-                historySets = [historySets[0]].filter(Boolean);
-                render();
-            } else {
-                saveData();
-                render();
-            }
-        }, (error) => console.error("Chyba čítania DB:", error));
-    }
-
-    function saveData() {
-        if (!isFirebaseActive) return;
-        setDoc(doc(db, 'spolocne', 'tipovacka_data'), {
-            matches: matches,
-            historySets: historySets
-        }).catch(err => console.error("Chyba zápisu DB:", err));
-    }
-
-    window.calculatePoints = function(t1, t2, r1, r2) {
-      if (t1 === r1 && t2 === r2) return 5;
-      
-      let pts = 0;
-      let tip1x2 = Math.sign(t1 - t2);
-      let real1x2 = Math.sign(r1 - r2);
-      
-      if (tip1x2 === real1x2) pts += 3;
-      if (t1 === r1) pts += 1;
-      if (t2 === r2) pts += 1;
-      
-      return pts;
-    };
-
-    window.adjustVal = function(id, delta) {
-      let el = document.getElementById(id);
-      let val = parseInt(el.value) + delta;
-      if (val >= 0) el.value = val;
-    };
-
-    window.adjustResolve = function(matchId, teamIdx, delta) {
-        let el = document.getElementById(`res${teamIdx}-${matchId}`);
-        if(el) {
-            let val = parseInt(el.innerText) + delta;
-            if (val >= 0) el.innerText = val;
-        }
-    };
-
-    window.toggleTipForm = function() {
-      const container = document.getElementById('tipFormContainer');
-      const btn = document.getElementById('toggleFormBtn');
-      if (container.classList.contains('hidden')) {
-        container.classList.remove('hidden');
-        btn.innerText = 'Zavrieť formulár';
-        btn.classList.replace('bg-zinc-200', 'bg-zinc-700');
-        btn.classList.replace('text-zinc-950', 'text-zinc-200');
-        setTimeout(() => {
-          document.getElementById('team1').focus();
-          container.scrollIntoView({ behavior: "smooth", block: "center" });
-        }, 100);
-      } else {
-        container.classList.add('hidden');
-        btn.innerText = '+ Pridať nový tip';
-        btn.classList.replace('bg-zinc-700', 'bg-zinc-200');
-        btn.classList.replace('text-zinc-200', 'text-zinc-950');
-      }
-    };
-
-    window.switchTab = function(tabId) {
-      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-      document.getElementById(tabId).classList.add('active');
-      
-      document.querySelectorAll('.nav-btn').forEach(btn => {
-        btn.classList.remove('text-white');
-        btn.classList.add('text-zinc-500');
-      });
-      document.getElementById('nav-tab-' + tabId.split('-')[1]).classList.remove('text-zinc-500');
-      document.getElementById('nav-tab-' + tabId.split('-')[1]).classList.add('text-white');
-      
-      let navImg = document.getElementById('nav-profile-img');
-      if(tabId === 'tab-profile') navImg.classList.add('border-zinc-300');
-      else navImg.classList.remove('border-zinc-300');
-      
-      window.scrollTo(0, 0);
-    };
-
-    window.toggleSet = function(setId) {
-      const content = document.getElementById(setId);
-      const arrow = document.getElementById(setId + '-arrow');
-      if (content.classList.contains('hidden')) {
-        content.classList.remove('hidden');
-        arrow.style.transform = 'rotate(180deg)';
-      } else {
-        content.classList.add('hidden');
-        arrow.style.transform = 'rotate(0deg)';
-      }
-    };
-
-    window.addMatch = function() {
-      const team1 = document.getElementById('team1').value.trim();
-      const team2 = document.getElementById('team2').value.trim();
-      const k1 = parseInt(document.getElementById('k1').value);
-      const k2 = parseInt(document.getElementById('k2').value);
-      const m1 = parseInt(document.getElementById('m1').value);
-      const m2 = parseInt(document.getElementById('m2').value);
-
-      if(!team1 || !team2) return;
-
-      matches.push({
-        id: 'm_' + Date.now(),
-        team1, team2,
-        k1, k2, m1, m2,
-        r1: 0, r2: 0,
-        ptsK: 0, ptsM: 0,
-        isResolved: false
-      });
-
-      document.getElementById('team1').value = '';
-      document.getElementById('team2').value = '';
-      document.getElementById('k1').value = 0;
-      document.getElementById('k2').value = 0;
-      document.getElementById('m1').value = 0;
-      document.getElementById('m2').value = 0;
-      
-      document.activeElement.blur();
-      toggleTipForm();
-      saveData();
-      render();
-    };
-
-    window.saveMatchResult = function(matchId) {
-      let r0El = document.getElementById(`res0-${matchId}`);
-      let r1El = document.getElementById(`res1-${matchId}`);
-      if (!r0El || !r1El) return;
-      
-      let r1 = parseInt(r0El.innerText);
-      let r2 = parseInt(r1El.innerText);
-
-      let m = matches.find(item => item.id === matchId);
-      if(m) {
-        m.r1 = r1;
-        m.r2 = r2;
-        m.ptsK = window.calculatePoints(m.k1, m.k2, r1, r2);
-        m.ptsM = window.calculatePoints(m.m1, m.m2, r1, r2);
-        m.isResolved = true;
-        
-        checkSetCompletion();
-        saveData();
-        render();
-      }
-    };
-
-    function checkSetCompletion() {
-      let totalK = 0;
-      let totalM = 0;
-
-      matches.forEach(m => {
-        if (m.isResolved) {
-          totalK += m.ptsK;
-          totalM += m.ptsM;
-        }
-      });
-
-      if (totalK >= 30 || totalM >= 30) {
-        historySets.unshift({
-          title: `Set #${historySets.length + 1}`,
-          scoreK: totalK,
-          scoreM: totalM,
-          matches: [...matches]
-        });
-        matches = [];
-      }
-    }
-
-    window.confirmDeleteMatch = function(matchId) {
-      matchToDeleteId = matchId;
-      document.getElementById('confirmModal').classList.remove('hidden');
-    };
-
-    window.closeConfirmModal = function() {
-      matchToDeleteId = null;
-      document.getElementById('confirmModal').classList.add('hidden');
-    };
-
-    document.getElementById('confirmDeleteBtn').onclick = function() {
-      if(matchToDeleteId) {
-        matches = matches.filter(m => m.id !== matchToDeleteId);
-        saveData();
-        render();
-      }
-      closeConfirmModal();
-    };
-
-    function createMatchCard(match) {
-      let deleteBtn = `<button onclick="confirmDeleteMatch('${match.id}')" class="absolute top-2.5 right-2 text-zinc-400 hover:text-white p-1 transition-colors flex items-center justify-center rounded-md z-20"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>`;
-
-      let colorK = 'text-zinc-400';
-      let colorM = 'text-zinc-400';
-      let bgK = 'bg-zinc-800 text-zinc-400'; 
-      let bgM = 'bg-zinc-800 text-zinc-400';
-      let hBorderClasses = 'border-l-transparent border-r-transparent';
-
-      if (match.isResolved) {
-        if (match.ptsK > match.ptsM) {
-          colorK = 'text-emerald-400';
-          bgK = 'bg-zinc-900 text-emerald-400'; 
-          hBorderClasses = 'border-l-emerald-400 border-r-emerald-400';
-        } else if (match.ptsM > match.ptsK) {
-          colorM = 'text-orange-400';
-          bgM = 'bg-zinc-900 text-orange-400';
-          hBorderClasses = 'border-l-orange-400 border-r-orange-400';
-        } else {
-          colorK = 'text-white';
-          colorM = 'text-white';
-          bgK = 'bg-zinc-900 text-white';
-          bgM = 'bg-zinc-900 text-white';
-          hBorderClasses = 'border-l-white border-r-white';
-        }
-      } else {
-        colorK = 'text-emerald-400';
-        colorM = 'text-orange-400';
-      }
-
-      if (!match.isResolved) {
-        return `
-          <div class="bg-zinc-800 rounded-lg shadow-sm relative border border-zinc-700 overflow-hidden mb-3">
-            ${deleteBtn}
+          if (user) {
+            currentUser = user;
+            loggedOutState.classList.add('hidden');
+            loggedInState.classList.remove('hidden');
+            userAvatar.src = user.photoURL;
+            userName.textContent = user.displayName;
+            userEmail.textContent = user.email;
             
-            <div class="px-4 py-3">
-              <div class="grid grid-cols-[1fr_64px_1fr] items-center w-full pb-3 mb-3 border-b border-zinc-700">
-                <div class="text-right text-base font-bold text-white truncate pr-2 pl-2">${match.team1}</div>
-                <div class="text-base font-black text-zinc-500 text-center w-full flex items-center justify-center">VS</div>
-                <div class="text-left text-base font-bold text-white truncate pl-2 pr-7">${match.team2}</div>
-              </div>
-              
-              <div class="space-y-2">
-                <div class="grid grid-cols-[1fr_64px_1fr] items-center w-full">
-                  <div class="text-left text-sm font-bold uppercase tracking-wider ${colorK}">Krevetka</div>
-                  <div class="text-base font-black text-center w-full ${colorK}">${match.k1}&nbsp;<span class="opacity-50 mx-0.5">:</span>&nbsp;${match.k2}</div>
-                  <div class="text-right flex justify-end"></div>
-                </div>
-                <div class="grid grid-cols-[1fr_64px_1fr] items-center w-full">
-                  <div class="text-left text-sm font-bold uppercase tracking-wider ${colorM}">Marek</div>
-                  <div class="text-base font-black text-center w-full ${colorM}">${match.m1}&nbsp;<span class="opacity-50 mx-0.5">:</span>&nbsp;${match.m2}</div>
-                  <div class="text-right flex justify-end"></div>
-                </div>
-              </div>
-            </div>
-
-            <div class="px-4 pb-4 pt-1">
-              <div class="flex items-center justify-center gap-2 mb-3">
-                <div class="flex bg-zinc-950 rounded-lg overflow-hidden h-12 border border-zinc-700 flex-1">
-                  <button type="button" onclick="adjustResolve('${match.id}', 0, -1)" class="w-1/3 h-full flex items-center justify-center text-zinc-400 active:bg-zinc-800 active:text-white font-black text-2xl select-none transition-none">-</button>
-                  <span id="res0-${match.id}" class="w-1/3 h-full flex items-center justify-center font-black text-base text-white select-none">0</span>
-                  <button type="button" onclick="adjustResolve('${match.id}', 0, 1)" class="w-1/3 h-full flex items-center justify-center text-zinc-400 active:bg-zinc-800 active:text-white font-black text-xl select-none transition-none">+</button>
-                </div>
-                <span class="font-bold text-zinc-500 px-1 text-lg">:</span>
-                <div class="flex bg-zinc-950 rounded-lg overflow-hidden h-12 border border-zinc-700 flex-1">
-                  <button type="button" onclick="adjustResolve('${match.id}', 1, -1)" class="w-1/3 h-full flex items-center justify-center text-zinc-400 active:bg-zinc-800 active:text-white font-black text-2xl select-none transition-none">-</button>
-                  <span id="res1-${match.id}" class="w-1/3 h-full flex items-center justify-center font-black text-base text-white select-none">0</span>
-                  <button type="button" onclick="adjustResolve('${match.id}', 1, 1)" class="w-1/3 h-full flex items-center justify-center text-zinc-400 active:bg-zinc-800 active:text-white font-black text-xl select-none transition-none">+</button>
-                </div>
-              </div>
-              <button onclick="saveMatchResult('${match.id}')" class="w-full bg-zinc-200 text-zinc-950 active:bg-white h-12 rounded-lg font-black text-xs uppercase tracking-wider shadow transition-colors block">ULOŽIŤ VÝSLEDOK</button>
-            </div>
-          </div>
-        `;
-      } else {
-        return `
-          <div class="bg-zinc-800 rounded-lg shadow-sm relative border border-zinc-700 border-l-[6px] border-r-[6px] ${hBorderClasses} overflow-hidden mb-3">
-            ${deleteBtn}
+            navAvatar.src = user.photoURL;
+            navAvatar.classList.remove('hidden');
+            navUserIcon.classList.add('hidden');
             
-            <div class="bg-zinc-700 px-4 py-3 border-b border-zinc-600">
-              <div class="grid grid-cols-[1fr_64px_1fr] items-center w-full">
-                <div class="text-right text-base font-bold text-white truncate pr-2 pl-2">${match.team1}</div>
-                <div class="text-base font-black text-white text-center w-full flex items-center justify-center">${match.r1}&nbsp;<span class="opacity-50 text-zinc-400 mx-0.5">:</span>&nbsp;${match.r2}</div>
-                <div class="text-left text-base font-bold text-white truncate pl-2 pr-7">${match.team2}</div>
-              </div>
-            </div>
-
-            <div class="px-4 py-3 space-y-2">
-              <div class="grid grid-cols-[1fr_64px_1fr] items-center w-full">
-                <div class="text-left text-sm font-bold uppercase tracking-wider ${colorK}">Krevetka</div>
-                <div class="text-base font-black text-center w-full ${colorK}">${match.k1}&nbsp;<span class="opacity-50 mx-0.5">:</span>&nbsp;${match.k2}</div>
-                <div class="text-right flex justify-end">
-                  <span class="inline-block ${bgK} px-2.5 py-1 rounded-md text-base font-black border border-zinc-700 shadow-sm leading-none">${match.ptsK}&nbsp;b</span>
-                </div>
-              </div>
-              <div class="grid grid-cols-[1fr_64px_1fr] items-center w-full">
-                <div class="text-left text-sm font-bold uppercase tracking-wider ${colorM}">Marek</div>
-                <div class="text-base font-black text-center w-full ${colorM}">${match.m1}&nbsp;<span class="opacity-50 mx-0.5">:</span>&nbsp;${match.m2}</div>
-                <div class="text-right flex justify-end">
-                  <span class="inline-block ${bgM} px-2.5 py-1 rounded-md text-base font-black border border-zinc-700 shadow-sm leading-none">${match.ptsM}&nbsp;b</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        `;
-      }
-    }
-
-    function render() {
-      let totalK = 0;
-      let totalM = 0;
-      let setsK = 0;
-      let setsM = 0;
-
-      matches.forEach(m => {
-        if (m.isResolved) {
-          totalK += m.ptsK;
-          totalM += m.ptsM;
-        }
-      });
-
-      historySets.forEach(s => {
-        if (s.scoreK > s.scoreM) setsK++;
-        else if (s.scoreM > s.scoreK) setsM++;
-      });
-
-      document.getElementById('scoreK').innerText = totalK;
-      document.getElementById('scoreM').innerText = totalM;
-      document.getElementById('setsK-val').innerText = setsK;
-      document.getElementById('setsM-val').innerText = setsM;
-
-      let homeHTML = '';
-      
-      // ZORADENIE: Najprv neukončené (najnovšie hore), potom ukončené (najnovšie hore)
-      let unresolvedMatches = matches.filter(m => !m.isResolved).reverse();
-      let resolvedMatches = matches.filter(m => m.isResolved).reverse();
-      let sortedMatches = [...unresolvedMatches, ...resolvedMatches];
-
-      sortedMatches.forEach(m => {
-        homeHTML += createMatchCard(m);
-      });
-      document.getElementById('homeMatchesList').innerHTML = homeHTML || '<div class="text-center py-6 text-zinc-500 text-sm font-medium">Žiadne zápasy v aktuálnom sete.</div>';
-
-      let historyHTML = '';
-      historySets.forEach((set, index) => {
-        let setId = `history-set-${index}`;
-        let isKrevetkaWinner = set.scoreK > set.scoreM;
-        let isMarekWinner = set.scoreM > set.scoreK;
-        let dotColor = isKrevetkaWinner ? 'bg-emerald-400' : (isMarekWinner ? 'bg-orange-400' : 'bg-white');
-
-        let setMatchesHTML = '';
-        set.matches.forEach(m => {
-          let hColorK = m.ptsK > m.ptsM ? 'text-emerald-400' : (m.ptsK === m.ptsM ? 'text-white' : 'text-zinc-400');
-          let hColorM = m.ptsM > m.ptsK ? 'text-orange-400' : (m.ptsM === m.ptsK ? 'text-white' : 'text-zinc-400');
-          let hBgK = m.ptsK > m.ptsM ? 'bg-zinc-900 text-emerald-400' : (m.ptsK === m.ptsM ? 'bg-zinc-900 text-white' : 'bg-zinc-800 text-zinc-400');
-          let hBgM = m.ptsM > m.ptsK ? 'bg-zinc-900 text-orange-400' : (m.ptsM === m.ptsK ? 'bg-zinc-900 text-white' : 'bg-zinc-800 text-zinc-400');
-          let hBorderClasses = m.ptsK > m.ptsM ? 'border-l-emerald-400 border-r-emerald-400' : (m.ptsM > m.ptsK ? 'border-l-orange-400 border-r-orange-400' : 'border-l-white border-r-white');
-
-          setMatchesHTML += `
-            <div class="bg-zinc-800 rounded-lg overflow-hidden shadow-sm mb-3.5 last:mb-0 relative border border-zinc-700 border-l-[6px] border-r-[6px] ${hBorderClasses}">
-              
-              <div class="bg-zinc-700 px-4 py-3 border-b border-zinc-600">
-                <div class="grid grid-cols-[1fr_64px_1fr] items-center w-full">
-                  <div class="text-right text-base font-bold text-white truncate pr-2 pl-2">${m.team1}</div>
-                  <div class="text-base font-black text-white text-center w-full flex items-center justify-center">${m.r1}&nbsp;<span class="opacity-50 text-zinc-400 mx-0.5">:</span>&nbsp;${m.r2}</div>
-                  <div class="text-left text-base font-bold text-white truncate pl-2 pr-2">${m.team2}</div>
-                </div>
-              </div>
-
-              <div class="px-4 py-3 space-y-2">
-                <div class="grid grid-cols-[1fr_64px_1fr] items-center w-full">
-                  <div class="text-left text-sm font-bold uppercase tracking-wider ${hColorK}">Krevetka</div>
-                  <div class="text-base font-black text-center w-full ${hColorK}">${m.k1}&nbsp;<span class="opacity-50 mx-0.5">:</span>&nbsp;${m.k2}</div>
-                  <div class="text-right flex justify-end">
-                    <span class="inline-block ${hBgK} px-2.5 py-1 rounded-md text-base font-black border border-zinc-700 shadow-sm leading-none">${m.ptsK}&nbsp;b</span>
-                  </div>
-                </div>
-                <div class="grid grid-cols-[1fr_64px_1fr] items-center w-full">
-                  <div class="text-left text-sm font-bold uppercase tracking-wider ${hColorM}">Marek</div>
-                  <div class="text-base font-black text-center w-full ${hColorM}">${m.m1}&nbsp;<span class="opacity-50 mx-0.5">:</span>&nbsp;${m.m2}</div>
-                  <div class="text-right flex justify-end">
-                    <span class="inline-block ${hBgM} px-2.5 py-1 rounded-md text-base font-black border border-zinc-700 shadow-sm leading-none">${m.ptsM}&nbsp;b</span>
-                  </div>
-                </div>
-              </div>
-
-            </div>
-          `;
-        });
-
-        historyHTML += `
-          <div class="bg-zinc-900 rounded-lg border border-zinc-700 overflow-hidden shadow-sm">
-            <div onclick="toggleSet('${setId}')" class="py-3.5 px-4 flex items-center cursor-pointer select-none active:bg-zinc-800 transition-colors">
-              <span class="w-2.5 h-2.5 rounded-full ${dotColor} flex-none mr-2.5"></span>
-              <span class="text-sm font-bold text-white tracking-wide">${set.title || `Set #${index + 1}`}</span>
-              <div class="flex items-center gap-1.5 ml-auto mr-3">
-                <span class="text-sm font-black text-emerald-400">${set.scoreK}</span>
-                <span class="text-zinc-500 font-bold">:</span>
-                <span class="text-sm font-black text-orange-400">${set.scoreM}</span>
-              </div>
-              <svg id="${setId}-arrow" class="w-4 h-4 text-zinc-400 transition-transform duration-200 flex-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-            </div>
-            <div id="${setId}" class="hidden p-3.5 pt-0 bg-zinc-950 border-t border-zinc-700 mt-0.5 pb-3.5">
-              <div class="h-3.5"></div>
-              ${setMatchesHTML}
-            </div>
-          </div>
-        `;
-      });
-      document.getElementById('historySetsList').innerHTML = historyHTML || '<div class="text-center py-6 text-zinc-500 text-sm font-medium">Zatiaľ žiadny ukončený set.</div>';
-    }
-
-    let touchStartY = 0;
-    const indicator = document.getElementById('pullRefreshIndicator');
-    const spinner = document.getElementById('refreshSpinner');
-    const refreshText = document.getElementById('refreshText');
-    const mainAppContainer = document.getElementById('mainApp');
-
-    mainAppContainer.addEventListener('touchstart', e => {
-      if (mainAppContainer.scrollTop === 0) {
-        touchStartY = e.touches[0].clientY;
-      }
-    }, {passive: true});
-
-    mainAppContainer.addEventListener('touchmove', e => {
-      if (mainAppContainer.scrollTop === 0 && touchStartY > 0) {
-        const touchY = e.touches[0].clientY;
-        const diff = touchY - touchStartY;
-        if (diff > 0 && diff < 150) {
-          indicator.style.transform = `translateY(${diff - 80}px)`;
-          if (diff > 90) {
-            refreshText.innerText = 'Pustite pre obnovenie...';
-            spinner.classList.remove('hidden');
+            loadData();
           } else {
-            refreshText.innerText = 'Potiahnite a podržte pre obnovenie...';
-            spinner.classList.add('hidden');
+            currentUser = null;
+            loggedOutState.classList.remove('hidden');
+            loggedInState.classList.add('hidden');
+            navAvatar.classList.add('hidden');
+            navUserIcon.classList.remove('hidden');
+            
+            matches = [];
+            historySets = [];
+            updateUI();
+          }
+        });
+
+        loginBtn.addEventListener('click', () => {
+          const provider = new GoogleAuthProvider();
+          signInWithPopup(auth, provider).catch(err => alert("Chyba pri prihlásení: " + err.message));
+        });
+
+        logoutBtn.addEventListener('click', () => {
+          signOut(auth);
+        });
+    }
+
+    window.switchTab = (tabId) => {
+      views.forEach(v => document.getElementById(v).classList.add('hidden'));
+      document.getElementById(tabId + 'View').classList.remove('hidden');
+      
+      navBtns.forEach(btn => {
+        if (btn.dataset.target === tabId + 'View') {
+          btn.classList.remove('text-zinc-500');
+          btn.classList.add('text-white');
+        } else {
+          btn.classList.remove('text-white');
+          btn.classList.add('text-zinc-500');
+        }
+      });
+    };
+
+    addTipBtn.addEventListener('click', () => {
+      if (!currentUser) return alert('Na pridanie tipu sa musíš prihlásiť!');
+      tipForm.classList.toggle('hidden');
+    });
+
+    function calculatePoints(tip, result) {
+      if (!tip || !result || result.trim() === "") return 0;
+      const [t1, t2] = tip.split(':').map(Number);
+      const [r1, r2] = result.split(':').map(Number);
+      
+      if (isNaN(t1) || isNaN(t2) || isNaN(r1) || isNaN(r2)) return 0;
+
+      if (t1 === r1 && t2 === r2) return 4;
+      
+      const tipDiff = t1 - t2;
+      const resDiff = r1 - r2;
+      
+      if (tipDiff === resDiff) return 3;
+      if ((tipDiff > 0 && resDiff > 0) || (tipDiff < 0 && resDiff < 0) || (tipDiff === 0 && resDiff === 0)) return 2;
+      
+      return 0;
+    }
+
+    function createMatchCard(match, isHistory = false) {
+      const kPoints = calculatePoints(match.tipK, match.result);
+      const mPoints = calculatePoints(match.tipM, match.result);
+      
+      const isClosed = match.result && match.result.trim() !== "";
+      
+      let winnerColor = 'bg-white';
+      let kColor = 'text-white border-white/20 bg-white/10';
+      let mColor = 'text-white border-white/20 bg-white/10';
+      
+      if (isClosed) {
+        if (kPoints > mPoints) {
+          winnerColor = 'bg-emerald-500';
+          kColor = 'text-emerald-400 border-emerald-500/30 bg-emerald-500/10';
+          mColor = 'text-white border-white/10 bg-white/5';
+        } else if (mPoints > kPoints) {
+          winnerColor = 'bg-orange-500';
+          kColor = 'text-white border-white/10 bg-white/5';
+          mColor = 'text-orange-400 border-orange-500/30 bg-orange-500/10';
+        }
+      }
+
+      const card = document.createElement('div');
+      card.className = `relative rounded-2xl shadow-sm mb-4 bg-zinc-800 flex flex-col overflow-hidden`;
+
+      card.innerHTML = `
+        ${isClosed ? `
+          <div class="absolute left-0 top-0 bottom-0 w-[5px] ${winnerColor} z-10"></div>
+          <div class="absolute right-0 top-0 bottom-0 w-[5px] ${winnerColor} z-10"></div>
+        ` : ''}
+
+        <div class="py-2.5 px-4 relative border-b border-zinc-700 ${isClosed ? 'bg-zinc-700/60' : ''}">
+          <div class="grid grid-cols-[1fr_64px_1fr] items-center">
+            <div class="text-right text-base font-bold text-white truncate pr-2">${match.team1}</div>
+            <div class="flex justify-center items-center text-base font-black text-white tracking-widest relative">
+              ${isClosed ? match.result : 'VS'}
+            </div>
+            <div class="text-left text-base font-bold text-white truncate pl-2">${match.team2}</div>
+          </div>
+          
+          ${!isHistory ? `
+            <button onclick="deleteMatch('${match.id}')" class="absolute right-2 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-red-400 p-2 z-20 flex items-center justify-center">
+              <i class="fas fa-times"></i>
+            </button>
+          ` : ''}
+        </div>
+        
+        <div class="p-3 pb-3.5 bg-zinc-800 z-0 pl-4 pr-4">
+          <div class="grid grid-cols-[1fr_64px_1fr] items-center mb-1.5">
+            <div class="text-left text-sm font-bold text-emerald-400 pl-1">KREVETKA</div>
+            <div class="text-center text-base font-black text-emerald-400">${match.tipK || '-:-'}</div>
+            <div class="text-right pr-1">
+              <span class="inline-block border text-base font-bold px-2.5 py-0.5 rounded-lg ${isClosed ? kColor : 'text-emerald-400 border-emerald-500/30 bg-emerald-500/10'}">${kPoints} b</span>
+            </div>
+          </div>
+          
+          <div class="grid grid-cols-[1fr_64px_1fr] items-center">
+            <div class="text-left text-sm font-bold text-orange-400 pl-1">MAREK</div>
+            <div class="text-center text-base font-black text-orange-400">${match.tipM || '-:-'}</div>
+            <div class="text-right pr-1">
+              <span class="inline-block border text-base font-bold px-2.5 py-0.5 rounded-lg ${isClosed ? mColor : 'text-orange-400 border-orange-500/30 bg-orange-500/10'}">${mPoints} b</span>
+            </div>
+          </div>
+        </div>
+      `;
+
+      if (!isClosed && !isHistory) {
+        card.innerHTML += `
+          <div class="bg-zinc-900 border-t border-zinc-700 p-4 rounded-b-2xl">
+             <div class="flex items-center justify-center gap-3">
+               <input type="number" id="res1-${match.id}" class="w-14 h-12 bg-zinc-950 text-white text-center text-xl font-bold rounded-xl border border-zinc-700" placeholder="0">
+               <span class="text-zinc-500 font-bold">:</span>
+               <input type="number" id="res2-${match.id}" class="w-14 h-12 bg-zinc-950 text-white text-center text-xl font-bold rounded-xl border border-zinc-700" placeholder="0">
+             </div>
+             <button onclick="saveResult('${match.id}')" class="w-full mt-4 bg-emerald-500 text-black font-bold py-3 rounded-xl uppercase tracking-widest text-sm shadow-lg">
+               Uložiť výsledok
+             </button>
+          </div>
+        `;
+      }
+
+      return card;
+    }
+
+    function updateUI() {
+      totalScoreK = 0;
+      totalScoreM = 0;
+      
+      matches.forEach(m => {
+        if (m.result && m.result.trim() !== "") {
+          totalScoreK += calculatePoints(m.tipK, m.result);
+          totalScoreM += calculatePoints(m.tipM, m.result);
+        }
+      });
+
+      document.getElementById('scoreK').textContent = totalScoreK;
+      document.getElementById('scoreM').textContent = totalScoreM;
+      document.getElementById('setsK-val').textContent = setsWonK;
+      document.getElementById('setsM-val').textContent = setsWonM;
+
+      const openList = document.getElementById('openMatchesList');
+      const closedList = document.getElementById('closedMatchesList');
+      openList.innerHTML = '';
+      closedList.innerHTML = '';
+
+      const sortedMatches = [...matches].sort((a, b) => {
+        const aClosed = a.result && a.result.trim() !== "";
+        const bClosed = b.result && b.result.trim() !== "";
+        
+        if (!aClosed && bClosed) return -1; 
+        if (aClosed && !bClosed) return 1;  
+        
+        const timeA = a.createdAt || 0;
+        const timeB = b.createdAt || 0;
+        return timeB - timeA;
+      });
+
+      sortedMatches.forEach(match => {
+        const isClosed = match.result && match.result.trim() !== "";
+        if (isClosed) {
+           closedList.appendChild(createMatchCard(match));
+        } else {
+           openList.appendChild(createMatchCard(match));
+        }
+      });
+
+      renderHistory();
+    }
+
+    function renderHistory() {
+      const histCont = document.getElementById('historyContainer');
+      histCont.innerHTML = '';
+
+      if (historySets.length > 0) {
+        const set = historySets[0];
+        const isKrevetkaWinner = set.scoreK > set.scoreM;
+        const winnerColor = isKrevetkaWinner ? 'bg-emerald-500' : 'bg-orange-500';
+
+        const setWrapper = document.createElement('div');
+        setWrapper.className = 'bg-zinc-900 rounded-2xl border border-zinc-800 overflow-hidden mb-6 shadow-sm';
+        
+        setWrapper.innerHTML = `
+          <button class="w-full p-5 flex items-center justify-between bg-zinc-800/50 hover:bg-zinc-800 transition-colors" onclick="this.nextElementSibling.classList.toggle('hidden')">
+            <div class="flex items-center gap-4">
+              <div class="w-2.5 h-2.5 rounded-full ${winnerColor}"></div>
+              <span class="font-bold text-white text-sm">SET #1</span>
+            </div>
+            <div class="flex items-center gap-4">
+              <div class="flex items-center gap-2">
+                 <span class="text-xl font-bold text-emerald-400">${set.scoreK}</span>
+                 <span class="text-zinc-600">:</span>
+                 <span class="text-xl font-bold text-orange-400">${set.scoreM}</span>
+              </div>
+              <i class="fas fa-chevron-down text-zinc-500 text-sm"></i>
+            </div>
+          </button>
+          <div class="hidden p-4 space-y-4 bg-zinc-950 border-t border-zinc-800 pb-6">
+            ${set.matches ? set.matches.map(m => createMatchCard(m, true).outerHTML).join('') : ''}
+          </div>
+        `;
+        histCont.appendChild(setWrapper);
+      }
+    }
+
+    async function loadData() {
+      if (!db || !currentUser) return;
+      
+      try {
+        const qMatches = query(collection(db, "matches"));
+        const snap = await getDocs(qMatches);
+        matches = [];
+        snap.forEach(doc => { matches.push({id: doc.id, ...doc.data()}); });
+      } catch(e) {
+        alert("CHYBA! Firebase ťa odpojil: " + e.message + "\n\n(Pravdepodobne treba opraviť Rules vo Firebase. Pozri inštrukcie v chate!)");
+        console.error("Chyba načítania zápasov:", e);
+      }
+
+      try {
+        const qSets = query(collection(db, "sets"));
+        const snapSets = await getDocs(qSets);
+        historySets = [];
+        setsWonK = 0;
+        setsWonM = 0;
+        
+        snapSets.forEach(doc => { 
+          const s = {id: doc.id, ...doc.data()};
+          historySets.push(s);
+        });
+
+        historySets.sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
+
+        historySets.forEach(s => {
+          if (s.scoreK > s.scoreM) setsWonK++;
+          if (s.scoreM > s.scoreK) setsWonM++;
+        });
+
+        if (historySets.length > 1) {
+          try {
+            const setToKeep = historySets[0];
+            for (let i = 1; i < historySets.length; i++) {
+               await deleteDoc(doc(db, "sets", historySets[i].id));
+            }
+            historySets = [setToKeep];
+          } catch(err) {
+            console.log("Nemáš práva na mazanie setov, ignorujem:", err);
+            historySets = [historySets[0]]; 
           }
         }
+      } catch(e) {
+        console.error("Chyba načítania setov:", e);
       }
-    }, {passive: true});
 
-    mainAppContainer.addEventListener('touchend', e => {
-      if (mainAppContainer.scrollTop === 0 && touchStartY > 0) {
-        const touchY = e.changedTouches[0].clientY;
-        const diff = touchY - touchStartY;
-        if (diff > 90) {
-          refreshText.innerText = 'Obnovuje sa...';
-          spinner.classList.remove('hidden');
-          indicator.style.transform = 'translateY(0)';
-          setTimeout(() => window.location.reload(), 500);
-        } else {
-          indicator.style.transform = 'translateY(-100%)';
-        }
-        touchStartY = 0;
+      updateUI();
+    }
+
+    saveTipBtn.addEventListener('click', async () => {
+      const t1 = document.getElementById('team1').value;
+      const t2 = document.getElementById('team2').value;
+      const tk1 = document.getElementById('tipK1').value;
+      const tk2 = document.getElementById('tipK2').value;
+      const tm1 = document.getElementById('tipM1').value;
+      const tm2 = document.getElementById('tipM2').value;
+
+      if (!t1 || !t2 || !tk1 || !tk2 || !tm1 || !tm2) return alert('Vyplň všetky polia!');
+
+      const newMatch = {
+        team1: t1, team2: t2,
+        tipK: `${tk1}:${tk2}`,
+        tipM: `${tm1}:${tm2}`,
+        result: "",
+        createdAt: Date.now()
+      };
+
+      try {
+        if(db) await addDoc(collection(db, "matches"), newMatch);
+        tipForm.classList.add('hidden');
+        
+        document.getElementById('team1').value = ''; document.getElementById('team2').value = '';
+        document.getElementById('tipK1').value = ''; document.getElementById('tipK2').value = '';
+        document.getElementById('tipM1').value = ''; document.getElementById('tipM2').value = '';
+        
+        loadData();
+      } catch(e) { console.error(e); }
+    });
+
+    window.saveResult = async (matchId) => {
+      const r1 = document.getElementById(`res1-${matchId}`).value;
+      const r2 = document.getElementById(`res2-${matchId}`).value;
+      if (!r1 || !r2) return alert('Zadaj výsledok!');
+
+      try {
+        if(db) await updateDoc(doc(db, "matches", matchId), { result: `${r1}:${r2}` });
+        await loadData();
+        checkSetWinner();
+      } catch(e) { console.error(e); }
+    };
+
+    window.deleteMatch = async (matchId) => {
+      if (!confirm('Naozaj zmazať zápas?')) return;
+      try {
+        if(db) await deleteDoc(doc(db, "matches", matchId));
+        loadData();
+      } catch(e) { console.error(e); }
+    };
+
+    async function checkSetWinner() {
+      if (totalScoreK >= 30 || totalScoreM >= 30) {
+        const sortedMatches = [...matches].sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
+        const newSet = {
+          scoreK: totalScoreK,
+          scoreM: totalScoreM,
+          matches: sortedMatches,
+          createdAt: Date.now()
+        };
+        
+        try {
+          if(db) await addDoc(collection(db, "sets"), newSet);
+          for (let m of matches) {
+            await deleteDoc(doc(db, "matches", m.id));
+          }
+          alert(`SET UKONČENÝ! Dosiahlo sa 30 bodov.`);
+          loadData();
+        } catch(e) { console.error(e); }
       }
-    }, {passive: true});
+    }
   </script>
 </body>
 </html>
