@@ -381,9 +381,10 @@
                 if(data.historySets && data.historySets.length > 0) {
                     historySets = data.historySets;
                 }
-                // Bezpečnostná poistka pre udržanie maximálne jedného natvrdo definovaného setu v pamäti pre ukážku, 
-                // ale ak je v DB viac, necháme ich. Podľa požiadavky "zruš všetky okrem prvého" ho orežeme:
-                historySets = [historySets[0]].filter(Boolean);
+                
+                // ODSTRANENE: historySets = [historySets[0]].filter(Boolean); 
+                // Zrusil som to umele obmedzenie, ktore mazalo stare sety z historie pri nacitani
+                
                 render();
             } else {
                 saveData();
@@ -831,4 +832,4 @@
     }, {passive: true});
   </script>
 </body>
-</html> 
+</html>
