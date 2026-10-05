@@ -91,28 +91,28 @@
       <div class="flex items-center justify-between mb-8 mt-1 px-1">
         
         <!-- Left / KREVETKA -->
-        <div class="flex flex-col items-center flex-1">
-          <div class="flex items-center gap-1.5 mb-2.5 bg-zinc-800/70 px-3 py-1 rounded-full border border-zinc-700/80 shadow-sm">
-            <span class="text-xl leading-none">🦠</span>
-            <span id="setsK-val" class="text-lg font-black text-white leading-none">0</span>
+        <div class="flex flex-col items-start flex-1">
+          <div class="flex items-center gap-1.5 mb-1.5">
+            <span class="text-lg leading-none">🦠</span>
+            <span id="setsK-val" class="text-base font-bold text-white leading-none">0</span>
           </div>
-          <span class="text-xs font-black text-emerald-400 uppercase tracking-widest drop-shadow-sm">Krevetka</span>
+          <span class="text-[10px] font-bold text-emerald-400 uppercase tracking-widest drop-shadow-sm">Krevetka</span>
         </div>
 
         <!-- Score Center -->
-        <div class="flex items-center justify-center shrink-0 px-2">
-          <span id="scoreK" class="text-6xl font-black text-emerald-400 leading-none tracking-tighter drop-shadow-sm text-right">0</span>
-          <span class="text-zinc-600 font-black text-4xl leading-none pb-2 mx-3">:</span>
-          <span id="scoreM" class="text-6xl font-black text-orange-400 leading-none tracking-tighter drop-shadow-sm text-left">0</span>
+        <div class="bg-zinc-900 border border-zinc-800 rounded-[14px] px-4 py-2 flex items-center justify-center shrink-0 shadow-sm mx-2">
+          <span id="scoreK" class="text-5xl font-semibold text-emerald-400 leading-none tracking-tighter text-right w-12">0</span>
+          <span class="text-zinc-600 font-bold text-2xl leading-none pb-1 mx-2">:</span>
+          <span id="scoreM" class="text-5xl font-semibold text-orange-400 leading-none tracking-tighter text-left w-12">0</span>
         </div>
 
         <!-- Right / MAREK -->
-        <div class="flex flex-col items-center flex-1">
-          <div class="flex items-center gap-1.5 mb-2.5 bg-zinc-800/70 px-3 py-1 rounded-full border border-zinc-700/80 shadow-sm">
-            <span id="setsM-val" class="text-lg font-black text-white leading-none">0</span>
-            <span class="text-xl leading-none">🦠</span>
+        <div class="flex flex-col items-end flex-1">
+          <div class="flex items-center gap-1.5 mb-1.5">
+            <span id="setsM-val" class="text-base font-bold text-white leading-none">0</span>
+            <span class="text-lg leading-none">🦠</span>
           </div>
-          <span class="text-xs font-black text-orange-400 uppercase tracking-widest drop-shadow-sm">Marek</span>
+          <span class="text-[10px] font-bold text-orange-400 uppercase tracking-widest drop-shadow-sm">Marek</span>
         </div>
 
       </div>
@@ -221,6 +221,12 @@
       </div>
 
       <div id="tab-profile" class="tab-content space-y-4">
+        
+        <!-- TLACIDLO NA OBNOVU SETU 1 -->
+        <button id="rescueBtn" onclick="obnovitStratenySet()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black py-4 rounded-lg uppercase tracking-widest text-xs shadow-lg mb-4 border-2 border-emerald-400">
+          ⚠️ Vrátiť zmazaný Set #1 do histórie
+        </button>
+
         <div class="bg-zinc-800 p-6 rounded-lg text-center border border-zinc-700">
           <img id="profile-avatar" src="https://ui-avatars.com/api/?name=User&background=3f3f46&color=fff" class="w-20 h-20 rounded-full mx-auto mb-3 border-2 border-zinc-700 object-cover">
           <h3 id="profile-name" class="text-white font-bold text-lg mb-1">Používateľ</h3>
@@ -292,26 +298,7 @@
     let isFirebaseActive = false;
     let unsubscribeSnapshot = null;
     
-    let historySets = [
-      {
-        title: "Set #1",
-        scoreK: 29,
-        scoreM: 30,
-        matches: [
-          { id: 'h1', team1: 'Man Utd', team2: 'Man City', k1: 2, k2: 3, m1: 1, m2: 2, r1: 0, r2: 1, ptsK: 3, ptsM: 3, isResolved: true },
-          { id: 'h2', team1: 'Torino', team2: 'AS Roma', k1: 1, k2: 2, m1: 0, m2: 2, r1: 0, r2: 2, ptsK: 4, ptsM: 5, isResolved: true },
-          { id: 'h3', team1: 'Leeds', team2: 'Newcastle', k1: 3, k2: 1, m1: 1, m2: 1, r1: 4, r2: 1, ptsK: 4, ptsM: 1, isResolved: true },
-          { id: 'h4', team1: 'Alaves', team2: 'Valencia', k1: 3, k2: 1, m1: 2, m2: 0, r1: 0, r2: 1, ptsK: 1, ptsM: 0, isResolved: true },
-          { id: 'h5', team1: 'AC Milan', team2: 'Benfica Lis.', k1: 2, k2: 1, m1: 3, m2: 0, r1: 0, r2: 2, ptsK: 0, ptsM: 0, isResolved: true },
-          { id: 'h6', team1: 'Juventus', team2: 'Nijmegen', k1: 3, k2: 1, m1: 3, m2: 0, r1: 5, r2: 0, ptsK: 3, ptsM: 4, isResolved: true },
-          { id: 'h7', team1: 'Brentford', team2: 'Chelsea', k1: 2, k2: 3, m1: 2, m2: 2, r1: 3, r2: 0, ptsK: 0, ptsM: 0, isResolved: true },
-          { id: 'h8', team1: 'Bayern', team2: 'Berlin', k1: 5, k2: 1, m1: 4, m2: 0, r1: 7, r2: 0, ptsK: 3, ptsM: 4, isResolved: true },
-          { id: 'h9', team1: 'Sevilla', team2: 'Barcelona', k1: 1, k2: 3, m1: 0, m2: 3, r1: 1, r2: 3, ptsK: 5, ptsM: 4, isResolved: true },
-          { id: 'h10', team1: 'Marseille', team2: 'PSG', k1: 2, k2: 3, m1: 1, m2: 2, r1: 1, r2: 2, ptsK: 3, ptsM: 5, isResolved: true },
-          { id: 'h11', team1: 'Nórsko', team2: 'Dánsko', k1: 2, k2: 0, m1: 3, m2: 1, r1: 3, r2: 2, ptsK: 3, ptsM: 4, isResolved: true }
-        ]
-      }
-    ];
+    let historySets = [];
 
     try {
         const app = initializeApp(FIREBASE_CONFIG);
@@ -381,10 +368,7 @@
                 if(data.historySets && data.historySets.length > 0) {
                     historySets = data.historySets;
                 }
-                
-                // ODSTRANENE: historySets = [historySets[0]].filter(Boolean); 
-                // Zrusil som to umele obmedzenie, ktore mazalo stare sety z historie pri nacitani
-                
+                // ODSTRANENE: historySets = [historySets[0]].filter(Boolean); (Toto mazalo historiu)
                 render();
             } else {
                 saveData();
@@ -400,6 +384,45 @@
             historySets: historySets
         }).catch(err => console.error("Chyba zápisu DB:", err));
     }
+
+    // FUNKCIA NA OBNOVU ZMAZANEHO SETU 1
+    window.obnovitStratenySet = function() {
+        if (!isFirebaseActive) return;
+        
+        // Toto sú tvoje presné dáta Setu 1 vytiahnuté z našej staršej konverzácie
+        const stratenySet1 = {
+            title: "Set #1",
+            scoreK: 29,
+            scoreM: 30,
+            matches: [
+              { id: 'h1', team1: 'Man Utd', team2: 'Man City', k1: 2, k2: 3, m1: 1, m2: 2, r1: 0, r2: 1, ptsK: 3, ptsM: 3, isResolved: true },
+              { id: 'h2', team1: 'Torino', team2: 'AS Roma', k1: 1, k2: 2, m1: 0, m2: 2, r1: 0, r2: 2, ptsK: 4, ptsM: 5, isResolved: true },
+              { id: 'h3', team1: 'Leeds', team2: 'Newcastle', k1: 3, k2: 1, m1: 1, m2: 1, r1: 4, r2: 1, ptsK: 4, ptsM: 1, isResolved: true },
+              { id: 'h4', team1: 'Alaves', team2: 'Valencia', k1: 3, k2: 1, m1: 2, m2: 0, r1: 0, r2: 1, ptsK: 1, ptsM: 0, isResolved: true },
+              { id: 'h5', team1: 'AC Milan', team2: 'Benfica Lis.', k1: 2, k2: 1, m1: 3, m2: 0, r1: 0, r2: 2, ptsK: 0, ptsM: 0, isResolved: true },
+              { id: 'h6', team1: 'Juventus', team2: 'Nijmegen', k1: 3, k2: 1, m1: 3, m2: 0, r1: 5, r2: 0, ptsK: 3, ptsM: 4, isResolved: true },
+              { id: 'h7', team1: 'Brentford', team2: 'Chelsea', k1: 2, k2: 3, m1: 2, m2: 2, r1: 3, r2: 0, ptsK: 0, ptsM: 0, isResolved: true },
+              { id: 'h8', team1: 'Bayern', team2: 'Berlin', k1: 5, k2: 1, m1: 4, m2: 0, r1: 7, r2: 0, ptsK: 3, ptsM: 4, isResolved: true },
+              { id: 'h9', team1: 'Sevilla', team2: 'Barcelona', k1: 1, k2: 3, m1: 0, m2: 3, r1: 1, r2: 3, ptsK: 5, ptsM: 4, isResolved: true },
+              { id: 'h10', team1: 'Marseille', team2: 'PSG', k1: 2, k2: 3, m1: 1, m2: 2, r1: 1, r2: 2, ptsK: 3, ptsM: 5, isResolved: true },
+              { id: 'h11', team1: 'Nórsko', team2: 'Dánsko', k1: 2, k2: 0, m1: 3, m2: 1, r1: 3, r2: 2, ptsK: 3, ptsM: 4, isResolved: true }
+            ]
+        };
+
+        // Zistíme, či ho tam už náhodou nemáš, aby sme ho nepridali dvakrát
+        const uzTamJe = historySets.some(set => set.title === "Set #1");
+        
+        if (!uzTamJe) {
+            // Pridáme ho na koniec zoznamu (aby bol pod Setom #2)
+            historySets.push(stratenySet1);
+            saveData();
+            render();
+            alert("VÝBORNE! Tvoj starý Set #1 s 11 zápasmi bol úspešne obnovený a natrvalo uložený späť do databázy.");
+            document.getElementById('rescueBtn').style.display = 'none'; // Schová tlačidlo po úspechu
+        } else {
+            alert("Set #1 sa už v histórii nachádza.");
+        }
+    };
 
     window.calculatePoints = function(t1, t2, r1, r2) {
       if (t1 === r1 && t2 === r2) return 5;
