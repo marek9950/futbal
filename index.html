@@ -92,27 +92,27 @@
         
         <!-- Left / KREVETKA -->
         <div class="flex flex-col items-end flex-1 pr-4">
-          <div class="flex items-center gap-1.5 mb-1.5">
-            <span class="text-base leading-none">🦠</span>
-            <span id="setsK-val" class="text-base font-bold text-white leading-none">0</span>
+          <div class="flex items-center gap-2 mb-1.5">
+            <span class="text-[22px] leading-none pb-0.5">🦠</span>
+            <span id="setsK-val" class="text-[22px] font-bold text-white leading-none">0</span>
           </div>
-          <span class="text-xs font-black text-emerald-400 uppercase tracking-widest drop-shadow-sm">Krevetka</span>
+          <span class="text-sm font-black text-emerald-400 uppercase tracking-widest drop-shadow-sm">Krevetka</span>
         </div>
 
         <!-- Score Center -->
-        <div class="bg-zinc-900 border border-zinc-800 rounded-2xl px-5 py-3 flex items-center justify-center shrink-0 shadow-md">
-          <span id="scoreK" class="text-5xl font-black text-emerald-400 leading-none tracking-tighter text-right w-12">0</span>
-          <span class="text-zinc-600 font-black text-2xl leading-none pb-1 mx-3">:</span>
-          <span id="scoreM" class="text-5xl font-black text-orange-400 leading-none tracking-tighter text-left w-12">0</span>
+        <div class="bg-zinc-900 border border-zinc-800 rounded-3xl px-6 py-4 flex items-center justify-center shrink-0 shadow-lg mx-1">
+          <span id="scoreK" class="text-5xl font-black text-emerald-400 leading-none tracking-tighter drop-shadow-sm text-right w-12">0</span>
+          <span class="text-zinc-600 font-black text-3xl leading-none pb-1 mx-3">:</span>
+          <span id="scoreM" class="text-5xl font-black text-orange-400 leading-none tracking-tighter drop-shadow-sm text-left w-12">0</span>
         </div>
 
         <!-- Right / MAREK -->
         <div class="flex flex-col items-start flex-1 pl-4">
-          <div class="flex items-center gap-1.5 mb-1.5">
-            <span id="setsM-val" class="text-base font-bold text-white leading-none">0</span>
-            <span class="text-base leading-none">🦠</span>
+          <div class="flex items-center gap-2 mb-1.5">
+            <span id="setsM-val" class="text-[22px] font-bold text-white leading-none">0</span>
+            <span class="text-[22px] leading-none pb-0.5">🦠</span>
           </div>
-          <span class="text-xs font-black text-orange-400 uppercase tracking-widest drop-shadow-sm">Marek</span>
+          <span class="text-sm font-black text-orange-400 uppercase tracking-widest drop-shadow-sm">Marek</span>
         </div>
 
       </div>
@@ -221,7 +221,6 @@
       </div>
 
       <div id="tab-profile" class="tab-content space-y-4">
-        
         <div class="bg-zinc-800 p-6 rounded-lg text-center border border-zinc-700">
           <img id="profile-avatar" src="https://ui-avatars.com/api/?name=User&background=3f3f46&color=fff" class="w-20 h-20 rounded-full mx-auto mb-3 border-2 border-zinc-700 object-cover">
           <h3 id="profile-name" class="text-white font-bold text-lg mb-1">Používateľ</h3>
@@ -363,7 +362,6 @@
                 if(data.historySets && data.historySets.length > 0) {
                     historySets = data.historySets;
                 }
-                // ODSTRANENE: historySets = [historySets[0]].filter(Boolean); (Toto mazalo historiu)
                 render();
             } else {
                 saveData();
