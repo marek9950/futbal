@@ -91,31 +91,44 @@
       <div class="flex items-center justify-between mb-8 mt-2 px-1">
         
         <!-- Left / KREVETKA -->
-        <div class="flex flex-col items-end flex-1 pr-4">
-          <div class="flex items-center gap-2 mb-1.5">
-            <span class="text-[18px] leading-none pb-0.5">🦠</span>
-            <span id="setsK-val" class="text-[22px] font-bold text-white leading-none">0</span>
-          </div>
+        <div class="flex-1 flex justify-start pl-2">
           <span class="text-sm font-black text-emerald-400 uppercase tracking-widest drop-shadow-sm">Krevetka</span>
         </div>
 
-        <!-- Score Center -->
-        <div class="bg-zinc-900 border border-zinc-800 rounded-xl px-2 py-2 flex items-center justify-center shrink-0 mx-1">
-          <span id="scoreK" class="text-4xl font-bold text-emerald-400 leading-none tracking-tighter drop-shadow-sm text-right w-11">0</span>
-          <span class="text-zinc-600 font-black text-3xl leading-none pb-1 mx-2">:</span>
-          <span id="scoreM" class="text-4xl font-bold text-orange-400 leading-none tracking-tighter drop-shadow-sm text-left w-11">0</span>
+        <!-- Score Center (Combined Mrdky + Score) -->
+        <div class="flex flex-col shrink-0 bg-zinc-900 border border-zinc-800 rounded-2xl shadow-lg mx-2 overflow-hidden">
+          
+          <!-- Top Row: Mrdky -->
+          <div class="flex items-center justify-between px-4 py-1.5 bg-zinc-800/80 border-b border-zinc-700/50">
+            <div class="flex items-center gap-1.5">
+              <span class="text-base leading-none pb-0.5">🦠</span>
+              <span id="setsK-val" class="text-base font-bold text-white leading-none">0</span>
+            </div>
+            
+            <!-- Jemný oddeľovací nápis v strede pre symetriu -->
+            <span class="text-[9px] text-zinc-500 font-black uppercase tracking-widest mx-4 mt-0.5">Sety</span>
+
+            <div class="flex items-center gap-1.5">
+              <span id="setsM-val" class="text-base font-bold text-white leading-none">0</span>
+              <span class="text-base leading-none pb-0.5">🦠</span>
+            </div>
+          </div>
+
+          <!-- Bottom Row: Score -->
+          <div class="flex items-center justify-center px-4 py-3">
+            <span id="scoreK" class="text-5xl font-bold text-emerald-400 leading-none tracking-tighter drop-shadow-sm text-right w-12">0</span>
+            <span class="text-zinc-600 font-black text-3xl leading-none pb-1 mx-3">:</span>
+            <span id="scoreM" class="text-5xl font-bold text-orange-400 leading-none tracking-tighter drop-shadow-sm text-left w-12">0</span>
+          </div>
         </div>
 
         <!-- Right / MAREK -->
-        <div class="flex flex-col items-start flex-1 pl-4">
-          <div class="flex items-center gap-2 mb-1.5">
-            <span id="setsM-val" class="text-[22px] font-bold text-white leading-none">0</span>
-            <span class="text-[22px] leading-none pb-0.5">🦠</span>
-          </div>
+        <div class="flex-1 flex justify-end pr-2">
           <span class="text-sm font-black text-orange-400 uppercase tracking-widest drop-shadow-sm">Marek</span>
         </div>
 
       </div>
+      <!-- Koniec Scoreboard Header -->
 
       <!-- Tab: Home -->
       <div id="tab-home" class="tab-content active space-y-3">
@@ -362,6 +375,7 @@
                 if(data.historySets && data.historySets.length > 0) {
                     historySets = data.historySets;
                 }
+                // CHYBNÝ RIADOK BOL TU A BOL VYMAZANÝ!
                 render();
             } else {
                 saveData();
@@ -809,4 +823,4 @@
     }, {passive: true});
   </script>
 </body>
-</html> 
+</html>
